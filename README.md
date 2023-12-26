@@ -12,12 +12,12 @@ onEvent('advjs', event => {
 	})
 
 	let root = event.create('advjs:hell')
-		.displayInfo(builder => builder.setIcon('diamond'))
+		.display(builder => builder.setIcon('diamond'))
 		.criteria(builder => builder.add('tick', event.TRIGGER.tick()))
 
 	root.addChild('child1', builder => {
 		builder
-			.displayInfo(builder => {
+			.display(builder => {
 				builder.setTitle(Text.red('Holy Shit'))
 				builder.setDescription(Text.red('地狱开局'))
 			})
