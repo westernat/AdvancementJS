@@ -1,6 +1,5 @@
 package org.mesdag.advjs.getter;
 
-import dev.latvian.mods.kubejs.core.ComponentKJS;
 import dev.latvian.mods.kubejs.item.ItemStackJS;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.network.chat.Component;
@@ -31,7 +30,7 @@ public class DisplayBuilder {
         return icon;
     }
 
-    public void setTitle(ComponentKJS title) {
+    public void setTitle(Component title) {
         this.title = title;
     }
 
@@ -39,7 +38,7 @@ public class DisplayBuilder {
         return title;
     }
 
-    public void setDescription(ComponentKJS description) {
+    public void setDescription(Component description) {
         this.description = description;
     }
 

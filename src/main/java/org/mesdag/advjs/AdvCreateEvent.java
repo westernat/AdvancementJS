@@ -14,7 +14,7 @@ public class AdvCreateEvent extends EventJS {
     public final MinMaxBoundsProvider BOUNDS = new MinMaxBoundsProvider();
 
     public AdvGetter create(ResourceLocation rootPath) {
-        return new AdvGetter("root", rootPath);
+        return new AdvGetter(null, "root", rootPath, false);
     }
 
     public void remove(ResourceLocation remove) {
