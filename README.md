@@ -4,7 +4,7 @@ Configure Advancements by JavaScript
 ```
 onEvent('advjs', event => {
 	let bred_in_nether = event.TRIGGER.bredAnimals(builder => {
-		builder.setChild(event.PREDICATE.entityPredicate({
+		builder.setChild(event.PREDICATE.entity({
 			stepping_on: {
 				dimension: 'the_nether'
 			}
