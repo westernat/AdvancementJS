@@ -1,4 +1,4 @@
-package org.mesdag.advjs.trigger;
+package org.mesdag.advjs.util;
 
 import dev.latvian.mods.kubejs.item.ingredient.IngredientJS;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
@@ -6,7 +6,7 @@ import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.NbtPredicate;
 
-interface ItemSetter {
+public interface ItemSetter {
     default ItemPredicate warpItem(IngredientJS ingredientJS) {
         return new ItemPredicate(
             null,

@@ -4,6 +4,7 @@ import net.minecraft.advancements.critereon.DamageSourcePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import org.mesdag.advjs.util.EntitySetter;
 
 public class EntityKillPlayerBuilder extends AbstractTriggerBuilder implements EntitySetter {
     EntityPredicate.Composite killer = EntityPredicate.Composite.ANY;

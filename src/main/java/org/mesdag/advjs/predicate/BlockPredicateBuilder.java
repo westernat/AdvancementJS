@@ -8,35 +8,28 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import org.mesdag.advjs.util.BlockSetter;
 
-public class BlockPredicateBuilder {
-    private final BlockPredicate.Builder builder = BlockPredicate.Builder.block();
+class BlockPredicateBuilder implements BlockSetter {
+    final BlockPredicate.Builder builder = BlockPredicate.Builder.block();
 
-    public BlockPredicateBuilder tag(ResourceLocation location) {
+    public void ofTag(ResourceLocation location) {
         builder.of(TagKey.create(Registry.BLOCK_REGISTRY, location));
-        return this;
     }
 
-    public BlockPredicateBuilder blocks(ResourceLocation... blockIds) {
+    public void ofBlocks(ResourceLocation... blockIds) {
         ImmutableSet.Builder<Block> setBuilder = ImmutableSet.builder();
         for (ResourceLocation blockId : blockIds) {
-            setBuilder.add(Registry.BLOCK.get(blockId));
+            setBuilder.add(warpBlock(blockId));
         }
         builder.of(setBuilder.build());
-        return this;
     }
 
-    public BlockPredicateBuilder properties(StatePropertiesPredicate statePropertiesPredicate) {
+    public void setProperties(StatePropertiesPredicate statePropertiesPredicate) {
         builder.setProperties(statePropertiesPredicate);
-        return this;
     }
 
-    public BlockPredicateBuilder nbt(CompoundTag nbt) {
+    public void hasNbt(CompoundTag nbt) {
         builder.hasNbt(nbt);
-        return this;
-    }
-
-    public BlockPredicate build() {
-        return builder.build();
     }
 }

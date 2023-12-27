@@ -6,6 +6,8 @@ import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
+import org.mesdag.advjs.util.BlockSetter;
+import org.mesdag.advjs.util.ItemSetter;
 
 class DestroyBlockBuilder extends AbstractTriggerBuilder implements ItemSetter, BlockSetter {
     @Nullable

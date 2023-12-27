@@ -1,10 +1,10 @@
-package org.mesdag.advjs.trigger;
+package org.mesdag.advjs.util;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
-interface BlockSetter {
+public interface BlockSetter {
     default Block warpBlock(ResourceLocation blockId) {
         return Registry.BLOCK.get(blockId);
     }

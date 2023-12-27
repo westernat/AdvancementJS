@@ -3,6 +3,7 @@ package org.mesdag.advjs.trigger;
 import dev.latvian.mods.kubejs.item.ingredient.IngredientJS;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import org.mesdag.advjs.util.ItemSetter;
 
 class FishingRodHookedBuilder extends AbstractTriggerBuilder implements ItemSetter {
     ItemPredicate rod = ItemPredicate.ANY;

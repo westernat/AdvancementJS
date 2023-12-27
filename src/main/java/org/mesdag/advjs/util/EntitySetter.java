@@ -1,10 +1,10 @@
-package org.mesdag.advjs.trigger;
+package org.mesdag.advjs.util;
 
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 
-interface EntitySetter {
+public interface EntitySetter {
     default EntityPredicate.Composite warpEntity(ResourceLocation entityId) {
         return EntityPredicate.Composite.wrap(EntityPredicate.Builder.entity().of(entityId).build());
     }

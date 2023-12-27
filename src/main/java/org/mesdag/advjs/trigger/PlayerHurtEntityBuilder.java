@@ -4,6 +4,7 @@ import net.minecraft.advancements.critereon.DamagePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import org.mesdag.advjs.util.EntitySetter;
 
 class PlayerHurtEntityBuilder extends AbstractTriggerBuilder implements EntitySetter {
     DamagePredicate damage;

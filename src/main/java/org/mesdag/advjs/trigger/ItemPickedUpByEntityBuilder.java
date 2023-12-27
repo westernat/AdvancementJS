@@ -5,6 +5,8 @@ import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import org.mesdag.advjs.util.EntitySetter;
+import org.mesdag.advjs.util.ItemSetter;
 
 class ItemPickedUpByEntityBuilder extends AbstractTriggerBuilder implements ItemSetter, EntitySetter {
     ItemPredicate item = ItemPredicate.ANY;

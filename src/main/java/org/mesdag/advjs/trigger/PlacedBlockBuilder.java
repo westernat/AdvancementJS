@@ -6,6 +6,8 @@ import net.minecraft.advancements.critereon.LocationPredicate;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import org.mesdag.advjs.util.BlockSetter;
+import org.mesdag.advjs.util.ItemSetter;
 
 import javax.annotation.Nullable;
 

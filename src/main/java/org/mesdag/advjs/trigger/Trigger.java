@@ -187,6 +187,12 @@ public class Trigger {
         return new StartRidingTrigger.TriggerInstance(player);
     }
 
+    public StartRidingTrigger.TriggerInstance startRiding(Consumer<PlayerPredicateBuilder> consumer) {
+        PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
+        consumer.accept(builder);
+        return new StartRidingTrigger.TriggerInstance(builder.build());
+    }
+
     public StartRidingTrigger.TriggerInstance startRiding() {
         return new StartRidingTrigger.TriggerInstance(EntityPredicate.Composite.ANY);
     }
@@ -211,6 +217,12 @@ public class Trigger {
 
     public TickTrigger.TriggerInstance tick(PlayerPredicate playerPredicate) {
         return new TickTrigger.TriggerInstance(EntityPredicate.Composite.wrap(EntityPredicate.Builder.entity().player(playerPredicate).build()));
+    }
+
+    public TickTrigger.TriggerInstance tick(Consumer<PlayerPredicateBuilder> consumer) {
+        PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
+        consumer.accept(builder);
+        return new TickTrigger.TriggerInstance(builder.build());
     }
 
     public TickTrigger.TriggerInstance tick() {

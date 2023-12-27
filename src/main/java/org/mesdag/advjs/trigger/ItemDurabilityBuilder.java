@@ -3,6 +3,7 @@ package org.mesdag.advjs.trigger;
 import dev.latvian.mods.kubejs.item.ingredient.IngredientJS;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
+import org.mesdag.advjs.util.ItemSetter;
 
 class ItemDurabilityBuilder extends AbstractTriggerBuilder implements ItemSetter {
     ItemPredicate item = ItemPredicate.ANY;

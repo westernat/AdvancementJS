@@ -1,172 +1,252 @@
 package org.mesdag.advjs.predicate;
 
-import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.nbt.CompoundTag;
 
+import java.util.function.Consumer;
+
 public class Predicate {
-    public BlockPredicate blockPredicate(JsonObject o) {
-        if (o == null) return BlockPredicate.ANY;
+    public BlockPredicate block(JsonObject o) {
         return BlockPredicate.fromJson(o);
     }
 
-    public BlockPredicateBuilder blockPredicateBuilder() {
-        return new BlockPredicateBuilder();
+    public BlockPredicate block(Consumer<BlockPredicateBuilder> consumer) {
+        BlockPredicateBuilder builder = new BlockPredicateBuilder();
+        consumer.accept(builder);
+        return builder.builder.build();
     }
 
-    public DamagePredicate damagePredicate(JsonObject o) {
-        if (o == null) return DamagePredicate.ANY;
+    public BlockPredicate block() {
+        return BlockPredicate.ANY;
+    }
+
+    public DamagePredicate damage(JsonObject o) {
         return DamagePredicate.fromJson(o);
     }
 
-    public DamagePredicate.Builder damagePredicateBuilder() {
-        return new DamagePredicate.Builder();
+    public DamagePredicate damage(Consumer<DamagePredicate.Builder> consumer) {
+        DamagePredicate.Builder builder = new DamagePredicate.Builder();
+        consumer.accept(builder);
+        return builder.build();
     }
 
-    public DamageSourcePredicate damageSourcePredicate(JsonObject o) {
-        if (o == null) return DamageSourcePredicate.ANY;
+    public DamagePredicate damage() {
+        return DamagePredicate.ANY;
+    }
+
+    public DamageSourcePredicate damageSource(JsonObject o) {
         return DamageSourcePredicate.fromJson(o);
     }
 
-    public DamageSourcePredicate.Builder damageSourcePredicateBuilder() {
-        return DamageSourcePredicate.Builder.damageType();
+    public DamageSourcePredicate damageSource(Consumer<DamageSourcePredicate.Builder> consumer) {
+        DamageSourcePredicate.Builder builder = DamageSourcePredicate.Builder.damageType();
+        consumer.accept(builder);
+        return builder.build();
     }
 
-    public DistancePredicate distancePredicate(JsonObject o) {
-        if (o == null) return DistancePredicate.ANY;
+    public DamageSourcePredicate damageSource() {
+        return DamageSourcePredicate.ANY;
+    }
+
+    public DistancePredicate distance(JsonObject o) {
         return DistancePredicate.fromJson(o);
     }
 
-    public DistancePredicate horizontalDistance(MinMaxBounds.Doubles bounds) {
-        return new DistancePredicate(MinMaxBounds.Doubles.ANY, MinMaxBounds.Doubles.ANY, MinMaxBounds.Doubles.ANY, bounds, MinMaxBounds.Doubles.ANY);
+    public DistancePredicate distance(Consumer<DistancePredicateBuilder> consumer) {
+        DistancePredicateBuilder builder = new DistancePredicateBuilder();
+        consumer.accept(builder);
+        return new DistancePredicate(builder.x, builder.y, builder.z, builder.horizontal, builder.absolute);
     }
 
-    public DistancePredicate verticalDistance(MinMaxBounds.Doubles bounds) {
-        return new DistancePredicate(MinMaxBounds.Doubles.ANY, bounds, MinMaxBounds.Doubles.ANY, MinMaxBounds.Doubles.ANY, MinMaxBounds.Doubles.ANY);
+    public DistancePredicate distance() {
+        return DistancePredicate.ANY;
     }
 
-    public DistancePredicate absoluteDistance(MinMaxBounds.Doubles bounds) {
-        return new DistancePredicate(MinMaxBounds.Doubles.ANY, MinMaxBounds.Doubles.ANY, MinMaxBounds.Doubles.ANY, MinMaxBounds.Doubles.ANY, bounds);
-    }
-
-    public EnchantmentPredicate enchantmentPredicate(JsonObject o) {
-        if (o == null) return EnchantmentPredicate.ANY;
+    public EnchantmentPredicate enchantment(JsonObject o) {
         return EnchantmentPredicate.fromJson(o);
     }
 
-    public EnchantmentPredicateBuilder enchantmentPredicateBuilder() {
-        return new EnchantmentPredicateBuilder();
+    public EnchantmentPredicate enchantment(Consumer<EnchantmentPredicateBuilder> consumer) {
+        EnchantmentPredicateBuilder builder = new EnchantmentPredicateBuilder();
+        consumer.accept(builder);
+        return new EnchantmentPredicate(builder.enchantment, builder.level);
     }
 
-    public EnchantmentPredicate[] enchantmentPredicateArray(JsonArray o) {
-        if (o == null) return EnchantmentPredicate.NONE;
+    public EnchantmentPredicate enchantment() {
+        return EnchantmentPredicate.ANY;
+    }
+
+    public EnchantmentPredicate[] enchantmentArray(JsonArray o) {
         return EnchantmentPredicate.fromJsonArray(o);
     }
 
-    public EntityEquipmentPredicate entityEquipmentPredicate(JsonObject o) {
-        if (o == null) return EntityEquipmentPredicate.ANY;
+    public EntityEquipmentPredicate entityEquipment(JsonObject o) {
         return EntityEquipmentPredicate.fromJson(o);
     }
 
-    public EntityEquipmentPredicate.Builder entityEquipmentPredicateBuilder() {
-        return EntityEquipmentPredicate.Builder.equipment();
+    public EntityEquipmentPredicate entityEquipment(Consumer<EntityEquipmentPredicate.Builder> consumer) {
+        EntityEquipmentPredicate.Builder builder = EntityEquipmentPredicate.Builder.equipment();
+        consumer.accept(builder);
+        return builder.build();
     }
 
-    public EntityFlagsPredicate entityFlagsPredicate(JsonObject o) {
-        if (o == null) return EntityFlagsPredicate.ANY;
+    public EntityEquipmentPredicate entityEquipment() {
+        return EntityEquipmentPredicate.ANY;
+    }
+
+    public EntityFlagsPredicate entityFlags(JsonObject o) {
         return EntityFlagsPredicate.fromJson(o);
     }
 
-    public EntityFlagsPredicate.Builder entityFlagsPredicateBuilder() {
-        return EntityFlagsPredicate.Builder.flags();
+    public EntityFlagsPredicate entityFlags(Consumer<EntityFlagsPredicate.Builder> consumer) {
+        EntityFlagsPredicate.Builder builder = EntityFlagsPredicate.Builder.flags();
+        consumer.accept(builder);
+        return builder.build();
     }
 
-    public EntityPredicate entityPredicate(JsonObject o) {
-        if (o == null) return EntityPredicate.ANY;
+    public EntityFlagsPredicate entityFlags() {
+        return EntityFlagsPredicate.ANY;
+    }
+
+    public EntityPredicate entity(JsonObject o) {
         return EntityPredicate.fromJson(o);
     }
 
-    //TODO entityPredicateBuilder
-
-    public FishingHookPredicate inOpenWater(boolean bool) {
-        return FishingHookPredicate.inOpenWater(bool);
+    public EntityPredicate entity(Consumer<EntityPredicate.Builder> consumer) {
+        EntityPredicate.Builder builder = new EntityPredicate.Builder();
+        consumer.accept(builder);
+        return builder.build();
     }
 
-    public FluidPredicate fluidPredicate(JsonObject o) {
-        if (o == null) return FluidPredicate.ANY;
+    public EntityPredicate entity() {
+        return EntityPredicate.ANY;
+    }
+
+    public FishingHookPredicate fishingHook(boolean isInWater) {
+        return FishingHookPredicate.inOpenWater(isInWater);
+    }
+
+    public FishingHookPredicate fishingHook() {
+        return FishingHookPredicate.ANY;
+    }
+
+    public FluidPredicate fluid(JsonObject o) {
         return FluidPredicate.fromJson(o);
     }
 
-    //TODO fluidPredicateBuilder
+    public FluidPredicate fluid(Consumer<FluidPredicate.Builder> consumer) {
+        FluidPredicate.Builder builder = FluidPredicate.Builder.fluid();
+        consumer.accept(builder);
+        return builder.build();
+    }
 
-    public ItemPredicate itemPredicate(JsonObject o) {
-        if (o == null) return ItemPredicate.ANY;
+    public FluidPredicate fluid() {
+        return FluidPredicate.ANY;
+    }
+
+    public ItemPredicate item(JsonObject o) {
         return ItemPredicate.fromJson(o);
     }
 
-    //TODO itemPredicateBuilder
+    public ItemPredicate item(Consumer<ItemPredicate.Builder> consumer) {
+        ItemPredicate.Builder builder = ItemPredicate.Builder.item();
+        consumer.accept(builder);
+        return builder.build();
+    }
 
-    public LighthingBoltPredicate lightningBoltPredicate(JsonObject o) {
-        if (o == null) return LighthingBoltPredicate.ANY;
+    public ItemPredicate item() {
+        return ItemPredicate.ANY;
+    }
+
+    public LighthingBoltPredicate lightningBolt(JsonObject o) {
         return LighthingBoltPredicate.fromJson(o);
     }
 
-    //TODO lightningBoltPredicateBuilder
+    public LighthingBoltPredicate lightningBolt() {
+        return LighthingBoltPredicate.ANY;
+    }
 
-    public LightPredicate lightPredicate(JsonObject o) {
-        if (o == null) return LightPredicate.ANY;
+    public LightPredicate light(JsonObject o) {
         return LightPredicate.fromJson(o);
     }
 
-    public LightPredicate.Builder lightPredicate() {
-        return new LightPredicate.Builder();
+    public LightPredicate light(Consumer<LightPredicate.Builder> consumer) {
+        LightPredicate.Builder builder = new LightPredicate.Builder();
+        consumer.accept(builder);
+        return builder.build();
     }
 
-    public LocationPredicate locationPredicate(JsonObject o) {
-        if (o == null) return LocationPredicate.ANY;
+    public LightPredicate light() {
+        return LightPredicate.ANY;
+    }
+
+    public LocationPredicate location(JsonObject o) {
         return LocationPredicate.fromJson(o);
     }
 
-    //TODO locationPredicateBuilder
+    public LocationPredicate location(Consumer<LocationPredicate.Builder> consumer) {
+        LocationPredicate.Builder builder = LocationPredicate.Builder.location();
+        consumer.accept(builder);
+        return builder.build();
+    }
 
-    public MobEffectsPredicate mobEffectsPredicate(JsonObject o) {
-        if (o == null) return MobEffectsPredicate.ANY;
+    public LocationPredicate location() {
+        return LocationPredicate.ANY;
+    }
+
+    public MobEffectsPredicate mobEffects(JsonObject o) {
         return MobEffectsPredicate.fromJson(o);
     }
 
-    public MobEffectsPredicate mobEffectsPredicateBuilder() {
-        return new MobEffectsPredicate(Maps.newLinkedHashMap());
+    public MobEffectsPredicate mobEffects(Consumer<MobEffectsPredicateBuilder> consumer) {
+        MobEffectsPredicateBuilder builder = new MobEffectsPredicateBuilder();
+        consumer.accept(builder);
+        return new MobEffectsPredicate(builder.effects);
     }
 
-    public MobEffectsPredicate.MobEffectInstancePredicate mobEffectInstancePredicate(JsonObject o) {
-        if (o == null) return new MobEffectsPredicate.MobEffectInstancePredicate();
+    public MobEffectsPredicate mobEffects() {
+        return MobEffectsPredicate.ANY;
+    }
+
+    public MobEffectsPredicate.MobEffectInstancePredicate mobEffectInstance(JsonObject o) {
         return MobEffectsPredicate.MobEffectInstancePredicate.fromJson(o);
     }
 
-    public MobEffectInstancePredicateBuilder mobEffectInstancePredicateBuilder() {
-        return new MobEffectInstancePredicateBuilder();
+    public MobEffectsPredicate.MobEffectInstancePredicate mobEffectInstance(Consumer<MobEffectInstancePredicateBuilder> consumer) {
+        MobEffectInstancePredicateBuilder builder = new MobEffectInstancePredicateBuilder();
+        consumer.accept(builder);
+        return new MobEffectsPredicate.MobEffectInstancePredicate(builder.amplifier, builder.duration, builder.ambient, builder.visible);
     }
 
-    public NbtPredicate nbtPredicate(CompoundTag nbt) {
-        if (nbt == null) return NbtPredicate.ANY;
+    public MobEffectsPredicate.MobEffectInstancePredicate mobEffectInstance() {
+        return new MobEffectsPredicate.MobEffectInstancePredicate();
+    }
+
+    public NbtPredicate nbt(CompoundTag nbt) {
         return new NbtPredicate(nbt);
     }
 
-    public PlayerPredicate playerPredicate(JsonObject o) {
-        if (o == null) return PlayerPredicate.ANY;
+    public NbtPredicate nbt() {
+        return NbtPredicate.ANY;
+    }
+
+    public PlayerPredicate player(JsonObject o) {
         return PlayerPredicate.fromJson(o);
     }
 
-    //TODO playerPredicateBuilder
-
-    public StatePropertiesPredicate statePropertiesPredicate(JsonObject o) {
-        if (o == null) return StatePropertiesPredicate.ANY;
+    public StatePropertiesPredicate stateProperties(JsonObject o) {
         return StatePropertiesPredicate.fromJson(o);
     }
 
-    public StatePropertiesPredicateBuilder statePropertiesPBuilder() {
-        return new StatePropertiesPredicateBuilder();
+    public StatePropertiesPredicate stateProperties(Consumer<StatePropertiesPredicateBuilder> consumer) {
+        StatePropertiesPredicateBuilder builder = new StatePropertiesPredicateBuilder();
+        consumer.accept(builder);
+        return builder.builder.build();
+    }
+
+    public StatePropertiesPredicate stateProperties() {
+        return StatePropertiesPredicate.ANY;
     }
 }
