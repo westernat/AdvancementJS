@@ -28,7 +28,7 @@ public abstract class ServerAdvancementManagerMixin {
 
     @Unique
     private static void advJS$remove(Map<ResourceLocation, Advancement.Builder> map) {
-        for (ResourceLocation remove : removes) {
+        for (ResourceLocation remove : REMOVES) {
             map.remove(remove);
         }
     }
@@ -37,7 +37,7 @@ public abstract class ServerAdvancementManagerMixin {
     private static void advJS$build(Map<ResourceLocation, Advancement.Builder> builderMap) {
         HashMap<ResourceLocation, Advancement> advMap = new HashMap<>();
         ArrayList<AdvGetter> remains = new ArrayList<>();
-        for (Map.Entry<ResourceLocation, AdvGetter> entry : getterMap.entrySet()) {
+        for (Map.Entry<ResourceLocation, AdvGetter> entry : GETTER_MAP.entrySet()) {
             AdvGetter getter = entry.getValue();
             if (getter.isRoot()) {
                 advMap.put(entry.getKey(), advJS$buildAdv(getter, null));
@@ -73,8 +73,8 @@ public abstract class ServerAdvancementManagerMixin {
     private static Advancement advJS$buildAdv(AdvGetter getter, Advancement parent) {
         if (getter.isAttention()) {
             getter.display(builder -> {
-                builder.setTitle(attention);
-                builder.setDescription(attention_desc);
+                builder.setTitle(ATTENTION);
+                builder.setDescription(ATTENTION_DESC);
             });
         }
         return new Advancement(

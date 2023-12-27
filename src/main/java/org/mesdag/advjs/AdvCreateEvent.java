@@ -5,8 +5,9 @@ import net.minecraft.resources.ResourceLocation;
 import org.mesdag.advjs.getter.AdvGetter;
 import org.mesdag.advjs.predicate.Predicate;
 import org.mesdag.advjs.trigger.Trigger;
-import org.mesdag.advjs.util.Data;
 import org.mesdag.advjs.util.MinMaxBoundsProvider;
+
+import static org.mesdag.advjs.util.Data.REMOVES;
 
 public class AdvCreateEvent extends EventJS {
     public final Trigger TRIGGER = new Trigger();
@@ -18,6 +19,6 @@ public class AdvCreateEvent extends EventJS {
     }
 
     public void remove(ResourceLocation remove) {
-        Data.removes.add(remove);
+        REMOVES.add(remove);
     }
 }

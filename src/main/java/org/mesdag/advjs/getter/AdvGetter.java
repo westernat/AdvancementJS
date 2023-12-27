@@ -4,12 +4,13 @@ import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.resources.ResourceLocation;
-import org.mesdag.advjs.util.Data;
 
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
+
+import static org.mesdag.advjs.util.Data.GETTER_MAP;
 
 public class AdvGetter {
     @Nullable
@@ -30,9 +31,10 @@ public class AdvGetter {
     }
 
     public AdvGetter addChild(Consumer<AdvGetter> advGetterConsumer) {
-        AdvGetter child = new AdvGetter(getSavePath(), UUID.randomUUID().toString().replaceAll("-", ""), rootPath, true);
+        AdvGetter child = new AdvGetter(getSavePath(), UUID.randomUUID().toString(), rootPath, true);
         advGetterConsumer.accept(child);
 
+        GETTER_MAP.put(getSavePath(), this);
         return child;
     }
 
@@ -40,6 +42,7 @@ public class AdvGetter {
         AdvGetter child = new AdvGetter(getSavePath(), name, rootPath, false);
         advGetterConsumer.accept(child);
 
+        GETTER_MAP.put(getSavePath(), this);
         return child;
     }
 
@@ -49,21 +52,21 @@ public class AdvGetter {
             displayBuilder.setBackground("textures/gui/advancements/backgrounds/stone.png");
         }
 
-        Data.getterMap.put(getSavePath(), this);
+        GETTER_MAP.put(getSavePath(), this);
         return this;
     }
 
     public AdvGetter criteria(Consumer<CriteriaBuilder> criteriaBuilderConsumer) {
         criteriaBuilderConsumer.accept(criteriaBuilder);
 
-        Data.getterMap.put(getSavePath(), this);
+        GETTER_MAP.put(getSavePath(), this);
         return this;
     }
 
     public AdvGetter rewards(Consumer<RewardsBuilder> rewardsBuilderConsumer) {
         rewardsBuilderConsumer.accept(rewardsBuilder);
 
-        Data.getterMap.put(getSavePath(), this);
+        GETTER_MAP.put(getSavePath(), this);
         return this;
     }
 
