@@ -1,30 +1,43 @@
-# Advancement JS
-Configure Advancements by JavaScript
+# AdvancementJS
+
+Configure Advancements by KubeJS
+
 ## A simple example
-```
-onEvent('advjs', event => {
-	let bred_in_nether = event.TRIGGER.bredAnimals(builder => {
-		builder.setChild(event.PREDICATE.entityPredicate({
-			stepping_on: {
-				dimension: 'the_nether'
-			}
-		}))
-	})
 
-	let root = event.create('advjs:hell')
-		.display(builder => builder.setIcon('diamond'))
-		.criteria(builder => builder.add('tick', event.TRIGGER.tick()))
+### KubeJS 5
 
-	root.addChild('child1', builder => {
-		builder
-			.display(builder => {
-				builder.setTitle(Text.red('Holy Shit'))
-				builder.setDescription(Text.red('地狱开局'))
-			})
-			.criteria(builder => builder.add('bred_in_nether', bred_in_nether))
-			.rewards(builder => builder.setExperience(114514))
-	})
+```js
+onEvent('advjs', (event) => {
+  const { TRIGGER, PREDICATE } = event;
 
-	event.remove("minecraft:story/smelt_iron")
+  const bred_in_nether = TRIGGER.bredAnimals((triggerBuilder) => {
+    triggerBuilder.setChild(PREDICATE.entity({
+      stepping_on: {
+        dimension: 'the_nether'
+      }
+    }))
+  })
+
+  const root = event.create('advjs:hell')
+    .display((displayBuilder) => displayBuilder.setIcon('diamond'))
+    .criteria((criteriaBuilder) => criteriaBuilder.add('tick', TRIGGER.tick()))
+
+  root.addChild('child1', (childBuilder) => {
+    childBuilder
+      .display((displayBuilder) => {
+        displayBuilder.setTitle(Text.red('Holy Shit'))
+        displayBuilder.setDescription(Text.red('地狱开局'))
+      })
+      .criteria((criteriaBuilder) => {
+        criteriaBuilder.add('bred_in_nether', bred_in_nether)
+      })
+      .rewards((rewardsBuilder) => {
+        rewardsBuilder.setExperience(100)
+      })
+  })
+
+  event.remove("minecraft:story/smelt_iron")
 })
 ```
+
+<!-- ### KubeJS 6+ -->
