@@ -48,7 +48,17 @@ public class Trigger {
         return new ConsumeItemTrigger.TriggerInstance(builder.player, builder.item);
     }
 
-    //TODO Distance
+    public static DistanceTrigger.TriggerInstance fallFromHeight(EntityPredicate entityPredicate, DistancePredicate distancePredicate, LocationPredicate locationPredicate) {
+        return new DistanceTrigger.TriggerInstance(CriteriaTriggers.FALL_FROM_HEIGHT.getId(), EntityPredicate.Composite.wrap(entityPredicate), locationPredicate, distancePredicate);
+    }
+
+    public static DistanceTrigger.TriggerInstance rideEntityInLava(EntityPredicate entityPredicate, DistancePredicate distancePredicate) {
+        return new DistanceTrigger.TriggerInstance(CriteriaTriggers.RIDE_ENTITY_IN_LAVA_TRIGGER.getId(), EntityPredicate.Composite.wrap(entityPredicate), LocationPredicate.ANY, distancePredicate);
+    }
+
+    public static DistanceTrigger.TriggerInstance travelledThroughNether(DistancePredicate distancePredicate) {
+        return new DistanceTrigger.TriggerInstance(CriteriaTriggers.NETHER_TRAVEL.getId(), EntityPredicate.Composite.ANY, LocationPredicate.ANY, distancePredicate);
+    }
 
     public EffectsChangedTrigger.TriggerInstance effectChanged(Consumer<EffectsChangedBuilder> consumer) {
         EffectsChangedBuilder builder = new EffectsChangedBuilder();
