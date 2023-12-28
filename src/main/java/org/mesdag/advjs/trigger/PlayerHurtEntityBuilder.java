@@ -7,8 +7,8 @@ import net.minecraft.world.entity.EntityType;
 import org.mesdag.advjs.util.EntitySetter;
 
 class PlayerHurtEntityBuilder extends AbstractTriggerBuilder implements EntitySetter {
-    DamagePredicate damage;
-    EntityPredicate.Composite entity;
+    DamagePredicate damage = DamagePredicate.ANY;
+    EntityPredicate.Composite entity = EntityPredicate.Composite.ANY;
 
     public void setDamage(DamagePredicate damage) {
         this.damage = damage;

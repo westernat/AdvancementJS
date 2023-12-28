@@ -7,8 +7,8 @@ import net.minecraft.world.entity.EntityType;
 import org.mesdag.advjs.util.EntitySetter;
 
 class TargetBlockBuilder extends AbstractTriggerBuilder implements EntitySetter {
-    MinMaxBounds.Ints signalStrength;
-    EntityPredicate.Composite projectile;
+    MinMaxBounds.Ints signalStrength= MinMaxBounds.Ints.ANY;
+    EntityPredicate.Composite projectile= EntityPredicate.Composite.ANY;
 
     public void setSignalStrength(MinMaxBounds.Ints signalStrength) {
         this.signalStrength = signalStrength;

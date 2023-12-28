@@ -20,7 +20,7 @@ public class CriteriaBuilder {
     }
 
     public <Trigger extends AbstractCriterionTriggerInstance> void add(Trigger instance) {
-        criteria.put(UUID.randomUUID().toString().replaceAll("-", ""), new Criterion(instance));
+        criteria.put(UUID.randomUUID().toString(), new Criterion(instance));
     }
 
     public Map<String, Criterion> getCriteria() {
