@@ -48,15 +48,15 @@ public class Trigger {
         return new ConsumeItemTrigger.TriggerInstance(builder.player, builder.item);
     }
 
-    public static DistanceTrigger.TriggerInstance fallFromHeight(EntityPredicate entityPredicate, DistancePredicate distancePredicate, LocationPredicate locationPredicate) {
+    public DistanceTrigger.TriggerInstance fallFromHeight(EntityPredicate entityPredicate, DistancePredicate distancePredicate, LocationPredicate locationPredicate) {
         return new DistanceTrigger.TriggerInstance(CriteriaTriggers.FALL_FROM_HEIGHT.getId(), EntityPredicate.Composite.wrap(entityPredicate), locationPredicate, distancePredicate);
     }
 
-    public static DistanceTrigger.TriggerInstance rideEntityInLava(EntityPredicate entityPredicate, DistancePredicate distancePredicate) {
+    public DistanceTrigger.TriggerInstance rideEntityInLava(EntityPredicate entityPredicate, DistancePredicate distancePredicate) {
         return new DistanceTrigger.TriggerInstance(CriteriaTriggers.RIDE_ENTITY_IN_LAVA_TRIGGER.getId(), EntityPredicate.Composite.wrap(entityPredicate), LocationPredicate.ANY, distancePredicate);
     }
 
-    public static DistanceTrigger.TriggerInstance travelledThroughNether(DistancePredicate distancePredicate) {
+    public DistanceTrigger.TriggerInstance travelledThroughNether(DistancePredicate distancePredicate) {
         return new DistanceTrigger.TriggerInstance(CriteriaTriggers.NETHER_TRAVEL.getId(), EntityPredicate.Composite.ANY, LocationPredicate.ANY, distancePredicate);
     }
 
@@ -132,7 +132,7 @@ public class Trigger {
         return new KilledTrigger.TriggerInstance(CriteriaTriggers.PLAYER_KILLED_ENTITY.getId(), builder.player, builder.killed, builder.killingBlow);
     }
 
-    public static KilledTrigger.TriggerInstance entityKilledPlayer(Consumer<EntityKillPlayerBuilder> consumer) {
+    public KilledTrigger.TriggerInstance entityKilledPlayer(Consumer<EntityKillPlayerBuilder> consumer) {
         EntityKillPlayerBuilder builder = new EntityKillPlayerBuilder();
         consumer.accept(builder);
         return new KilledTrigger.TriggerInstance(CriteriaTriggers.ENTITY_KILLED_PLAYER.getId(), builder.player, builder.killer, builder.killingBlow);
