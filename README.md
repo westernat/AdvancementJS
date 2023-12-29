@@ -39,5 +39,3 @@ onEvent('advjs', (event) => {
   event.remove("minecraft:story/smelt_iron")
 })
 ```
-
-<!-- ### KubeJS 6+ -->
