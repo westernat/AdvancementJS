@@ -1,7 +1,6 @@
 package org.mesdag.advjs.trigger;
 
 import net.minecraft.advancement.criterion.*;
-import net.minecraft.predicate.PlayerPredicate;
 import net.minecraft.predicate.entity.DistancePredicate;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.LocationPredicate;
@@ -195,11 +194,6 @@ public class Trigger {
         return new SlideDownBlockCriterion.Conditions(builder.player, builder.block, builder.state);
     }
 
-    public StartedRidingCriterion.Conditions startRiding(PlayerPredicate playerPredicate) {
-        EntityPredicate.Extended player = EntityPredicate.Extended.ofLegacy(EntityPredicate.Builder.create().player(playerPredicate).build());
-        return new StartedRidingCriterion.Conditions(player);
-    }
-
     public StartedRidingCriterion.Conditions startRiding(Consumer<PlayerPredicateBuilder> consumer) {
         PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
         consumer.accept(builder);
@@ -228,10 +222,6 @@ public class Trigger {
         return new TargetHitCriterion.Conditions(builder.player, builder.signalStrength, builder.projectile);
     }
 
-    public TickCriterion.Conditions tick(PlayerPredicate playerPredicate) {
-        return new TickCriterion.Conditions(EntityPredicate.Extended.ofLegacy(EntityPredicate.Builder.create().player(playerPredicate).build()));
-    }
-
     public TickCriterion.Conditions tick(Consumer<PlayerPredicateBuilder> consumer) {
         PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
         consumer.accept(builder);
@@ -239,7 +229,7 @@ public class Trigger {
     }
 
     public TickCriterion.Conditions tick() {
-        return tick(PlayerPredicate.ANY);
+        return new TickCriterion.Conditions(EntityPredicate.Extended.EMPTY);
     }
 
     public VillagerTradeCriterion.Conditions trade(Consumer<TradeBuilder> consumer) {
