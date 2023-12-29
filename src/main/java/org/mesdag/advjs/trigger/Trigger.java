@@ -120,13 +120,17 @@ public class Trigger {
         return new PickedUpItemTrigger.TriggerInstance(CriteriaTriggers.THROWN_ITEM_PICKED_UP_BY_PLAYER.getId(), builder.player, builder.item, builder.entity);
     }
 
-    public ItemInteractWithBlockTrigger.TriggerInstance itemUsedOnBlock(Consumer<ItemUsedOnBlockBuilder> consumer) {
-        ItemUsedOnBlockBuilder builder = new ItemUsedOnBlockBuilder();
+    public ItemInteractWithBlockTrigger.TriggerInstance itemUsedOnBlock(Consumer<ItemInteractWithBlockBuilder> consumer) {
+        ItemInteractWithBlockBuilder builder = new ItemInteractWithBlockBuilder();
         consumer.accept(builder);
         return new ItemInteractWithBlockTrigger.TriggerInstance(CriteriaTriggers.ITEM_USED_ON_BLOCK.getId(), builder.player, builder.location, builder.item);
     }
 
-    //TODO ALLAY_DROP_ITEM_ON_BLOCK
+    public ItemInteractWithBlockTrigger.TriggerInstance allayDropItemOnBlock(Consumer<ItemInteractWithBlockBuilder> consumer) {
+        ItemInteractWithBlockBuilder builder = new ItemInteractWithBlockBuilder();
+        consumer.accept(builder);
+        return new ItemInteractWithBlockTrigger.TriggerInstance(CriteriaTriggers.ALLAY_DROP_ITEM_ON_BLOCK.getId(), builder.player, builder.location, builder.item);
+    }
 
     public KilledByCrossbowTrigger.TriggerInstance killedByCrossbow(Consumer<KilledByCrossbowBuilder> consumer) {
         KilledByCrossbowBuilder builder = new KilledByCrossbowBuilder();
@@ -146,7 +150,11 @@ public class Trigger {
         return new KilledTrigger.TriggerInstance(CriteriaTriggers.ENTITY_KILLED_PLAYER.getId(), builder.player, builder.killer, builder.killingBlow);
     }
 
-    //TODO KILL_MOB_NEAR_SCULK_CATALYST
+    public KilledTrigger.TriggerInstance playerKilledEntityNearSculkCatalyst(Consumer<PlayerKillEntityBuilder> consumer) {
+        PlayerKillEntityBuilder builder = new PlayerKillEntityBuilder();
+        consumer.accept(builder);
+        return new KilledTrigger.TriggerInstance(CriteriaTriggers.KILL_MOB_NEAR_SCULK_CATALYST.getId(), builder.player, builder.killed, builder.killingBlow);
+    }
 
     public LevitationTrigger.TriggerInstance levitated(Consumer<LevitationBuilder> consumer) {
         LevitationBuilder builder = new LevitationBuilder();
@@ -202,11 +210,6 @@ public class Trigger {
         return new SlideDownBlockTrigger.TriggerInstance(builder.player, builder.block, builder.state);
     }
 
-    public StartRidingTrigger.TriggerInstance startRiding(PlayerPredicate playerPredicate) {
-        EntityPredicate.Composite player = EntityPredicate.Composite.wrap(EntityPredicate.Builder.entity().subPredicate(playerPredicate).build());
-        return new StartRidingTrigger.TriggerInstance(player);
-    }
-
     public StartRidingTrigger.TriggerInstance startRiding(Consumer<PlayerPredicateBuilder> consumer) {
         PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
         consumer.accept(builder);
@@ -235,10 +238,6 @@ public class Trigger {
         return new TargetBlockTrigger.TriggerInstance(builder.player, builder.signalStrength, builder.projectile);
     }
 
-    public PlayerTrigger.TriggerInstance tick(PlayerPredicate playerPredicate) {
-        return new PlayerTrigger.TriggerInstance(CriteriaTriggers.TICK.getId(), EntityPredicate.Composite.wrap(EntityPredicate.Builder.entity().subPredicate(playerPredicate).build()));
-    }
-
     public PlayerTrigger.TriggerInstance tick(Consumer<PlayerPredicateBuilder> consumer) {
         PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
         consumer.accept(builder);
@@ -249,15 +248,41 @@ public class Trigger {
         return new PlayerTrigger.TriggerInstance(CriteriaTriggers.TICK.getId(), EntityPredicate.Composite.ANY);
     }
 
-    //TODO LOCATION
+    public PlayerTrigger.TriggerInstance located(Consumer<PlayerPredicateBuilder> consumer){
+        PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
+        consumer.accept(builder);
+        return new PlayerTrigger.TriggerInstance(CriteriaTriggers.LOCATION.getId(), builder.build());
+    }
 
-    //TODO SLEPT_IN_BED
+    public PlayerTrigger.TriggerInstance sleptInBed(Consumer<PlayerPredicateBuilder> consumer){
+        PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
+        consumer.accept(builder);
+        return new PlayerTrigger.TriggerInstance(CriteriaTriggers.SLEPT_IN_BED.getId(), builder.build());
+    }
 
-    //TODO RAID_WIN
+    public PlayerTrigger.TriggerInstance sleptInBed() {
+        return new PlayerTrigger.TriggerInstance(CriteriaTriggers.SLEPT_IN_BED.getId(), EntityPredicate.Composite.ANY);
+    }
 
-    //TODO BAD_OMEN
+    public PlayerTrigger.TriggerInstance raidWon(Consumer<PlayerPredicateBuilder> consumer){
+        PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
+        consumer.accept(builder);
+        return new PlayerTrigger.TriggerInstance(CriteriaTriggers.RAID_WIN.getId(), builder.build());
+    }
 
-    //TODO AVOID_VIBRATION
+    public PlayerTrigger.TriggerInstance raidWon() {
+        return new PlayerTrigger.TriggerInstance(CriteriaTriggers.RAID_WIN.getId(), EntityPredicate.Composite.ANY);
+    }
+
+    public PlayerTrigger.TriggerInstance avoidVibration(Consumer<PlayerPredicateBuilder> consumer){
+        PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
+        consumer.accept(builder);
+        return new PlayerTrigger.TriggerInstance(CriteriaTriggers.AVOID_VIBRATION.getId(), builder.build());
+    }
+
+    public PlayerTrigger.TriggerInstance avoidVibration() {
+        return new PlayerTrigger.TriggerInstance(CriteriaTriggers.AVOID_VIBRATION.getId(), EntityPredicate.Composite.ANY);
+    }
 
     public TradeTrigger.TriggerInstance trade(Consumer<TradeBuilder> consumer) {
         TradeBuilder builder = new TradeBuilder();

@@ -1,12 +1,11 @@
 package org.mesdag.advjs.trigger;
 
-import dev.latvian.mods.kubejs.item.ingredient.IngredientJS;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.LocationPredicate;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.mesdag.advjs.util.ItemSetter;
 
-class ItemUsedOnBlockBuilder extends AbstractTriggerBuilder implements ItemSetter {
+class ItemInteractWithBlockBuilder extends AbstractTriggerBuilder implements ItemSetter {
     LocationPredicate location = LocationPredicate.ANY;
     ItemPredicate item = ItemPredicate.ANY;
 

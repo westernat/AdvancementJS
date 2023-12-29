@@ -124,8 +124,8 @@ public class Predicate {
         return EntityPredicate.ANY;
     }
 
-    public FishingHookPredicate fishingHook(boolean isInWater) {
-        return FishingHookPredicate.inOpenWater(isInWater);
+    public FishingHookPredicate fishingHook(boolean isOpenWater) {
+        return FishingHookPredicate.inOpenWater(isOpenWater);
     }
 
     public FishingHookPredicate fishingHook() {
