@@ -192,11 +192,6 @@ public class Trigger {
         return new SlideDownBlockTrigger.TriggerInstance(builder.player, builder.block, builder.state);
     }
 
-    public StartRidingTrigger.TriggerInstance startRiding(PlayerPredicate playerPredicate) {
-        EntityPredicate.Composite player = EntityPredicate.Composite.wrap(EntityPredicate.Builder.entity().player(playerPredicate).build());
-        return new StartRidingTrigger.TriggerInstance(player);
-    }
-
     public StartRidingTrigger.TriggerInstance startRiding(Consumer<PlayerPredicateBuilder> consumer) {
         PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
         consumer.accept(builder);
@@ -225,10 +220,6 @@ public class Trigger {
         return new TargetBlockTrigger.TriggerInstance(builder.player, builder.signalStrength, builder.projectile);
     }
 
-    public TickTrigger.TriggerInstance tick(PlayerPredicate playerPredicate) {
-        return new TickTrigger.TriggerInstance(EntityPredicate.Composite.wrap(EntityPredicate.Builder.entity().player(playerPredicate).build()));
-    }
-
     public TickTrigger.TriggerInstance tick(Consumer<PlayerPredicateBuilder> consumer) {
         PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
         consumer.accept(builder);
@@ -236,7 +227,7 @@ public class Trigger {
     }
 
     public TickTrigger.TriggerInstance tick() {
-        return tick(PlayerPredicate.ANY);
+        return new TickTrigger.TriggerInstance(EntityPredicate.Composite.ANY);
     }
 
     public TradeTrigger.TriggerInstance trade(Consumer<TradeBuilder> consumer) {

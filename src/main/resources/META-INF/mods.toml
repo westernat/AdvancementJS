@@ -5,17 +5,11 @@ license = "LGPL v2.1"
 [[mods]]
 modId = "advjs"
 version = "${file.jarVersion}"
-displayName = "AdvJS"
+displayName = "AdvancementJS"
 logoFile = "logo.png"
 credits = "Thanks for this example mod goes to Java"
-authors = "Love, Cheese and small house plants"
-description = '''
-This is a long form description of the mod. You can write whatever you want here
-
-Have some lorem ipsum.
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed mollis lacinia magna. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed sagittis luctus odio eu tempus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque volutpat ligula eget lacus auctor sagittis. In hac habitasse platea dictumst. Nunc gravida elit vitae sem vehicula efficitur. Donec mattis ipsum et arcu lobortis, eleifend sagittis sem rutrum. Cras pharetra quam eget posuere fermentum. Sed id tincidunt justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-'''
+authors = "Westernat"
+description = '''Configure advancements by KubeJS'''
 
 [[dependencies.advjs]]
 modId = "forge"
@@ -23,14 +17,12 @@ mandatory = true
 versionRange = "[40,)"
 ordering = "NONE"
 side = "BOTH"
-
 [[dependencies.advjs]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.18.2,1.19)"
 ordering = "NONE"
 side = "BOTH"
-
 [[dependencies.advjs]]
 modId = "kubejs"
 mandatory = true

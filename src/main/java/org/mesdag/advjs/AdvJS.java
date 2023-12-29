@@ -10,8 +10,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 
-@Mod("advjs")
+@Mod(AdvJS.MODID)
 public class AdvJS {
+    public static final String MODID = "advjs";
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public AdvJS() {
