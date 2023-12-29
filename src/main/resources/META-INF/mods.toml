@@ -1,0 +1,29 @@
+modLoader = "javafml"
+loaderVersion = "[43,)"
+license = "LGPL v2.1"
+
+[[mods]]
+modId = "advjs"
+version = "${file.jarVersion}"
+displayName = "AdvancementJS"
+logoFile = "logo.png"
+credits = "Thanks for this example mod goes to Java"
+authors = "Westernat"
+description = '''Configure advancements by KubeJS'''
+
+[[dependencies.advjs]]
+modId = "forge"
+mandatory = true
+versionRange = "[43,)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.advjs]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.19.2,1.20)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.advjs]]
+modId = "kubejs"
+mandatory = true
+versionRange = "[1902.6.2-build.45,)"
