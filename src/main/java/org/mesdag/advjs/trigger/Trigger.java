@@ -51,15 +51,15 @@ public class Trigger {
         return new ConsumeItemCriterion.Conditions(builder.player, builder.item);
     }
 
-    public static TravelCriterion.Conditions fallFromHeight(EntityPredicate entityPredicate, DistancePredicate distancePredicate, LocationPredicate locationPredicate) {
+    public TravelCriterion.Conditions fallFromHeight(EntityPredicate entityPredicate, DistancePredicate distancePredicate, LocationPredicate locationPredicate) {
         return new TravelCriterion.Conditions(Criteria.FALL_FROM_HEIGHT.getId(), EntityPredicate.Extended.ofLegacy(entityPredicate), locationPredicate, distancePredicate);
     }
 
-    public static TravelCriterion.Conditions rideEntityInLava(EntityPredicate entityPredicate, DistancePredicate distancePredicate) {
+    public TravelCriterion.Conditions rideEntityInLava(EntityPredicate entityPredicate, DistancePredicate distancePredicate) {
         return new TravelCriterion.Conditions(Criteria.RIDE_ENTITY_IN_LAVA.getId(), EntityPredicate.Extended.ofLegacy(entityPredicate), LocationPredicate.ANY, distancePredicate);
     }
 
-    public static TravelCriterion.Conditions travelledThroughNether(DistancePredicate distancePredicate) {
+    public TravelCriterion.Conditions travelledThroughNether(DistancePredicate distancePredicate) {
         return new TravelCriterion.Conditions(Criteria.NETHER_TRAVEL.getId(), EntityPredicate.Extended.EMPTY, LocationPredicate.ANY, distancePredicate);
     }
 
@@ -135,7 +135,7 @@ public class Trigger {
         return new OnKilledCriterion.Conditions(Criteria.PLAYER_KILLED_ENTITY.getId(), builder.player, builder.killed, builder.killingBlow);
     }
 
-    public static OnKilledCriterion.Conditions entityKilledPlayer(Consumer<EntityKillPlayerBuilder> consumer) {
+    public OnKilledCriterion.Conditions entityKilledPlayer(Consumer<EntityKillPlayerBuilder> consumer) {
         EntityKillPlayerBuilder builder = new EntityKillPlayerBuilder();
         consumer.accept(builder);
         return new OnKilledCriterion.Conditions(Criteria.ENTITY_KILLED_PLAYER.getId(), builder.player, builder.killer, builder.killingBlow);
