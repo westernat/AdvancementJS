@@ -2,7 +2,6 @@ package org.mesdag.advjs.trigger;
 
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.MobEffectsPredicate;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import org.mesdag.advjs.util.EntitySetter;
 

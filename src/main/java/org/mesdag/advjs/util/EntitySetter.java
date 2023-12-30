@@ -1,8 +1,6 @@
 package org.mesdag.advjs.util;
 
 import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 
 public interface EntitySetter {

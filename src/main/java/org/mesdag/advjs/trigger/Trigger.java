@@ -108,14 +108,14 @@ public class Trigger {
         return new ItemDurabilityTrigger.TriggerInstance(builder.player, builder.item, builder.durability, builder.delta);
     }
 
-    public PickedUpItemTrigger.TriggerInstance itemPickedUpByEntity(Consumer<ItemPickedUpByEntityBuilder> consumer) {
-        ItemPickedUpByEntityBuilder builder = new ItemPickedUpByEntityBuilder();
+    public PickedUpItemTrigger.TriggerInstance itemPickedUpByEntity(Consumer<PickedUpItemBuilder> consumer) {
+        PickedUpItemBuilder builder = new PickedUpItemBuilder();
         consumer.accept(builder);
         return new PickedUpItemTrigger.TriggerInstance(CriteriaTriggers.THROWN_ITEM_PICKED_UP_BY_ENTITY.getId(), builder.player, builder.item, builder.entity);
     }
 
-    public PickedUpItemTrigger.TriggerInstance itemPickedUpByPlayer(Consumer<ItemPickedUpByEntityBuilder> consumer) {
-        ItemPickedUpByEntityBuilder builder = new ItemPickedUpByEntityBuilder();
+    public PickedUpItemTrigger.TriggerInstance itemPickedUpByPlayer(Consumer<PickedUpItemBuilder> consumer) {
+        PickedUpItemBuilder builder = new PickedUpItemBuilder();
         consumer.accept(builder);
         return new PickedUpItemTrigger.TriggerInstance(CriteriaTriggers.THROWN_ITEM_PICKED_UP_BY_PLAYER.getId(), builder.player, builder.item, builder.entity);
     }
