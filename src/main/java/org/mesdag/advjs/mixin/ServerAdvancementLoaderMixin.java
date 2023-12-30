@@ -1,8 +1,11 @@
 package org.mesdag.advjs.mixin;
 
+import dev.latvian.mods.kubejs.script.ScriptType;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.util.Identifier;
+import org.mesdag.advjs.AdvCreateEvent;
+import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.getter.AdvGetter;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -20,9 +23,11 @@ public abstract class ServerAdvancementLoaderMixin {
     @ModifyArg(
         method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/advancement/AdvancementManager;load(Ljava/util/Map;)V"))
-    private Map<Identifier, Advancement.Builder> addNew(Map<Identifier, Advancement.Builder> map) {
+    private Map<Identifier, Advancement.Builder> advjs$reload(Map<Identifier, Advancement.Builder> map) {
+        new AdvCreateEvent().post(ScriptType.SERVER, "advjs");
         advJS$remove(map);
-        advJS$build(map);
+        advJS$add(map);
+        AdvJS.LOGGER.info("AdvJS Loaded!");
         return map;
     }
 
@@ -34,21 +39,21 @@ public abstract class ServerAdvancementLoaderMixin {
     }
 
     @Unique
-    private static void advJS$build(Map<Identifier, Advancement.Builder> builderMap) {
+    private static void advJS$add(Map<Identifier, Advancement.Builder> builderMap) {
         HashMap<Identifier, Advancement> advMap = new HashMap<>();
         ArrayList<AdvGetter> remains = new ArrayList<>();
         for (Map.Entry<Identifier, AdvGetter> entry : GETTER_MAP.entrySet()) {
             AdvGetter getter = entry.getValue();
             if (getter.isRoot()) {
                 advMap.put(entry.getKey(), advJS$buildAdv(getter, null));
-            } else if (!advJS$addAndPut(advMap, getter)) {
+            } else if (!advJS$buildAndPut(advMap, getter)) {
                 remains.add(getter);
             }
         }
 
         if (remains.size() > 0) {
             for (AdvGetter getter : remains) {
-                advJS$addAndPut(advMap, getter);
+                advJS$buildAndPut(advMap, getter);
             }
         }
 
@@ -58,7 +63,7 @@ public abstract class ServerAdvancementLoaderMixin {
     }
 
     @Unique
-    private static boolean advJS$addAndPut(HashMap<Identifier, Advancement> advMap, AdvGetter getter) {
+    private static boolean advJS$buildAndPut(HashMap<Identifier, Advancement> advMap, AdvGetter getter) {
         Identifier location = getter.getParent();
         if (advMap.containsKey(location)) {
             Advancement advancement = advJS$buildAdv(getter, advMap.get(location));
