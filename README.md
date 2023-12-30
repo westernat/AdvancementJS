@@ -7,7 +7,7 @@ Configure Advancements by KubeJS
 ### KubeJS 6
 
 ```js
-StartupEvents.advancement((event) => {
+ServerEvents.advancement((event) => {
 	const { TRIGGER, PREDICATE } = event;
 
 	const bred_in_nether = TRIGGER.bredAnimals((triggerBuilder) => {
