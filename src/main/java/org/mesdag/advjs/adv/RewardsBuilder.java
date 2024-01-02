@@ -1,4 +1,4 @@
-package org.mesdag.advjs.getter;
+package org.mesdag.advjs.adv;
 
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.commands.CommandFunction;
@@ -21,7 +21,7 @@ public class RewardsBuilder {
         this.recipes = recipes;
     }
 
-    public AdvancementRewards getRewards(){
+    AdvancementRewards build() {
         return new AdvancementRewards(experience, loot, recipes, CommandFunction.CacheableFunction.NONE);
     }
 }

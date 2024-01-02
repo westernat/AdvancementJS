@@ -1,4 +1,4 @@
-package org.mesdag.advjs.getter;
+package org.mesdag.advjs.adv;
 
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static org.mesdag.advjs.util.Data.GETTER_MAP;
+import static org.mesdag.advjs.adv.Data.BUILDER_MAP;
 
-public class AdvGetter {
+public class AdvBuilder {
     @Nullable
     private final ResourceLocation parent;
     private final String name;
@@ -23,50 +23,50 @@ public class AdvGetter {
 
     private final boolean attention;
 
-    public AdvGetter(@Nullable ResourceLocation parent, String name, ResourceLocation rootPath, boolean attention) {
+    public AdvBuilder(@Nullable ResourceLocation parent, String name, ResourceLocation rootPath, boolean attention) {
         this.parent = parent;
         this.name = name;
         this.rootPath = rootPath;
         this.attention = attention;
     }
 
-    public AdvGetter addChild(Consumer<AdvGetter> advGetterConsumer) {
-        AdvGetter child = new AdvGetter(getSavePath(), UUID.randomUUID().toString(), rootPath, true);
+    public AdvBuilder addChild(Consumer<AdvBuilder> advGetterConsumer) {
+        AdvBuilder child = new AdvBuilder(getSavePath(), UUID.randomUUID().toString(), rootPath, true);
         advGetterConsumer.accept(child);
 
-        GETTER_MAP.put(getSavePath(), this);
+        BUILDER_MAP.put(getSavePath(), this);
         return child;
     }
 
-    public AdvGetter addChild(String name, Consumer<AdvGetter> advGetterConsumer) {
-        AdvGetter child = new AdvGetter(getSavePath(), name, rootPath, false);
+    public AdvBuilder addChild(String name, Consumer<AdvBuilder> advGetterConsumer) {
+        AdvBuilder child = new AdvBuilder(getSavePath(), name, rootPath, false);
         advGetterConsumer.accept(child);
 
-        GETTER_MAP.put(getSavePath(), this);
+        BUILDER_MAP.put(getSavePath(), this);
         return child;
     }
 
-    public AdvGetter display(Consumer<DisplayBuilder> displayBuilderConsumer) {
+    public AdvBuilder display(Consumer<DisplayBuilder> displayBuilderConsumer) {
         displayBuilderConsumer.accept(displayBuilder);
         if (isRoot() && displayBuilder.getBackground() == null) {
             displayBuilder.setBackground("textures/gui/advancements/backgrounds/stone.png");
         }
 
-        GETTER_MAP.put(getSavePath(), this);
+        BUILDER_MAP.put(getSavePath(), this);
         return this;
     }
 
-    public AdvGetter criteria(Consumer<CriteriaBuilder> criteriaBuilderConsumer) {
+    public AdvBuilder criteria(Consumer<CriteriaBuilder> criteriaBuilderConsumer) {
         criteriaBuilderConsumer.accept(criteriaBuilder);
 
-        GETTER_MAP.put(getSavePath(), this);
+        BUILDER_MAP.put(getSavePath(), this);
         return this;
     }
 
-    public AdvGetter rewards(Consumer<RewardsBuilder> rewardsBuilderConsumer) {
+    public AdvBuilder rewards(Consumer<RewardsBuilder> rewardsBuilderConsumer) {
         rewardsBuilderConsumer.accept(rewardsBuilder);
 
-        GETTER_MAP.put(getSavePath(), this);
+        BUILDER_MAP.put(getSavePath(), this);
         return this;
     }
 
@@ -74,25 +74,12 @@ public class AdvGetter {
         return parent;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public ResourceLocation getSavePath() {
         return new ResourceLocation(rootPath.getNamespace(), rootPath.getPath() + "/" + name);
     }
 
     public DisplayInfo getDisplayInfo() {
-        return new DisplayInfo(
-            displayBuilder.getIcon(),
-            displayBuilder.getTitle(),
-            displayBuilder.getDescription(),
-            displayBuilder.getBackground(),
-            displayBuilder.getFrameType(),
-            displayBuilder.isShowToast(),
-            displayBuilder.isAnnounceToChat(),
-            displayBuilder.isHidden()
-        );
+        return displayBuilder.build();
     }
 
     public Map<String, Criterion> getCriteria() {
@@ -104,7 +91,7 @@ public class AdvGetter {
     }
 
     public AdvancementRewards getRewards() {
-        return rewardsBuilder.getRewards();
+        return rewardsBuilder.build();
     }
 
     public boolean isRoot() {

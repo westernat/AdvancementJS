@@ -1,5 +1,6 @@
-package org.mesdag.advjs.getter;
+package org.mesdag.advjs.adv;
 
+import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,31 +25,19 @@ public class DisplayBuilder {
         this.icon = icon;
     }
 
-    public ItemStack getIcon() {
-        return icon;
-    }
-
     public void setTitle(Component title) {
         this.title = title;
-    }
-
-    public Component getTitle() {
-        return title;
     }
 
     public void setDescription(Component description) {
         this.description = description;
     }
 
-    public Component getDescription() {
-        return description;
-    }
-
     public void setBackground(String path) {
         this.background = new ResourceLocation(path);
     }
 
-    public @Nullable ResourceLocation getBackground() {
+    @Nullable ResourceLocation getBackground() {
         return background;
     }
 
@@ -56,31 +45,19 @@ public class DisplayBuilder {
         this.frameType = frameType;
     }
 
-    public FrameType getFrameType() {
-        return frameType;
-    }
-
     public void setShowToast(boolean showToast) {
         this.showToast = showToast;
-    }
-
-    public boolean isShowToast() {
-        return showToast;
     }
 
     public void setAnnounceToChat(boolean announceToChat) {
         this.announceToChat = announceToChat;
     }
 
-    public boolean isAnnounceToChat() {
-        return announceToChat;
-    }
-
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
     }
 
-    public boolean isHidden() {
-        return hidden;
+    DisplayInfo build() {
+        return new DisplayInfo(icon, title, description, background, frameType, showToast, announceToChat, hidden);
     }
 }

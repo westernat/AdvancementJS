@@ -1,4 +1,4 @@
-package org.mesdag.advjs.getter;
+package org.mesdag.advjs.adv;
 
 import com.google.common.collect.Maps;
 import net.minecraft.advancements.Criterion;
@@ -23,7 +23,7 @@ public class CriteriaBuilder {
         criteria.put(UUID.randomUUID().toString(), new Criterion(instance));
     }
 
-    public Map<String, Criterion> getCriteria() {
+    Map<String, Criterion> getCriteria() {
         if (criteria.isEmpty()) {
             criteria.put("default", new Criterion(InventoryChangeTrigger.TriggerInstance.hasItems(Items.APPLE)));
         }
@@ -34,7 +34,7 @@ public class CriteriaBuilder {
         this.requirementsStrategy = strategy;
     }
 
-    public String[][] getRequirements() {
+    String[][] getRequirements() {
         return requirementsStrategy.createRequirements(getCriteria().keySet());
     }
 }
