@@ -49,5 +49,12 @@ ServerEvents.advancement((event) => {
                 rewardsBuilder.setExperience(100)
             })
     });
+    
+    // 删除已有的进度
+    event.remove("minecraft:story/lava_bucket")
+    
+    // 修改已有的进度
+    event.get("minecraft:story/smelt_iron")
+        .modifyDisplay((displayBuilder) => displayBuilder.setIcon("diamond_pickaxe"))
 })
 ```
