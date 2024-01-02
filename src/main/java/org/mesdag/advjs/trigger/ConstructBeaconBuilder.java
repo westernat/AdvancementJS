@@ -1,11 +1,13 @@
 package org.mesdag.advjs.trigger;
 
+import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 
 class ConstructBeaconBuilder extends AbstractTriggerBuilder {
-    MinMaxBounds.Ints bounds = MinMaxBounds.Ints.ANY;
+    MinMaxBounds.Ints level = MinMaxBounds.Ints.ANY;
 
-    public void atLeast(int amount){
-        this.bounds = MinMaxBounds.Ints.atLeast(amount);
+    @Info("The level of the updated beacon structure.")
+    public void setLevel(MinMaxBounds.Ints level){
+        this.level = level;
     }
 }

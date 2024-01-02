@@ -11,7 +11,7 @@ class SingleEntityBuilder extends AbstractTriggerBuilder implements EntitySetter
         this.entity = EntityPredicate.Composite.wrap(entity);
     }
 
-    public void setEntity(EntityType<?> entityType) {
-        this.entity = warpEntity(entityType);
+    public void setEntity(EntityType<?> entity) {
+        this.entity = warpEntity(entity);
     }
 }
