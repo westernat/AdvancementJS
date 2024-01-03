@@ -13,5 +13,5 @@ public class Data {
     public static final HashMap<ResourceLocation, AdvBuilder> BUILDER_MAP = new HashMap<>();
     public static final Component ATTENTION = Component.translatable("advjs.attention").withStyle(ChatFormatting.RED);
     public static final Component ATTENTION_DESC = Component.translatable("advjs.attention.desc");
-    public static final ResourceLocation ADVJS_BUILD = new ResourceLocation("advjs", "build");
+    static final ResourceLocation DEFAULT_BACKGROUND = new ResourceLocation("textures/gui/advancements/backgrounds/stone.png");
 }

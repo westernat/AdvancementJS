@@ -1,53 +1,51 @@
 package org.mesdag.advjs.adv;
 
-import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.Map;
 import java.util.function.Consumer;
 
 import static org.mesdag.advjs.adv.Data.GETTER_MAP;
 
 public class AdvGetter {
     private final ResourceLocation path;
-    private final DisplayBuilder displayBuilder = new DisplayBuilder();
-    private final RewardsBuilder rewardsBuilder = new RewardsBuilder();
-    private final CriteriaBuilder criteriaBuilder = new CriteriaBuilder();
+    private Consumer<DisplayBuilder> displayConsumer;
+    private Consumer<RewardsBuilder> rewardsConsumer;
+    private Consumer<CriteriaBuilder> criteriaConsumer;
 
     public AdvGetter(ResourceLocation path) {
         this.path = path;
+        this.displayConsumer = displayBuilder -> {
+        };
+        this.rewardsConsumer = rewardsBuilder -> {
+        };
+        this.criteriaConsumer = criteriaBuilder -> {
+        };
     }
 
     public void modifyDisplay(Consumer<DisplayBuilder> consumer) {
-        consumer.accept(displayBuilder);
+        this.displayConsumer = consumer;
         GETTER_MAP.put(path, this);
     }
 
     public void modifyCriteria(Consumer<CriteriaBuilder> consumer) {
-        consumer.accept(criteriaBuilder);
+        this.criteriaConsumer = consumer;
         GETTER_MAP.put(path, this);
     }
 
     public void modifyRewards(Consumer<RewardsBuilder> consumer) {
-        consumer.accept(rewardsBuilder);
+        this.rewardsConsumer = consumer;
         GETTER_MAP.put(path, this);
     }
 
-    public DisplayInfo getDisplayInfo() {
-        return displayBuilder.build();
+    public Consumer<DisplayBuilder> getDisplayConsumer() {
+        return displayConsumer;
     }
 
-    public Map<String, Criterion> getCriteria() {
-        return criteriaBuilder.getCriteria();
+    public Consumer<CriteriaBuilder> getCriteriaConsumer() {
+        return criteriaConsumer;
     }
 
-    public String[][] getRequirements() {
-        return criteriaBuilder.getRequirements();
-    }
-
-    public AdvancementRewards getRewards() {
-        return rewardsBuilder.build();
+    public Consumer<RewardsBuilder> getRewardsConsumer() {
+        return rewardsConsumer;
     }
 }

@@ -1,5 +1,6 @@
 package org.mesdag.advjs.adv;
 
+import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.DisplayInfo;
@@ -11,6 +12,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import static org.mesdag.advjs.adv.Data.BUILDER_MAP;
+import static org.mesdag.advjs.adv.Data.DEFAULT_BACKGROUND;
 
 public class AdvBuilder {
     @Nullable
@@ -30,6 +32,7 @@ public class AdvBuilder {
         this.attention = attention;
     }
 
+    @Info("Add a nameless child to this. Just for test.")
     public AdvBuilder addChild(Consumer<AdvBuilder> advGetterConsumer) {
         AdvBuilder child = new AdvBuilder(getSavePath(), UUID.randomUUID().toString(), rootPath, true);
         advGetterConsumer.accept(child);
@@ -38,6 +41,7 @@ public class AdvBuilder {
         return child;
     }
 
+    @Info("Add a named child to this.")
     public AdvBuilder addChild(String name, Consumer<AdvBuilder> advGetterConsumer) {
         AdvBuilder child = new AdvBuilder(getSavePath(), name, rootPath, false);
         advGetterConsumer.accept(child);
@@ -46,16 +50,18 @@ public class AdvBuilder {
         return child;
     }
 
+    @Info("Data related to the advancement's display.")
     public AdvBuilder display(Consumer<DisplayBuilder> displayBuilderConsumer) {
         displayBuilderConsumer.accept(displayBuilder);
         if (isRoot() && displayBuilder.getBackground() == null) {
-            displayBuilder.setBackground("textures/gui/advancements/backgrounds/stone.png");
+            displayBuilder.setBackground(DEFAULT_BACKGROUND);
         }
 
         BUILDER_MAP.put(getSavePath(), this);
         return this;
     }
 
+    @Info("The criteria to be tracked by this advancement.")
     public AdvBuilder criteria(Consumer<CriteriaBuilder> criteriaBuilderConsumer) {
         criteriaBuilderConsumer.accept(criteriaBuilder);
 
@@ -63,6 +69,7 @@ public class AdvBuilder {
         return this;
     }
 
+    @Info("The rewards provided when this advancement is obtained.")
     public AdvBuilder rewards(Consumer<RewardsBuilder> rewardsBuilderConsumer) {
         rewardsBuilderConsumer.accept(rewardsBuilder);
 
