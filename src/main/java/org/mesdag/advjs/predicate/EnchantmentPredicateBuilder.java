@@ -1,5 +1,6 @@
 package org.mesdag.advjs.predicate;
 
+import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -12,6 +13,7 @@ class EnchantmentPredicateBuilder {
     Enchantment enchantment = null;
     MinMaxBounds.Ints level = MinMaxBounds.Ints.ANY;
 
+    @Info("Match enchantment.")
     public void setEnchantment(ResourceLocation location) {
         Enchantment enchantment = Registry.ENCHANTMENT.get(location);
         if (enchantment != null) {
@@ -19,6 +21,7 @@ class EnchantmentPredicateBuilder {
         }
     }
 
+    @Info("Match level of enchantment.")
     public void setLevel(MinMaxBounds.Ints bounds) {
         level = bounds;
     }

@@ -4,7 +4,7 @@ license = "LGPL v2.1"
 
 [[mods]]
 modId = "advjs"
-version = "${file.jarVersion}"
+version = "1902forge-1.5.5"
 displayName = "AdvancementJS"
 logoFile = "logo.png"
 credits = "Thanks for this example mod goes to Java"

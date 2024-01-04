@@ -38,7 +38,7 @@ public class RewardsBuilder {
     }
 
     @Info(value = "To unlock recipes.",
-        params = @Param("The resource locations of recipe."))
+        params = @Param(name = "recipes", value = "The resource locations of recipe."))
     public void setRecipes(ResourceLocation... recipes) {
         this.recipes = recipes;
     }
@@ -49,6 +49,6 @@ public class RewardsBuilder {
     }
 
     public AdvancementRewards build() {
-        return new AdvancementRewards(experience, loot, recipes, CommandFunction.CacheableFunction.NONE);
+        return new AdvancementRewards(experience, loot, recipes, function);
     }
 }

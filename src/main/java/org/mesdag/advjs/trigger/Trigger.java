@@ -104,17 +104,17 @@ public class Trigger {
         return new EnchantedItemTrigger.TriggerInstance(builder.player, builder.item, builder.levels);
     }
 
-    @Info(value = """
+    @Info("""
         Triggers once for each block the player's hitbox is inside (up to 12 blocks, the maximum number of blocks the player can stand in),
                 
         twice per tick plus once more for every time the player moves or looks around during the same tick.
                 
         This results in the trigger activating tens of times per tick, and in extreme cases, even hundreds of times per tick.
-        """,
-        params = {
-            @Param(name = "blockId", value = "The block that the player is standing in."),
-            @Param(name = "state", value = "A map of block property names to values. Errors if the block doesn't have these properties.")
-        })
+                
+        @param blockId The block that the player is standing in.
+                
+        @param state A map of block property names to values. Errors if the block doesn't have these properties.
+        """)
     public EnterBlockTrigger.TriggerInstance entersBlock(Consumer<SingleBlockBuilder> consumer) {
         SingleBlockBuilder builder = new SingleBlockBuilder();
         consumer.accept(builder);
@@ -128,8 +128,11 @@ public class Trigger {
         return new EntityHurtPlayerTrigger.TriggerInstance(builder.player, builder.damage);
     }
 
-    @Info(value = "Triggers after the player fills a bucket.",
-        params = @Param(name = "item", value = "The item resulting from filling the bucket."))
+    @Info("""
+        Triggers after the player fills a bucket.
+                
+        @param item The item resulting from filling the bucket.
+        """)
     public FilledBucketTrigger.TriggerInstance filledBucket(Consumer<SingleItemBuilder> consumer) {
         SingleItemBuilder builder = new SingleItemBuilder();
         consumer.accept(builder);
@@ -293,22 +296,26 @@ public class Trigger {
         return new StartRidingTrigger.TriggerInstance(EntityPredicate.Composite.ANY);
     }
 
-    @Info(value = """
+    @Info("""
         Triggers after an entity has been summoned.
                 
         Works with iron golem, snow golem, the ender dragon and the wither.
                 
         Using dispensers, commands, or pistons to place the wither skulls or pumpkins will still activate this trigger.
-        """,
-        params = @Param(name = "entity", value = "The summoned entity."))
+                
+        @param entity The summoned entity.
+        """)
     public SummonedEntityTrigger.TriggerInstance summonedEntity(Consumer<SingleEntityBuilder> consumer) {
         SingleEntityBuilder builder = new SingleEntityBuilder();
         consumer.accept(builder);
         return new SummonedEntityTrigger.TriggerInstance(builder.player, builder.entity);
     }
 
-    @Info(value = "Triggers after the player tames an animal.",
-        params = @Param(name = "entity", value = "Checks the entity that was tamed."))
+    @Info("""
+        Triggers after the player tames an animal.
+                
+        @param entity Checks the entity that was tamed.
+        """)
     public TameAnimalTrigger.TriggerInstance tameAnimal(Consumer<SingleEntityBuilder> consumer) {
         SingleEntityBuilder builder = new SingleEntityBuilder();
         consumer.accept(builder);
@@ -403,16 +410,22 @@ public class Trigger {
         return new UsedEnderEyeTrigger.TriggerInstance(builder.player, builder.distance);
     }
 
-    @Info(value = "Triggers when the player uses a totem.",
-        params = @Param(name = "item", value = "The item, only works with totem items."))
+    @Info("""
+        Triggers when the player uses a totem.
+                
+        @param item The item, only works with totem items.
+        """)
     public UsedTotemTrigger.TriggerInstance usedTotem(Consumer<SingleItemBuilder> consumer) {
         SingleItemBuilder builder = new SingleItemBuilder();
         consumer.accept(builder);
         return new UsedTotemTrigger.TriggerInstance(builder.player, builder.item);
     }
 
-    @Info(value = "Triggers for every tick that the player uses an item that is used continuously.",
-        params = @Param(name = "item", value = "The item that is used."))
+    @Info("""
+        Triggers when the player uses a totem.
+                
+        @param item The item, only works with totem items.
+        """)
     public UsingItemTrigger.TriggerInstance usingItem(Consumer<SingleItemBuilder> consumer) {
         SingleItemBuilder builder = new SingleItemBuilder();
         consumer.accept(builder);

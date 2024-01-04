@@ -50,6 +50,7 @@ public class Predicate {
         return builder.build();
     }
 
+    @Info("Any DamageSourcePredicate")
     public DamageSourcePredicate damageSource() {
         return DamageSourcePredicate.ANY;
     }
@@ -153,6 +154,8 @@ public class Predicate {
         return EntityPredicate.ANY;
     }
 
+    @Info(value = "Check if fishing hook is in open water.",
+    params = @Param(name = "isOpenWater"))
     public FishingHookPredicate fishingHook(boolean isOpenWater) {
         return FishingHookPredicate.inOpenWater(isOpenWater);
     }

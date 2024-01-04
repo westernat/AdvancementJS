@@ -7,9 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-@Mod(AdvJS.MODID)
+@Mod("advjs")
 public class AdvJS {
-    public static final String MODID = "advjs";
     public static final Logger LOGGER = LoggerFactory.getLogger("AdvJS");
     public static final EventHandler ADVANCEMENT = ServerEvents.GROUP.server("advancement", () -> AdvCreateEvent.class);
 
