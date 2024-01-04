@@ -23,28 +23,28 @@ public class AdvBuilder {
     private final RewardsBuilder rewardsBuilder = new RewardsBuilder();
     private final CriteriaBuilder criteriaBuilder = new CriteriaBuilder();
 
-    private final boolean attention;
+    private final boolean warn;
 
-    public AdvBuilder(@Nullable ResourceLocation parent, String name, ResourceLocation rootPath, boolean attention) {
+    public AdvBuilder(@Nullable ResourceLocation parent, String name, ResourceLocation rootPath, boolean warn) {
         this.parent = parent;
         this.name = name;
         this.rootPath = rootPath;
-        this.attention = attention;
+        this.warn = warn;
     }
 
-    @Info("Add a nameless child to this. Just for test.")
-    public AdvBuilder addChild(Consumer<AdvBuilder> advGetterConsumer) {
+    @Info("Add a nameless child to this advancement, just for test. Returns child.")
+    public AdvBuilder addChild(Consumer<AdvBuilder> advBuilderConsumer) {
         AdvBuilder child = new AdvBuilder(getSavePath(), UUID.randomUUID().toString(), rootPath, true);
-        advGetterConsumer.accept(child);
+        advBuilderConsumer.accept(child);
 
         BUILDER_MAP.put(getSavePath(), this);
         return child;
     }
 
-    @Info("Add a named child to this.")
-    public AdvBuilder addChild(String name, Consumer<AdvBuilder> advGetterConsumer) {
+    @Info("Add a named child to this advancement. Returns child.")
+    public AdvBuilder addChild(String name, Consumer<AdvBuilder> advBuilderConsumer) {
         AdvBuilder child = new AdvBuilder(getSavePath(), name, rootPath, false);
-        advGetterConsumer.accept(child);
+        advBuilderConsumer.accept(child);
 
         BUILDER_MAP.put(getSavePath(), this);
         return child;
@@ -77,35 +77,43 @@ public class AdvBuilder {
         return this;
     }
 
+    @Info("Get parent of this advancement.")
     public @Nullable ResourceLocation getParent() {
         return parent;
     }
 
+    @Info("Get the id of this advancement.")
     public ResourceLocation getSavePath() {
         return new ResourceLocation(rootPath.getNamespace(), rootPath.getPath() + "/" + name);
     }
 
+    @Info("Get the built display.")
     public DisplayInfo getDisplayInfo() {
         return displayBuilder.build();
     }
 
+    @Info("Get the built criteria.")
     public Map<String, Criterion> getCriteria() {
         return criteriaBuilder.getCriteria();
     }
 
+    @Info("Get the built requirements.")
     public String[][] getRequirements() {
         return criteriaBuilder.getRequirements();
     }
 
+    @Info("Get the built rewards.")
     public AdvancementRewards getRewards() {
         return rewardsBuilder.build();
     }
 
+    @Info("If it is a root advancement.")
     public boolean isRoot() {
         return parent == null;
     }
 
-    public boolean isAttention() {
-        return attention;
+    @Info("If it is a warn advancement.")
+    public boolean isWarn() {
+        return warn;
     }
 }

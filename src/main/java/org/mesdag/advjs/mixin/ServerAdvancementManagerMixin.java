@@ -22,8 +22,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.mesdag.advjs.adv.Data.*;
@@ -51,10 +49,12 @@ public abstract class ServerAdvancementManagerMixin {
         for (ResourceLocation remove : REMOVES) {
             map.remove(remove);
         }
+        AdvJS.LOGGER.info("Removed {} advancements", REMOVES.size());
     }
 
     @Unique
     private static void advJS$modify(Map<ResourceLocation, Advancement.Builder> map, PredicateManager predicateManager) {
+        int counter = 0;
         for (Map.Entry<ResourceLocation, AdvGetter> entry : GETTER_MAP.entrySet()) {
             ResourceLocation path = entry.getKey();
             Advancement.Builder builder = map.get(path);
@@ -99,8 +99,12 @@ public abstract class ServerAdvancementManagerMixin {
                     neo.addCriterion(pair.getKey(), pair.getValue());
                 }
                 map.put(path, neo);
+                counter++;
+            } else {
+                AdvJS.LOGGER.error("Advancement '{}' is not exist", path);
             }
         }
+        AdvJS.LOGGER.info("Modified {} advancements", counter);
     }
 
     @Unique
@@ -132,55 +136,42 @@ public abstract class ServerAdvancementManagerMixin {
 
     @Unique
     private static void advJS$add(Map<ResourceLocation, Advancement.Builder> builderMap) {
-        HashMap<ResourceLocation, Advancement> advMap = new HashMap<>();
-        ArrayList<AdvBuilder> remains = new ArrayList<>();
+        int counter = 0;
         for (Map.Entry<ResourceLocation, AdvBuilder> entry : BUILDER_MAP.entrySet()) {
-            AdvBuilder builder = entry.getValue();
-            if (builder.isRoot()) {
-                advMap.put(entry.getKey(), advJS$buildAdv(builder, null));
-            } else if (!advJS$buildAndPut(advMap, builder)) {
-                remains.add(builder);
+            AdvBuilder advBuilder = entry.getValue();
+            if (advBuilder.isRoot()) {
+                builderMap.put(entry.getKey(), advJS$build(advBuilder));
+                counter++;
+            } else { // advBuilder.parent != null
+                ResourceLocation parentId = advBuilder.getParent();
+                if (builderMap.containsKey(parentId)) {
+                    Advancement.Builder builder = advJS$build(advBuilder);
+                    builderMap.put(advBuilder.getSavePath(), builder.parent(parentId));
+                    counter++;
+                } else {
+                    AdvJS.LOGGER.error("Advancement '{}' is not exist", parentId);
+                }
             }
         }
-
-        if (remains.size() > 0) {
-            for (AdvBuilder builder : remains) {
-                advJS$buildAndPut(advMap, builder);
-            }
-        }
-
-        for (Map.Entry<ResourceLocation, Advancement> entry : advMap.entrySet()) {
-            builderMap.put(entry.getKey(), entry.getValue().deconstruct());
-        }
+        AdvJS.LOGGER.info("Added {} advancements", counter);
     }
 
     @Unique
-    private static boolean advJS$buildAndPut(HashMap<ResourceLocation, Advancement> advMap, AdvBuilder builder) {
-        ResourceLocation location = builder.getParent();
-        if (advMap.containsKey(location)) {
-            Advancement advancement = advJS$buildAdv(builder, advMap.get(location));
-            advMap.get(location).addChild(advancement);
-            advMap.put(builder.getSavePath(), advancement);
-            return true;
-        }
-        return false;
-    }
-
-    @Unique
-    private static Advancement advJS$buildAdv(AdvBuilder getter, Advancement parent) {
-        if (getter.isAttention()) {
-            getter.display(builder -> {
+    private static Advancement.Builder advJS$build(AdvBuilder advBuilder) {
+        if (advBuilder.isWarn()) {
+            advBuilder.display(builder -> {
                 builder.setTitle(ATTENTION);
                 builder.setDescription(ATTENTION_DESC);
             });
+            AdvJS.LOGGER.warn("A warn advancement created, the parent is '{}'", advBuilder.getParent());
         }
         return new Advancement(
-            getter.getSavePath(),
-            parent,
-            getter.getDisplayInfo(),
-            getter.getRewards(),
-            getter.getCriteria(),
-            getter.getRequirements()
-        );
+            advBuilder.getSavePath(),
+            null,
+            advBuilder.getDisplayInfo(),
+            advBuilder.getRewards(),
+            advBuilder.getCriteria(),
+            advBuilder.getRequirements()
+        ).deconstruct();
     }
 }

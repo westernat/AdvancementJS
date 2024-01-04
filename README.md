@@ -2,7 +2,7 @@
 
 Configure Advancements by KubeJS
 
-## Quick Exmaple
+## Quick Example
 
 ### KubeJS 6
 
@@ -10,7 +10,7 @@ Configure Advancements by KubeJS
 ServerEvents.advancement((event) => {
     const { BOUNDS, PREDICATE, TRIGGER } = event;
 
-    // 定义触发器
+    // Define triggers
     const jump5times = TRIGGER.tick((triggerBuilder) =>
         triggerBuilder.addStat(Stats.JUMP, Stats.CUSTOM, BOUNDS.min$Integer(5)));
     const bred_in_nether = TRIGGER.bredAnimals((triggerBuilder) => {
@@ -21,17 +21,16 @@ ServerEvents.advancement((event) => {
         }))
     });
 
-    // 创建根进度
+    // Create root advancement
     const root = event.create("advjs:hell")
         .display((displayBuilder) => {
             displayBuilder.setTitle("AdvancementJS")
             displayBuilder.setDescription("Quick example")
             displayBuilder.setIcon("diamond")
-            displayBuilder.setAnnounceToChat(true)
         })
         .criteria((criteriaBuilder) => criteriaBuilder.add("tick", TRIGGER.tick()));
 
-    // 为根进度添加子进度
+    // Add child for root
     root.addChild("child1", (childBuilder) => {
         childBuilder
             .display((displayBuilder) => {
@@ -39,7 +38,8 @@ ServerEvents.advancement((event) => {
                 displayBuilder.setDescription(Text.red("Hell starts"))
             })
             .criteria((criteriaBuilder) => {
-                // 'OR'表示以下两个触发器任意一个达成, 则进度完成
+                // 'OR' means that if you want to achieve this advancement,
+                // you just need one of two triggers matched below
                 criteriaBuilder.setStrategy(RequirementsStrategy.OR)
                 criteriaBuilder.add("bred", bred_in_nether)
                 criteriaBuilder.add("jump", jump5times)
@@ -50,11 +50,27 @@ ServerEvents.advancement((event) => {
             })
     });
     
-    // 删除已有的进度
-    event.remove("minecraft:story/lava_bucket")
+    // Remove an exist advancement
+    event.remove("minecraft:story/lava_bucket");
     
-    // 修改已有的进度
+        // modify an exist advancement
     event.get("minecraft:story/smelt_iron")
         .modifyDisplay((displayBuilder) => displayBuilder.setIcon("diamond_pickaxe"))
+        .addChild("child2", (childBuilder) => {
+            childBuilder
+                .display((displayBuilder) => {
+                    displayBuilder.setTitle('A nice one!')
+                    displayBuilder.setDescription(Text.green("Good luck"))
+                })
+                .criteria((criteriaBuilder) => criteriaBuilder.add("jump", jump5times))
+        });
 })
 ```
+
+# How to reload
+Just use ```/reload```
+
+# TODO
+- More non-vanilla triggers
+- More than vanilla rewards
+- Lock recipes by advancement

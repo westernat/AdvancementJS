@@ -6,7 +6,7 @@ plugins {
 }
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1902forge-1.5.0'
+version = '1902forge-1.5.5'
 group = 'org.mesdag.advjs'
 archivesBaseName = 'AdvJS'
 
