@@ -1,6 +1,8 @@
 package org.mesdag.advjs.trigger;
 
 
+import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.predicate.NbtPredicate;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.*;
@@ -26,10 +28,17 @@ class PlayerPredicateBuilder {
     @Nullable
     String team = null;
 
+    @Info("Test the experience level of this player.")
     public void setLevel(NumberRange.IntRange bounds) {
         playerBuilder.experienceLevel(bounds);
     }
 
+    @Info(value = "Test player's statistics.",
+        params = {
+            @Param(name = "statId", value = "The statistic ID to test."),
+            @Param(name = "statType", value = "The statistic type."),
+            @Param(name = "value", value = "Test if the value of the statistic matches an exact number.")
+        })
     public void addStat(Identifier statId, StatType<?> statType, NumberRange.IntRange bounds) {
         playerBuilder.stat(getStat(statType, statId), bounds);
     }
@@ -44,64 +53,87 @@ class PlayerPredicateBuilder {
         }
     }
 
+    @Info("Test if recipes are known or unknown to this player.")
     public void addRecipe(Identifier recipe, boolean unlocked) {
         playerBuilder.recipe(recipe, unlocked);
     }
 
+    @Info("Test the game mode of this player.")
     public void setGameType(GameMode gameType) {
         playerBuilder.gameMode(gameType);
     }
 
+    @Info("""
+        Test properties of the entity that this player is looking at, as long as it is visible and within a radius of 100 blocks.
+        
+        Visibility is defined through the line from the player's eyes to the entity's eyes, rather than the direction that the player is looking in.
+        """)
     public void setLookingAt(EntityPredicate entityPredicate) {
         playerBuilder.lookingAt(entityPredicate);
     }
 
+    @Info("Test if the player's advancement done.")
     public void checkAdvancementDone(Identifier advancement, boolean done) {
         playerBuilder.advancement(advancement, done);
     }
 
     //TODO checkAdvancementCriteria
 
+    @Info("""
+        Test the distance to player this predicate is invoked upon.
+                
+        Passes if the calculated distance is between the entered min and max, inclusive.
+        """)
     public void setDistance(DistancePredicate distance) {
         this.distance = distance;
     }
 
+    @Info("Test properties of player's location.")
     public void setLocation(LocationPredicate location) {
         this.location = location;
     }
 
+    @Info("Test properties of the block player is standing on, using a location predicate.")
     public void setSteppingOnLocation(LocationPredicate steppingOnLocation) {
         this.steppingOnLocation = steppingOnLocation;
     }
 
+    @Info("Test the active status effects on player.")
     public void setEffects(EntityEffectPredicate effects) {
         this.effects = effects;
     }
 
+    @Info("Test NBT data of player.")
     public void setNbt(NbtPredicate nbt) {
         this.nbt = nbt;
     }
 
+    @Info("Test flags of player.")
     public void setFlags(EntityFlagsPredicate flags) {
         this.flags = flags;
     }
 
+    @Info("Test the items that player holds in its equipment slots.")
     public void setEquipment(EntityEquipmentPredicate equipment) {
         this.equipment = equipment;
     }
 
+    @Info("Test properties of the vehicle entity that player is riding upon.")
     public void setVehicle(EntityPredicate vehicle) {
         this.vehicle = vehicle;
     }
 
+    @Info("Test the entity directly riding player.")
     public void setPassenger(EntityPredicate passenger) {
         this.passenger = passenger;
     }
 
+    @Info("Test properties of the entity which player is targeting for attacks.")
     public void setTargetedEntity(EntityPredicate targetedEntity) {
         this.targetedEntity = targetedEntity;
     }
 
+    @Info("Passes if the team of player matches this string.")
     public void setTeam(@Nullable String team) {
         this.team = team;
     }

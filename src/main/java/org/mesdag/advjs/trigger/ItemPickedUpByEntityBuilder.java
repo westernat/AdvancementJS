@@ -8,26 +8,26 @@ import net.minecraft.recipe.Ingredient;
 import org.mesdag.advjs.util.EntitySetter;
 import org.mesdag.advjs.util.ItemSetter;
 
-class PlayerInteractBuilder extends AbstractTriggerBuilder implements ItemSetter, EntitySetter {
+public class ItemPickedUpByEntityBuilder extends AbstractTriggerBuilder implements ItemSetter, EntitySetter {
     ItemPredicate item = ItemPredicate.ANY;
     EntityPredicate.Extended entity = EntityPredicate.Extended.EMPTY;
 
-    @Info("The item which was in the player's hand during interaction.")
+    @Info("The thrown item which was picked up.")
     public void setItem(ItemPredicate item) {
         this.item = item;
     }
 
-    @Info("The item which was in the player's hand during interaction.")
+    @Info("The thrown item which was picked up.")
     public void setItem(Ingredient ingredient) {
         this.item = warpItem(ingredient);
     }
 
-    @Info("The entity which was interacted with.")
+    @Info("The entity which picked up the item.")
     public void setEntity(EntityPredicate entity) {
         this.entity = EntityPredicate.Extended.ofLegacy(entity);
     }
 
-    @Info("The entity which was interacted with.")
+    @Info("The entity which picked up the item.")
     public void setEntity(EntityType<?> entityType) {
         this.entity = warpEntity(entityType);
     }

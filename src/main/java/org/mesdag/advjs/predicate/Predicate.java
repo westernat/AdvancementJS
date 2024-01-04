@@ -2,6 +2,8 @@ package org.mesdag.advjs.predicate;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.*;
 import net.minecraft.predicate.entity.*;
@@ -21,6 +23,7 @@ public class Predicate {
         return builder.builder.build();
     }
 
+    @Info("Any BlockPredicate")
     public BlockPredicate block() {
         return BlockPredicate.ANY;
     }
@@ -35,6 +38,7 @@ public class Predicate {
         return builder.build();
     }
 
+    @Info("Any DamagePredicate")
     public DamagePredicate damage() {
         return DamagePredicate.ANY;
     }
@@ -49,20 +53,32 @@ public class Predicate {
         return builder.build();
     }
 
+    @Info("Any DamageSourcePredicate")
     public DamageSourcePredicate damageSource() {
         return DamageSourcePredicate.EMPTY;
     }
 
+    @Info("""
+        To test the distance to the entity this predicate is invoked upon.
+                
+        Passes if the calculated distance is between the entered min and max, inclusive.
+        """)
     public DistancePredicate distance(JsonObject o) {
         return DistancePredicate.fromJson(o);
     }
 
+    @Info("""
+        To test the distance to the entity this predicate is invoked upon.
+                
+        Passes if the calculated distance is between the entered min and max, inclusive.
+        """)
     public DistancePredicate distance(Consumer<DistancePredicateBuilder> consumer) {
         DistancePredicateBuilder builder = new DistancePredicateBuilder();
         consumer.accept(builder);
         return new DistancePredicate(builder.x, builder.y, builder.z, builder.horizontal, builder.absolute);
     }
 
+    @Info("Any DistancePredicate")
     public DistancePredicate distance() {
         return DistancePredicate.ANY;
     }
@@ -77,6 +93,7 @@ public class Predicate {
         return new EnchantmentPredicate(builder.enchantment, builder.level);
     }
 
+    @Info("Any EnchantmentPredicate")
     public EnchantmentPredicate enchantment() {
         return EnchantmentPredicate.ANY;
     }
@@ -85,16 +102,27 @@ public class Predicate {
         return EnchantmentPredicate.deserializeAll(o);
     }
 
+    @Info("For testing the items that this entity holds in its equipment slots.")
     public EntityEquipmentPredicate entityEquipment(JsonObject o) {
         return EntityEquipmentPredicate.fromJson(o);
     }
 
+    @Info(value = "For testing the items that this entity holds in its equipment slots.",
+        params = {
+            @Param(name = "mainhand", value = "Test the item in the entity's main hand."),
+            @Param(name = "offhand", value = "Test the item in the entity's offhand."),
+            @Param(name = "head", value = "Test the item in the entity's head armor slot."),
+            @Param(name = "chest", value = "Test the item in the entity's chest armor slot."),
+            @Param(name = "legs", value = "Test the item in the entity's legs armor slot."),
+            @Param(name = "feet", value = "Test the item in the entity's feet armor slot.")
+        })
     public EntityEquipmentPredicate entityEquipment(Consumer<EntityEquipmentPredicate.Builder> consumer) {
         EntityEquipmentPredicate.Builder builder = EntityEquipmentPredicate.Builder.create();
         consumer.accept(builder);
         return builder.build();
     }
 
+    @Info("Any EntityEquipmentPredicate")
     public EntityEquipmentPredicate entityEquipment() {
         return EntityEquipmentPredicate.ANY;
     }
@@ -109,6 +137,7 @@ public class Predicate {
         return builder.build();
     }
 
+    @Info("Any EntityFlagsPredicate")
     public EntityFlagsPredicate entityFlags() {
         return EntityFlagsPredicate.ANY;
     }
@@ -123,14 +152,18 @@ public class Predicate {
         return builder.build();
     }
 
+    @Info("Any EntityPredicate")
     public EntityPredicate entity() {
         return EntityPredicate.ANY;
     }
 
+    @Info(value = "Check if fishing hook is in open water.",
+        params = @Param(name = "isOpenWater"))
     public FishingHookPredicate fishingHook(boolean isOpenWater) {
         return FishingHookPredicate.of(isOpenWater);
     }
 
+    @Info("Any EntityPredicate")
     public FishingHookPredicate fishingHook() {
         return FishingHookPredicate.ALL;
     }
@@ -145,6 +178,7 @@ public class Predicate {
         return builder.build();
     }
 
+    @Info("Any FluidPredicate")
     public FluidPredicate fluid() {
         return FluidPredicate.ANY;
     }
@@ -159,6 +193,7 @@ public class Predicate {
         return builder.build();
     }
 
+    @Info("Any ItemPredicate")
     public ItemPredicate item() {
         return ItemPredicate.ANY;
     }
@@ -167,6 +202,7 @@ public class Predicate {
         return LightningBoltPredicate.fromJson(o);
     }
 
+    @Info("Any LightningBoltPredicate")
     public LightningBoltPredicate lightningBolt() {
         return LightningBoltPredicate.of(NumberRange.IntRange.ANY);
     }
@@ -181,6 +217,7 @@ public class Predicate {
         return builder.build();
     }
 
+    @Info("Any LightPredicate")
     public LightPredicate light() {
         return LightPredicate.ANY;
     }
@@ -195,20 +232,24 @@ public class Predicate {
         return builder.build();
     }
 
+    @Info("Any LocationPredicate")
     public LocationPredicate location() {
         return LocationPredicate.ANY;
     }
 
+    @Info("For testing the active status effects on the entity.")
     public EntityEffectPredicate mobEffects(JsonObject o) {
         return EntityEffectPredicate.fromJson(o);
     }
 
+    @Info("For testing the active status effects on the entity.")
     public EntityEffectPredicate mobEffects(Consumer<MobEffectsPredicateBuilder> consumer) {
         MobEffectsPredicateBuilder builder = new MobEffectsPredicateBuilder();
         consumer.accept(builder);
         return new EntityEffectPredicate(builder.effects);
     }
 
+    @Info("Any MobEffectsPredicate")
     public EntityEffectPredicate mobEffects() {
         return EntityEffectPredicate.EMPTY;
     }
@@ -231,6 +272,7 @@ public class Predicate {
         return new NbtPredicate(nbt);
     }
 
+    @Info("Any NbtPredicate")
     public NbtPredicate nbt() {
         return NbtPredicate.ANY;
     }
@@ -249,6 +291,7 @@ public class Predicate {
         return builder.builder.build();
     }
 
+    @Info("Any StatePropertiesPredicate")
     public StatePredicate stateProperties() {
         return StatePredicate.ANY;
     }

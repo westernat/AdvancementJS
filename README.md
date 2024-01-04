@@ -2,43 +2,67 @@
 
 Configure Advancements by KubeJS
 
-## Quick Exmaple
+## Quick Example
 
 ### KubeJS 6
 
 ```js
 ServerEvents.advancement((event) => {
-  const { TRIGGER, PREDICATE } = event;
+    const { BOUNDS, PREDICATE, TRIGGER } = event;
 
-  const bred_in_nether = TRIGGER.bredAnimals((triggerBuilder) => {
-    triggerBuilder.setChild(
-      PREDICATE.entity({
-        stepping_on: {
-          dimension: "the_nether",
-        },
-      })
-    );
-  });
+    // Define triggers
+    const jump5times = TRIGGER.tick((triggerBuilder) =>
+        triggerBuilder.addStat(Stats.JUMP, Stats.CUSTOM, BOUNDS.min$Integer(5)));
+    const bred_in_nether = TRIGGER.bredAnimals((triggerBuilder) => {
+        triggerBuilder.setChild(PREDICATE.entity({
+            stepping_on: {
+                dimension: "the_nether"
+            }
+        }))
+    });
 
-  const root = event
-    .create("advjs:hell")
-    .display((displayBuilder) => displayBuilder.setIcon("diamond"))
-    .criteria((criteriaBuilder) => criteriaBuilder.add("tick", TRIGGER.tick()));
+    // Create root advancement
+    const root = event.create("advjs:hell")
+        .display((displayBuilder) => {
+            displayBuilder.setTitle("AdvancementJS")
+            displayBuilder.setDescription("Quick example")
+            displayBuilder.setIcon("diamond")
+        })
+        .criteria((criteriaBuilder) => criteriaBuilder.add("tick", TRIGGER.tick()));
 
-  root.addChild("child1", (childBuilder) => {
-    childBuilder
-      .display((displayBuilder) => {
-        displayBuilder.setTitle(Text.red("Holy Shit"));
-        displayBuilder.setDescription(Text.red("Hell starts"));
-      })
-      .criteria((criteriaBuilder) => {
-        criteriaBuilder.add("bred_in_nether", bred_in_nether);
-      })
-      .rewards((rewardsBuilder) => {
-        rewardsBuilder.setExperience(100);
-      });
-  });
-
-  event.remove("minecraft:story/smelt_iron");
-});
+    // Add child for root
+    root.addChild("child1", (childBuilder) => {
+        childBuilder
+            .display((displayBuilder) => {
+                displayBuilder.setTitle(Text.red("Holy"))
+                displayBuilder.setDescription(Text.red("Hell starts"))
+            })
+            .criteria((criteriaBuilder) => {
+                // 'OR' means that if you want to achieve this advancement,
+                // you just need one of two triggers matched below
+                criteriaBuilder.setStrategy(RequirementsStrategy.OR)
+                criteriaBuilder.add("bred", bred_in_nether)
+                criteriaBuilder.add("jump", jump5times)
+            })
+            .rewards((rewardsBuilder) => {
+                rewardsBuilder.setRecipes("minecraft:lodestone", "minecraft:brewing_stand")
+                rewardsBuilder.setExperience(100)
+            })
+    });
+    
+    // Remove an exist advancement
+    event.remove("minecraft:story/lava_bucket");
+    
+    // modify an exist advancement
+    event.get("minecraft:story/smelt_iron")
+        .modifyDisplay((displayBuilder) => displayBuilder.setIcon("diamond_pickaxe"))
+        .addChild("child2", (childBuilder) => {
+            childBuilder
+                .display((displayBuilder) => {
+                    displayBuilder.setTitle('A nice one!')
+                    displayBuilder.setDescription(Text.green("Good luck"))
+                })
+                .criteria((criteriaBuilder) => criteriaBuilder.add("jump", jump5times))
+        });
+})
 ```

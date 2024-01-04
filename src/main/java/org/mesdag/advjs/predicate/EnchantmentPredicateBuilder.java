@@ -1,6 +1,7 @@
 package org.mesdag.advjs.predicate;
 
 
+import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.util.Identifier;
@@ -12,6 +13,7 @@ class EnchantmentPredicateBuilder {
     Enchantment enchantment = null;
     NumberRange.IntRange level = NumberRange.IntRange.ANY;
 
+    @Info("Match enchantment.")
     public void setEnchantment(Identifier location) {
         Enchantment enchantment = Registry.ENCHANTMENT.get(location);
         if (enchantment != null) {
@@ -19,6 +21,7 @@ class EnchantmentPredicateBuilder {
         }
     }
 
+    @Info("Match level of enchantment.")
     public void setLevel(NumberRange.IntRange bounds) {
         level = bounds;
     }
