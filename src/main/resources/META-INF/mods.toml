@@ -1,0 +1,23 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+
+[[mods]]
+modId = "advjs"
+version = "2001forge-1.5.5"
+displayName = "AdvancementJS"
+authors = "Weternat"
+description = '''Configure advancements by KubeJS'''
+
+[[dependencies.advjs]]
+modId = "forge"
+mandatory = true
+versionRange = "${forge_version_range}"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.advjs]]
+modId = "minecraft"
+mandatory = true
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
