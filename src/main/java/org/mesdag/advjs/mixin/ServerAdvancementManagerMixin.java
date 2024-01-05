@@ -12,9 +12,9 @@ import net.minecraft.commands.CommandFunction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.world.level.storage.loot.PredicateManager;
-import org.mesdag.advjs.AdvCreateEvent;
 import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.AdvJSPlugin;
+import org.mesdag.advjs.AdvancementEvent;
 import org.mesdag.advjs.adv.*;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,7 +37,7 @@ public abstract class ServerAdvancementManagerMixin {
         method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/AdvancementList;add(Ljava/util/Map;)V"))
     private Map<ResourceLocation, Advancement.Builder> advjs$reload(Map<ResourceLocation, Advancement.Builder> map) {
-        AdvJS.ADVANCEMENT.post(new AdvCreateEvent());
+        AdvJS.ADVANCEMENT.post(new AdvancementEvent());
         advJS$remove(map);
         advJS$modify(map, predicateManager);
         advJS$add(map);

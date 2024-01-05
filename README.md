@@ -64,6 +64,9 @@ ServerEvents.advancement((event) => {
                 })
                 .criteria((criteriaBuilder) => criteriaBuilder.add("jump", jump5times))
         });
+    
+    // Lock recipe by advancement
+    event.lock("stone_slab", "minecraft:story/smelt_iron");
 })
 ```
 
@@ -73,4 +76,3 @@ Just use ```/reload```
 # TODO
 - More non-vanilla triggers
 - More than vanilla rewards
-- Lock recipes by advancement
