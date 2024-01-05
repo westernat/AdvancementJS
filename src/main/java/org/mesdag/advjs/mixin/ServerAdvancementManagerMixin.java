@@ -14,6 +14,7 @@ import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.world.level.storage.loot.LootDataManager;
 import org.mesdag.advjs.AdvCreateEvent;
 import org.mesdag.advjs.AdvJS;
+import org.mesdag.advjs.AdvJSPlugin;
 import org.mesdag.advjs.adv.*;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -46,14 +47,21 @@ public abstract class ServerAdvancementManagerMixin {
 
     @Unique
     private static void advJS$remove(Map<ResourceLocation, Advancement.Builder> map) {
+        int counter = 0;
         for (ResourceLocation remove : REMOVES) {
-            map.remove(remove);
+            if (map.remove(remove) != null) {
+                counter++;
+            }
         }
-        AdvJS.LOGGER.info("Removed {} advancements", REMOVES.size());
+        AdvJS.LOGGER.info("Removed {} advancements", counter);
     }
 
     @Unique
     private static void advJS$modify(Map<ResourceLocation, Advancement.Builder> map, LootDataManager lootData) {
+        if (AdvJSPlugin.DEBUG) {
+            AdvJS.LOGGER.debug("Modification details:");
+        }
+
         int counter = 0;
         for (Map.Entry<ResourceLocation, AdvGetter> entry : GETTER_MAP.entrySet()) {
             ResourceLocation path = entry.getKey();
@@ -75,6 +83,7 @@ public abstract class ServerAdvancementManagerMixin {
                     oldDisplay.isHidden()
                 );
                 getter.getDisplayConsumer().accept(neoDisplayBuilder);
+                DisplayInfo neoDisplay = neoDisplayBuilder.build();
 
                 JsonElement oldRewardsJson = oldJson.get("rewards");
                 AdvancementRewards neoRewards;
@@ -89,17 +98,51 @@ public abstract class ServerAdvancementManagerMixin {
                 Map<String, Criterion> oldCriteria = Criterion.criteriaFromJson(oldJson.get("criteria").getAsJsonObject(), new DeserializationContext(path, lootData));
                 CriteriaBuilder neoCriteriaBuilder = new CriteriaBuilder(oldCriteria, oldJson.get("requirements").getAsJsonArray());
                 getter.getCriteriaConsumer().accept(neoCriteriaBuilder);
+                String[][] neoRequirements = neoCriteriaBuilder.getRequirements();
 
                 Advancement.Builder neo = Advancement.Builder.advancement()
                     .parent(parentId)
-                    .display(neoDisplayBuilder.build())
+                    .display(neoDisplay)
                     .rewards(neoRewards)
-                    .requirements(neoCriteriaBuilder.getRequirements());
+                    .requirements(neoRequirements);
                 for (Map.Entry<String, Criterion> pair : neoCriteriaBuilder.getCriteria().entrySet()) {
                     neo.addCriterion(pair.getKey(), pair.getValue());
                 }
                 map.put(path, neo);
                 counter++;
+
+                if (AdvJSPlugin.DEBUG) {
+                    AdvJS.LOGGER.debug("""
+                            identifier: {}
+                                parent: {}
+                                display:
+                                    icon: {} -> {}
+                                    title: {} -> {}
+                                    description: {} -> {}
+                                    background: {} -> {}
+                                    frame: {} -> {}
+                                    showToast: {} -> {}
+                                    announceToChat: {} -> {}
+                                    hidden: {} -> {}
+                                rewards: {}
+                                requirements: {}
+                                criteria: {}
+                            """,
+                        path,
+                        parentId,
+                        oldDisplay.getIcon().getDescriptionId(), neoDisplay.getIcon().getDescriptionId(),
+                        oldDisplay.getTitle().getString(), neoDisplay.getTitle().getString(),
+                        oldDisplay.getDescription().getString(), neoDisplay.getDescription().getString(),
+                        oldDisplay.getBackground(), neoDisplay.getBackground(),
+                        oldDisplay.getFrame().getName(), neoDisplay.getFrame().getName(),
+                        oldDisplay.shouldShowToast(), neoDisplay.shouldShowToast(),
+                        oldDisplay.shouldAnnounceChat(), neoDisplay.shouldAnnounceChat(),
+                        oldDisplay.isHidden(), neoDisplay.isHidden(),
+                        neoRewards,
+                        neoRequirements,
+                        String.join(",", neo.getCriteria().keySet())
+                    );
+                }
             } else {
                 AdvJS.LOGGER.error("Advancement '{}' is not exist", path);
             }
