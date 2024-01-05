@@ -14,6 +14,7 @@ import net.minecraft.server.function.CommandFunction;
 import net.minecraft.util.Identifier;
 import org.mesdag.advjs.AdvCreateEvent;
 import org.mesdag.advjs.AdvJS;
+import org.mesdag.advjs.AdvJSPlugin;
 import org.mesdag.advjs.adv.*;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,7 +32,7 @@ public abstract class ServerAdvancementLoaderMixin {
     @Shadow
     @Final
     private LootConditionManager conditionManager;
-    
+
     @ModifyArg(
         method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/advancement/AdvancementManager;load(Ljava/util/Map;)V"))
@@ -46,14 +47,21 @@ public abstract class ServerAdvancementLoaderMixin {
 
     @Unique
     private static void advJS$remove(Map<Identifier, Advancement.Builder> map) {
+        int counter = 0;
         for (Identifier remove : REMOVES) {
-            map.remove(remove);
+            if (map.remove(remove) != null) {
+                counter++;
+            }
         }
-        AdvJS.LOGGER.info("Removed {} advancements", REMOVES.size());
+        AdvJS.LOGGER.info("Removed {} advancements", counter);
     }
 
     @Unique
     private static void advJS$modify(Map<Identifier, Advancement.Builder> map, LootConditionManager predicateManager) {
+        if (AdvJSPlugin.DEBUG) {
+            AdvJS.LOGGER.debug("Modification details:");
+        }
+
         int counter = 0;
         for (Map.Entry<Identifier, AdvGetter> entry : GETTER_MAP.entrySet()) {
             Identifier path = entry.getKey();
@@ -75,6 +83,7 @@ public abstract class ServerAdvancementLoaderMixin {
                     oldDisplay.isHidden()
                 );
                 getter.getDisplayConsumer().accept(neoDisplayBuilder);
+                AdvancementDisplay neoDisplay = neoDisplayBuilder.build();
 
                 JsonElement oldRewardsJson = oldJson.get("rewards");
                 AdvancementRewards neoRewards;
@@ -89,17 +98,51 @@ public abstract class ServerAdvancementLoaderMixin {
                 Map<String, AdvancementCriterion> oldCriteria = AdvancementCriterion.criteriaFromJson(oldJson.get("criteria").getAsJsonObject(), new AdvancementEntityPredicateDeserializer(path, predicateManager));
                 CriteriaBuilder neoCriteriaBuilder = new CriteriaBuilder(oldCriteria, oldJson.get("requirements").getAsJsonArray());
                 getter.getCriteriaConsumer().accept(neoCriteriaBuilder);
+                String[][] neoRequirements = neoCriteriaBuilder.getRequirements();
 
                 Advancement.Builder neo = Advancement.Builder.create()
                     .parent(parentId)
-                    .display(neoDisplayBuilder.build())
+                    .display(neoDisplay)
                     .rewards(neoRewards)
-                    .requirements(neoCriteriaBuilder.getRequirements());
+                    .requirements(neoRequirements);
                 for (Map.Entry<String, AdvancementCriterion> pair : neoCriteriaBuilder.getCriteria().entrySet()) {
                     neo.criterion(pair.getKey(), pair.getValue());
                 }
                 map.put(path, neo);
                 counter++;
+
+                if (AdvJSPlugin.DEBUG) {
+                    AdvJS.LOGGER.debug("""
+                            identifier: {}
+                                parent: {}
+                                display:
+                                    icon: {} -> {}
+                                    title: {} -> {}
+                                    description: {} -> {}
+                                    background: {} -> {}
+                                    frame: {} -> {}
+                                    showToast: {} -> {}
+                                    announceToChat: {} -> {}
+                                    hidden: {} -> {}
+                                rewards: {}
+                                requirements: {}
+                                criteria: {}
+                            """,
+                        path,
+                        parentId,
+                        oldDisplay.getIcon().getTranslationKey(), neoDisplay.getIcon().getTranslationKey(),
+                        oldDisplay.getTitle().getString(), neoDisplay.getTitle().getString(),
+                        oldDisplay.getDescription().getString(), neoDisplay.getDescription().getString(),
+                        oldDisplay.getBackground(), neoDisplay.getBackground(),
+                        oldDisplay.getFrame().getId(), neoDisplay.getFrame().getId(),
+                        oldDisplay.shouldShowToast(), neoDisplay.shouldShowToast(),
+                        oldDisplay.shouldAnnounceToChat(), neoDisplay.shouldAnnounceToChat(),
+                        oldDisplay.isHidden(), neoDisplay.isHidden(),
+                        neoRewards,
+                        neoRequirements,
+                        String.join(",", neo.getCriteria().keySet())
+                    );
+                }
             } else {
                 AdvJS.LOGGER.error("Advancement '{}' is not exist", path);
             }
