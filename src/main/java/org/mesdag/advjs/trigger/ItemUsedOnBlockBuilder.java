@@ -13,11 +13,11 @@ class ItemUsedOnBlockBuilder extends AbstractTriggerBuilder implements ItemSette
         this.location = location;
     }
 
-    public void setItem(ItemPredicate item) {
+    public void setTool(ItemPredicate item) {
         this.item = item;
     }
 
-    public void setItem(IngredientJS ingredientJS) {
+    public void setTool(IngredientJS ingredientJS) {
         this.item = warpItem(ingredientJS);
     }
 }

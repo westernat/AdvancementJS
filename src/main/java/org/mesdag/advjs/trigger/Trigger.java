@@ -6,8 +6,8 @@ import net.minecraft.advancements.critereon.*;
 import java.util.function.Consumer;
 
 public class Trigger {
-    public BeeNestDestroyedTrigger.TriggerInstance destroyBlock(Consumer<DestroyBlockBuilder> consumer) {
-        DestroyBlockBuilder builder = new DestroyBlockBuilder();
+    public BeeNestDestroyedTrigger.TriggerInstance beeNestDestroyed(Consumer<BeeNestDestroyedBuilder> consumer) {
+        BeeNestDestroyedBuilder builder = new BeeNestDestroyedBuilder();
         consumer.accept(builder);
         return new BeeNestDestroyedTrigger.TriggerInstance(builder.player, builder.block, builder.item, builder.bounds);
     }
@@ -16,6 +16,12 @@ public class Trigger {
         BredAnimalsBuilder builder = new BredAnimalsBuilder();
         consumer.accept(builder);
         return new BredAnimalsTrigger.TriggerInstance(builder.player, builder.parent, builder.partner, builder.child);
+    }
+
+    public BrewedPotionTrigger.TriggerInstance brewedPotion(Consumer<BrewedPotionBuilder> consumer) {
+        BrewedPotionBuilder builder = new BrewedPotionBuilder();
+        consumer.accept(builder);
+        return new BrewedPotionTrigger.TriggerInstance(builder.player, builder.potion);
     }
 
     public ChangeDimensionTrigger.TriggerInstance changedDimension(Consumer<ChangeDimensionBuilder> consumer) {
@@ -33,7 +39,7 @@ public class Trigger {
     public ConstructBeaconTrigger.TriggerInstance constructedBeacon(Consumer<ConstructBeaconBuilder> consumer) {
         ConstructBeaconBuilder builder = new ConstructBeaconBuilder();
         consumer.accept(builder);
-        return new ConstructBeaconTrigger.TriggerInstance(builder.player, builder.bounds);
+        return new ConstructBeaconTrigger.TriggerInstance(builder.player, builder.level);
     }
 
     public CuredZombieVillagerTrigger.TriggerInstance curedZombieVillager(Consumer<CuredZombieVillagerBuilder> consumer) {
@@ -48,16 +54,22 @@ public class Trigger {
         return new ConsumeItemTrigger.TriggerInstance(builder.player, builder.item);
     }
 
-    public DistanceTrigger.TriggerInstance fallFromHeight(EntityPredicate entityPredicate, DistancePredicate distancePredicate, LocationPredicate locationPredicate) {
-        return new DistanceTrigger.TriggerInstance(CriteriaTriggers.FALL_FROM_HEIGHT.getId(), EntityPredicate.Composite.wrap(entityPredicate), locationPredicate, distancePredicate);
+    public DistanceTrigger.TriggerInstance fallFromHeight(Consumer<FallFromHeightBuilder> consumer) {
+        FallFromHeightBuilder builder = new FallFromHeightBuilder();
+        consumer.accept(builder);
+        return new DistanceTrigger.TriggerInstance(CriteriaTriggers.FALL_FROM_HEIGHT.getId(), builder.player, builder.startPosition, builder.distance);
     }
 
-    public DistanceTrigger.TriggerInstance rideEntityInLava(EntityPredicate entityPredicate, DistancePredicate distancePredicate) {
-        return new DistanceTrigger.TriggerInstance(CriteriaTriggers.RIDE_ENTITY_IN_LAVA_TRIGGER.getId(), EntityPredicate.Composite.wrap(entityPredicate), LocationPredicate.ANY, distancePredicate);
+    public DistanceTrigger.TriggerInstance rideEntityInLava(Consumer<RideEntityInLavaBuilder> consumer) {
+        RideEntityInLavaBuilder builder = new RideEntityInLavaBuilder();
+        consumer.accept(builder);
+        return new DistanceTrigger.TriggerInstance(CriteriaTriggers.RIDE_ENTITY_IN_LAVA_TRIGGER.getId(), builder.player, builder.startPosition, builder.distance);
     }
 
-    public DistanceTrigger.TriggerInstance travelledThroughNether(DistancePredicate distancePredicate) {
-        return new DistanceTrigger.TriggerInstance(CriteriaTriggers.NETHER_TRAVEL.getId(), EntityPredicate.Composite.ANY, LocationPredicate.ANY, distancePredicate);
+    public DistanceTrigger.TriggerInstance travelledThroughNether(Consumer<TraveledThroughNetherBuilder> consumer) {
+        TraveledThroughNetherBuilder builder = new TraveledThroughNetherBuilder();
+        consumer.accept(builder);
+        return new DistanceTrigger.TriggerInstance(CriteriaTriggers.NETHER_TRAVEL.getId(), builder.player, builder.startPosition, builder.distance);
     }
 
     public EffectsChangedTrigger.TriggerInstance effectChanged(Consumer<EffectsChangedBuilder> consumer) {

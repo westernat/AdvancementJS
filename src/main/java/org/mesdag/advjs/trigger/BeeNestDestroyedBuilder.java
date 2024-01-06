@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mesdag.advjs.util.BlockSetter;
 import org.mesdag.advjs.util.ItemSetter;
 
-class DestroyBlockBuilder extends AbstractTriggerBuilder implements ItemSetter, BlockSetter {
+class BeeNestDestroyedBuilder extends AbstractTriggerBuilder implements ItemSetter, BlockSetter {
     @Nullable
     Block block = null;
     ItemPredicate item = ItemPredicate.ANY;
@@ -19,11 +19,11 @@ class DestroyBlockBuilder extends AbstractTriggerBuilder implements ItemSetter, 
         this.block = warpBlock(blockId);
     }
 
-    public void setItem(ItemPredicate item) {
+    public void setTool(ItemPredicate item) {
         this.item = item;
     }
 
-    public void setItem(IngredientJS ingredientJS){
+    public void setTool(IngredientJS ingredientJS){
         this.item = warpItem(ingredientJS);
     }
 
