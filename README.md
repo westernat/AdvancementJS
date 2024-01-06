@@ -53,7 +53,7 @@ ServerEvents.advancement((event) => {
     // Remove an exist advancement
     event.remove("minecraft:story/lava_bucket");
     
-    // modify an exist advancement
+    // Modify an exist advancement
     event.get("minecraft:story/smelt_iron")
         .modifyDisplay((displayBuilder) => displayBuilder.setIcon("diamond_pickaxe"))
         .addChild("child2", (childBuilder) => {

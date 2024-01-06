@@ -37,7 +37,7 @@ public class AdvancementEvent extends EventJS {
         return new AdvGetter(path);
     }
 
-    @Info(value = "Lock recipe by advancement",
+    @Info(value = "Lock recipe by advancement.",
         params = {
             @Param(name = "toLock"),
             @Param(name = "lockBy")
@@ -46,7 +46,7 @@ public class AdvancementEvent extends EventJS {
         LOCK_MAP.put(toLock.getItem(), lockBy);
     }
 
-    @Info(value = "Lock recipe by advancement",
+    @Info(value = "Lock recipe by advancement.",
         params = {
             @Param(name = "toLock"),
             @Param(name = "lockBy")

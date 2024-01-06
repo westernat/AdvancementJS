@@ -20,14 +20,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import static org.mesdag.advjs.adv.Data.LOCK_MAP;
 
 @Mixin(AbstractContainerMenu.class)
-public class AbstractContainerMenuMixin {
+public abstract class AbstractContainerMenuMixin {
     @Shadow
     @Final
     public NonNullList<Slot> slots;
 
     @Inject(method = "doClick", at = @At("HEAD"), cancellable = true)
     private void advJS$checkAdvancement(int index, int p_150432_, ClickType clickType, Player player, CallbackInfo ci) {
-        if (index < 0) return;
+        if (index < 0) {
+            return;
+        }
 
         Slot slot = slots.get(index);
         if(!(slot.container instanceof ResultContainer)){
