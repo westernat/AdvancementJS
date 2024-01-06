@@ -20,6 +20,8 @@ ServerEvents.advancement((event) => {
             }
         }))
     });
+    // AdvJS custom trigger
+    const destroy_dirt = TRIGGER.blockDestroyed((triggerBuilder) => triggerBuilder.setBlock("dirt"));
 
     // Create root advancement
     const root = event.create("advjs:hell")
@@ -28,7 +30,7 @@ ServerEvents.advancement((event) => {
             displayBuilder.setDescription("Quick example")
             displayBuilder.setIcon("diamond")
         })
-        .criteria((criteriaBuilder) => criteriaBuilder.add("tick", TRIGGER.tick()));
+        .criteria((criteriaBuilder) => criteriaBuilder.add("dirt", destroy_dirt));
 
     // Add child for root
     root.addChild("child1", (childBuilder) => {
