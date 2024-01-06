@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 
 
 public class BlockDestroyedTrigger extends SimpleCriterionTrigger<BlockDestroyedTrigger.TriggerInstance> {
-    static final ResourceLocation ID = new ResourceLocation("block_destroyed");
+    static final ResourceLocation ID = new ResourceLocation("advjs:block_destroyed");
 
     @Override
     public @NotNull TriggerInstance createInstance(@NotNull JsonObject jsonObject, EntityPredicate.@NotNull Composite composite, @NotNull DeserializationContext deserializationContext) {
