@@ -51,6 +51,8 @@ public abstract class ServerAdvancementManagerMixin {
         for (ResourceLocation remove : REMOVES) {
             if (map.remove(remove) != null) {
                 counter++;
+            } else {
+                AdvJS.LOGGER.warn("Advancement '{}' is not exist", remove);
             }
         }
         AdvJS.LOGGER.info("Removed {} advancements", counter);

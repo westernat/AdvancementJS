@@ -57,7 +57,7 @@ public class Predicate {
 
     @Info("""
         To test the distance to the entity this predicate is invoked upon.
-                
+
         Passes if the calculated distance is between the entered min and max, inclusive.
         """)
     public DistancePredicate distance(JsonObject o) {
@@ -66,7 +66,7 @@ public class Predicate {
 
     @Info("""
         To test the distance to the entity this predicate is invoked upon.
-                
+
         Passes if the calculated distance is between the entered min and max, inclusive.
         """)
     public DistancePredicate distance(Consumer<DistancePredicateBuilder> consumer) {
