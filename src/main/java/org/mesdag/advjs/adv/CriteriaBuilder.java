@@ -5,8 +5,8 @@ import com.google.gson.JsonArray;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.RequirementsStrategy;
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Items;
@@ -40,12 +40,12 @@ public class CriteriaBuilder {
             @Param(name = "name", value = "The name of this trigger"),
             @Param(name = "trigger", value = "The trigger itself")
         })
-    public <Trigger extends AbstractCriterionTriggerInstance> void add(String name, Trigger trigger) {
+    public <Trigger extends CriterionTriggerInstance> void add(String name, Trigger trigger) {
         criteria.put(name, new Criterion(trigger));
     }
 
     @Info("Add a nameless trigger for this advancement.")
-    public <Trigger extends AbstractCriterionTriggerInstance> void add(Trigger trigger) {
+    public <Trigger extends CriterionTriggerInstance> void add(Trigger trigger) {
         criteria.put(UUID.randomUUID().toString(), new Criterion(trigger));
     }
 

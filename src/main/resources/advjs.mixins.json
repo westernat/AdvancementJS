@@ -6,6 +6,7 @@
     "mixins": [
         "AbstractContainerMenuMixin",
         "BlockMixin",
+        "PlayerMixin",
         "ServerAdvancementManagerMixin"
     ],
     "minVersion": "0.8.5"

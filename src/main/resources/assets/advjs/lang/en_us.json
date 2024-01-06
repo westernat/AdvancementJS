@@ -1,4 +1,6 @@
 {
     "advjs.attention": "Attention",
-    "advjs.attention.desc": "Your custom advancement doesn't have a name"
+    "advjs.attention.desc": "Your custom advancement doesn't have a name",
+    "advjs.cant_recipe": "Wait, What?",
+    "advjs.cant_recipe.desc": "Find first locked recipe"
 }

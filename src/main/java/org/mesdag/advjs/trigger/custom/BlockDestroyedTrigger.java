@@ -27,8 +27,9 @@ public class BlockDestroyedTrigger extends SimpleCriterionTrigger<BlockDestroyed
     @Override
     public @NotNull TriggerInstance createInstance(@NotNull JsonObject jsonObject, EntityPredicate.@NotNull Composite composite, @NotNull DeserializationContext deserializationContext) {
         Block block = deserializeBlock(jsonObject);
+        StatePropertiesPredicate state = StatePropertiesPredicate.fromJson(jsonObject.get("state"));
         ItemPredicate item = ItemPredicate.fromJson(jsonObject.get("item"));
-        return new TriggerInstance(composite, block, item);
+        return new TriggerInstance(composite, block, state, item);
     }
 
     @Nullable
@@ -50,20 +51,26 @@ public class BlockDestroyedTrigger extends SimpleCriterionTrigger<BlockDestroyed
         return ID;
     }
 
-    public static BlockDestroyedTrigger.TriggerInstance blockDestroyed(Consumer<Builder> consumer) {
+    public static TriggerInstance blockDestroyed(Consumer<Builder> consumer) {
         Builder builder = new Builder();
         consumer.accept(builder);
-        return new TriggerInstance(builder.player, builder.block, builder.item);
+        return new TriggerInstance(builder.player, builder.block, builder.statePredicate, builder.item);
     }
 
     public static class Builder extends AbstractTriggerBuilder implements BlockSetter, ItemSetter {
         @Nullable
         Block block = null;
+        StatePropertiesPredicate statePredicate = StatePropertiesPredicate.ANY;
         ItemPredicate item = ItemPredicate.ANY;
 
         @Info("Checks the block that was destroyed.")
         public void setBlock(ResourceLocation blockId) {
             this.block = warpBlock(blockId);
+        }
+
+        @Info("Checks states of destroyed block.")
+        public void setState(StatePropertiesPredicate statePredicate) {
+            this.statePredicate = statePredicate;
         }
 
         @Info("The item used to break the block.")
@@ -79,19 +86,21 @@ public class BlockDestroyedTrigger extends SimpleCriterionTrigger<BlockDestroyed
 
     public static class TriggerInstance extends AbstractCriterionTriggerInstance {
         private final Block block;
-        private final ItemPredicate item;
+        private final StatePropertiesPredicate statePredicate;
+        private final ItemPredicate itemPredicate;
 
-        public TriggerInstance(EntityPredicate.Composite composite, Block block, ItemPredicate item) {
+        public TriggerInstance(EntityPredicate.Composite composite, Block block, StatePropertiesPredicate statePredicate, ItemPredicate itemPredicate) {
             super(ID, composite);
             this.block = block;
-            this.item = item;
+            this.statePredicate = statePredicate;
+            this.itemPredicate = itemPredicate;
         }
 
         public boolean matches(BlockState state, ItemStack stack) {
             if (this.block != null && !state.is(this.block)) {
                 return false;
             } else {
-                return this.item.matches(stack);
+                return statePredicate.matches(state) && this.itemPredicate.matches(stack);
             }
         }
     }

@@ -75,6 +75,11 @@ ServerEvents.advancement((event) => {
 # How to reload
 Just use ```/reload```
 
+# Custom trigger
+- blockDestroyed: triggers when the player breaks a block.
+- playerTouch: triggers when the player touch an entity.
+- More idea...
+
 # TODO
 - More non-vanilla triggers
 - More than vanilla rewards

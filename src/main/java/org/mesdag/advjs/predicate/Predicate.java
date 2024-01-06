@@ -104,15 +104,21 @@ public class Predicate {
         return EntityEquipmentPredicate.fromJson(o);
     }
 
-    @Info(value = "For testing the items that this entity holds in its equipment slots.",
-        params = {
-            @Param(name = "mainhand", value = "Test the item in the entity's main hand."),
-            @Param(name = "offhand", value = "Test the item in the entity's offhand."),
-            @Param(name = "head", value = "Test the item in the entity's head armor slot."),
-            @Param(name = "chest", value = "Test the item in the entity's chest armor slot."),
-            @Param(name = "legs", value = "Test the item in the entity's legs armor slot."),
-            @Param(name = "feet", value = "Test the item in the entity's feet armor slot.")
-        })
+    @Info("""
+        For testing the items that this entity holds in its equipment slots.
+        
+        @param mainhand Test the item in the entity's main hand.
+        
+        @param offhand Test the item in the entity's offhand.
+        
+        @param head Test the item in the entity's head armor slot.
+        
+        @param chest Test the item in the entity's chest armor slot.
+        
+        @param legs Test the item in the entity's legs armor slot.
+        
+        @param feet Test the item in the entity's feet armor slot.
+        """)
     public EntityEquipmentPredicate entityEquipment(Consumer<EntityEquipmentPredicate.Builder> consumer) {
         EntityEquipmentPredicate.Builder builder = EntityEquipmentPredicate.Builder.equipment();
         consumer.accept(builder);

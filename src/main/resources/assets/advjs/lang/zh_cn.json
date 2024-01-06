@@ -1,4 +1,6 @@
 {
     "advjs.attention": "警告",
-    "advjs.attention.desc": "你的自定义进度没有名字"
+    "advjs.attention.desc": "你的自定义进度没有名字",
+    "advjs.cant_recipe": "啊这, 什么情况?",
+    "advjs.cant_recipe.desc": "发现第一个被锁的合成"
 }
