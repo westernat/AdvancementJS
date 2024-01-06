@@ -4,7 +4,6 @@ import dev.latvian.mods.kubejs.item.ingredient.IngredientJS;
 import net.minecraft.entity.EntityType;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.item.ItemPredicate;
-import net.minecraft.util.Identifier;
 import org.mesdag.advjs.util.EntitySetter;
 import org.mesdag.advjs.util.ItemSetter;
 
@@ -22,10 +21,6 @@ class PlayerInteractBuilder extends AbstractTriggerBuilder implements ItemSetter
 
     public void setEntity(EntityPredicate entity) {
         this.entity = EntityPredicate.Extended.ofLegacy(entity);
-    }
-
-    public void setEntity(Identifier entityId) {
-        this.entity = warpEntity(entityId);
     }
 
     public void setEntity(EntityType<?> entityType) {

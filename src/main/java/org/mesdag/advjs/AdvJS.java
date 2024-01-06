@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AdvJS implements ModInitializer {
-    public static final Logger LOGGER = LoggerFactory.getLogger("advjs");
+    public static final Logger LOGGER = LoggerFactory.getLogger("AdvJS");
 
 	@Override
 	public void onInitialize() {

@@ -1,24 +1,39 @@
 package org.mesdag.advjs;
 
 import dev.latvian.mods.kubejs.event.EventJS;
+import dev.latvian.mods.kubejs.item.ItemStackJS;
 import net.minecraft.util.Identifier;
-import org.mesdag.advjs.getter.AdvGetter;
+import org.mesdag.advjs.adv.AdvBuilder;
+import org.mesdag.advjs.adv.AdvGetter;
 import org.mesdag.advjs.predicate.Predicate;
 import org.mesdag.advjs.trigger.Trigger;
-import org.mesdag.advjs.util.MinMaxBoundsProvider;
+import org.mesdag.advjs.util.Bounds;
 
-import static org.mesdag.advjs.util.Data.REMOVES;
+import static org.mesdag.advjs.adv.Data.LOCK_MAP;
+import static org.mesdag.advjs.adv.Data.REMOVES;
 
 public class AdvCreateEvent extends EventJS {
     public final Trigger TRIGGER = new Trigger();
     public final Predicate PREDICATE = new Predicate();
-    public final MinMaxBoundsProvider BOUNDS = new MinMaxBoundsProvider();
+    public final Bounds BOUNDS = new Bounds();
 
-    public AdvGetter create(Identifier rootPath) {
-        return new AdvGetter(null, "root", rootPath, false);
+    public AdvBuilder create(Identifier rootPath) {
+        return new AdvBuilder(null, "root", rootPath, false);
     }
 
     public void remove(Identifier remove) {
         REMOVES.add(remove);
+    }
+
+    public AdvGetter get(Identifier path) {
+        return new AdvGetter(path);
+    }
+
+    public void lock(ItemStackJS toLock, Identifier lockBy) {
+        LOCK_MAP.put(toLock.getItem(), lockBy);
+    }
+
+    public void lock(ItemStackJS toLock, AdvBuilder lockBy) {
+        LOCK_MAP.put(toLock.getItem(), lockBy.getSavePath());
     }
 }

@@ -1,15 +1,13 @@
 package org.mesdag.advjs.trigger;
 
 import net.minecraft.advancement.criterion.*;
-import net.minecraft.predicate.entity.DistancePredicate;
 import net.minecraft.predicate.entity.EntityPredicate;
-import net.minecraft.predicate.entity.LocationPredicate;
 
 import java.util.function.Consumer;
 
 public class Trigger {
-    public BeeNestDestroyedCriterion.Conditions destroyBlock(Consumer<DestroyBlockBuilder> consumer) {
-        DestroyBlockBuilder builder = new DestroyBlockBuilder();
+    public BeeNestDestroyedCriterion.Conditions beeNestDestroyed(Consumer<BeeNestDestroyedBuiilder> consumer) {
+        BeeNestDestroyedBuiilder builder = new BeeNestDestroyedBuiilder();
         consumer.accept(builder);
         return new BeeNestDestroyedCriterion.Conditions(builder.player, builder.block, builder.item, builder.bounds);
     }
@@ -18,6 +16,12 @@ public class Trigger {
         BredAnimalsBuilder builder = new BredAnimalsBuilder();
         consumer.accept(builder);
         return new BredAnimalsCriterion.Conditions(builder.player, builder.parent, builder.partner, builder.child);
+    }
+
+    public BrewedPotionCriterion.Conditions brewedPotion(Consumer<BrewedPotionBuilder> consumer) {
+        BrewedPotionBuilder builder = new BrewedPotionBuilder();
+        consumer.accept(builder);
+        return new BrewedPotionCriterion.Conditions(builder.player, builder.potion);
     }
 
     public ChangedDimensionCriterion.Conditions changedDimension(Consumer<ChangeDimensionBuilder> consumer) {
@@ -35,7 +39,7 @@ public class Trigger {
     public ConstructBeaconCriterion.Conditions constructedBeacon(Consumer<ConstructBeaconBuilder> consumer) {
         ConstructBeaconBuilder builder = new ConstructBeaconBuilder();
         consumer.accept(builder);
-        return new ConstructBeaconCriterion.Conditions(builder.player, builder.bounds);
+        return new ConstructBeaconCriterion.Conditions(builder.player, builder.level);
     }
 
     public CuredZombieVillagerCriterion.Conditions curedZombieVillager(Consumer<CuredZombieVillagerBuilder> consumer) {
@@ -50,16 +54,22 @@ public class Trigger {
         return new ConsumeItemCriterion.Conditions(builder.player, builder.item);
     }
 
-    public TravelCriterion.Conditions fallFromHeight(EntityPredicate entityPredicate, DistancePredicate distancePredicate, LocationPredicate locationPredicate) {
-        return new TravelCriterion.Conditions(Criteria.FALL_FROM_HEIGHT.getId(), EntityPredicate.Extended.ofLegacy(entityPredicate), locationPredicate, distancePredicate);
+    public TravelCriterion.Conditions fallFromHeight(Consumer<FallFromHeightBuilder> consumer) {
+        FallFromHeightBuilder builder = new FallFromHeightBuilder();
+        consumer.accept(builder);
+        return new TravelCriterion.Conditions(Criteria.FALL_FROM_HEIGHT.getId(), builder.player, builder.startPosition, builder.distance);
     }
 
-    public TravelCriterion.Conditions rideEntityInLava(EntityPredicate entityPredicate, DistancePredicate distancePredicate) {
-        return new TravelCriterion.Conditions(Criteria.RIDE_ENTITY_IN_LAVA.getId(), EntityPredicate.Extended.ofLegacy(entityPredicate), LocationPredicate.ANY, distancePredicate);
+    public TravelCriterion.Conditions rideEntityInLava(Consumer<RideEntityInLavaBuilder> consumer) {
+        RideEntityInLavaBuilder builder = new RideEntityInLavaBuilder();
+        consumer.accept(builder);
+        return new TravelCriterion.Conditions(Criteria.RIDE_ENTITY_IN_LAVA.getId(), builder.player, builder.startPosition, builder.distance);
     }
 
-    public TravelCriterion.Conditions travelledThroughNether(DistancePredicate distancePredicate) {
-        return new TravelCriterion.Conditions(Criteria.NETHER_TRAVEL.getId(), EntityPredicate.Extended.EMPTY, LocationPredicate.ANY, distancePredicate);
+    public TravelCriterion.Conditions travelledThroughNether(Consumer<TraveledThroughNetherBuilder> consumer) {
+        TraveledThroughNetherBuilder builder = new TraveledThroughNetherBuilder();
+        consumer.accept(builder);
+        return new TravelCriterion.Conditions(Criteria.NETHER_TRAVEL.getId(), builder.player, builder.startPosition, builder.distance);
     }
 
     public EffectsChangedCriterion.Conditions effectChanged(Consumer<EffectsChangedBuilder> consumer) {

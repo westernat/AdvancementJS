@@ -3,7 +3,6 @@ package org.mesdag.advjs.trigger;
 import net.minecraft.entity.EntityType;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.EntityPredicate;
-import net.minecraft.util.Identifier;
 import org.mesdag.advjs.util.EntitySetter;
 
 import java.util.stream.Stream;
@@ -14,10 +13,6 @@ class KilledByCrossbowBuilder extends AbstractTriggerBuilder implements EntitySe
 
     public void setVictims(EntityPredicate... victims) {
         this.victims = Stream.of(victims).map(EntityPredicate.Extended::ofLegacy).toArray(EntityPredicate.Extended[]::new);
-    }
-
-    public void setVictims(Identifier... victims) {
-        this.victims = Stream.of(victims).map(this::warpEntity).toArray(EntityPredicate.Extended[]::new);
     }
 
     public void setVictims(EntityType<?>... victims) {

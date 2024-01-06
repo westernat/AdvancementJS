@@ -2,7 +2,7 @@ package org.mesdag.advjs.util;
 
 import net.minecraft.predicate.NumberRange;
 
-public class MinMaxBoundsProvider {
+public class Bounds {
     public NumberRange.FloatRange exactly$Float(double value) {
         return NumberRange.FloatRange.exactly(value);
     }

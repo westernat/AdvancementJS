@@ -3,7 +3,6 @@ package org.mesdag.advjs.trigger;
 import net.minecraft.entity.EntityType;
 import net.minecraft.predicate.entity.EntityEffectPredicate;
 import net.minecraft.predicate.entity.EntityPredicate;
-import net.minecraft.util.Identifier;
 import org.mesdag.advjs.util.EntitySetter;
 
 class EffectsChangedBuilder extends AbstractTriggerBuilder implements EntitySetter {
@@ -16,10 +15,6 @@ class EffectsChangedBuilder extends AbstractTriggerBuilder implements EntitySett
 
     public void setSource(EntityPredicate source) {
         this.source = EntityPredicate.Extended.ofLegacy(source);
-    }
-
-    public void setSource(Identifier entityId) {
-        this.source = warpEntity(entityId);
     }
 
     public void setSource(EntityType<?> entityType) {
