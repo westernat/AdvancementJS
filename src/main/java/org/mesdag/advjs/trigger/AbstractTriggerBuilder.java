@@ -5,8 +5,8 @@ import net.minecraft.advancements.critereon.PlayerPredicate;
 
 import java.util.function.Consumer;
 
-abstract class AbstractTriggerBuilder {
-    EntityPredicate.Composite player = EntityPredicate.Composite.ANY;
+public abstract class AbstractTriggerBuilder {
+    public EntityPredicate.Composite player = EntityPredicate.Composite.ANY;
 
     public void setPlayer(PlayerPredicate player) {
         this.player = EntityPredicate.Composite.wrap(EntityPredicate.Builder.entity().subPredicate(player).build());

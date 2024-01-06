@@ -4,10 +4,16 @@ import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.*;
+import org.mesdag.advjs.trigger.custom.BlockDestroyedTrigger;
 
 import java.util.function.Consumer;
 
 public class Trigger {
+    @Info("Custom trigger, Triggers when the player breaks a block.")
+    public BlockDestroyedTrigger.TriggerInstance blockDestroyed(Consumer<BlockDestroyedTrigger.Builder> consumer) {
+        return BlockDestroyedTrigger.blockDestroyed(consumer);
+    }
+
     @Info("Triggers when the player breaks a bee nest or beehive.")
     public BeeNestDestroyedTrigger.TriggerInstance beeNestDestroyed(Consumer<BeeNestDestroyedBuilder> consumer) {
         BeeNestDestroyedBuilder builder = new BeeNestDestroyedBuilder();
