@@ -94,7 +94,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
                         // Remove an exist advancement
                         event.remove("minecraft:story/lava_bucket")
 
-                        // modify an exist advancement
+                        // Modify an exist advancement
                         event.get("minecraft:story/smelt_iron")
                             .modifyDisplay((displayBuilder) => displayBuilder.setIcon("diamond_pickaxe"))
                             .addChild("child2", (childBuilder) => {
@@ -105,6 +105,9 @@ public class AdvJSPlugin extends KubeJSPlugin {
                                     })
                                     .criteria((criteriaBuilder) => criteriaBuilder.add("jump", jump5times))
                             });
+                            
+                        // Lock recipe by advancement
+                        event.lock("stone_slab", "minecraft:story/smelt_iron")
                     })
                     """
                 );
