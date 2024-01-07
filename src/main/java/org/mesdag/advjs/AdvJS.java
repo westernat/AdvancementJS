@@ -5,6 +5,7 @@ import dev.latvian.mods.kubejs.KubeJSPaths;
 import dev.latvian.mods.kubejs.bindings.event.ServerEvents;
 import dev.latvian.mods.kubejs.event.EventHandler;
 import net.minecraftforge.fml.common.Mod;
+import org.mesdag.advjs.trigger.custom.Criteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,5 +20,6 @@ public class AdvJS {
 
     public AdvJS() {
         CommonProperties.reload();
+        Criteria.initialize();
     }
 }

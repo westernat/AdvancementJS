@@ -10,7 +10,7 @@ Configure Advancements by KubeJS
 ServerEvents.advancement((event) => {
     const { BOUNDS, PREDICATE, TRIGGER } = event;
 
-    // Define triggers
+    // Define trigger
     const jump5times = TRIGGER.tick((triggerBuilder) =>
         triggerBuilder.addStat(Stats.JUMP, Stats.CUSTOM, BOUNDS.min$Integer(5)));
     const bred_in_nether = TRIGGER.bredAnimals((triggerBuilder) => {
@@ -30,7 +30,9 @@ ServerEvents.advancement((event) => {
             displayBuilder.setDescription("Quick example")
             displayBuilder.setIcon("diamond")
         })
-        .criteria((criteriaBuilder) => criteriaBuilder.add("dirt", destroy_dirt));
+        .criteria((criteriaBuilder) => criteriaBuilder.add("dirt", destroy_dirt))
+        // AdvJS custom reward
+        .rewards((rewardsBuilder) => rewardsBuilder.addEffect("minecraft:absorption", 200));
 
     // Add child for root
     root.addChild("child1", (childBuilder) => {
@@ -78,6 +80,10 @@ Just use ```/reload```
 # Custom trigger
 - blockDestroyed: triggers when the player breaks a block.
 - playerTouch: triggers when the player touch an entity.
+- More idea...
+
+# Custom reward
+- addEffect: to give effect.
 - More idea...
 
 # TODO

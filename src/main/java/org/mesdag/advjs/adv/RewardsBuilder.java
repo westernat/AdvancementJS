@@ -2,28 +2,38 @@ package org.mesdag.advjs.adv;
 
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.commands.CommandFunction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import org.mesdag.advjs.util.RewardsAccessor;
+
+import java.util.ArrayList;
 
 public class RewardsBuilder {
     private int experience;
     private ResourceLocation[] loot;
     private ResourceLocation[] recipes;
     private CommandFunction.CacheableFunction function;
+    private ArrayList<MobEffectInstance> mobEffectInstances;
 
     RewardsBuilder() {
         this.experience = 0;
         this.loot = new ResourceLocation[0];
         this.recipes = new ResourceLocation[0];
         this.function = CommandFunction.CacheableFunction.NONE;
+        this.mobEffectInstances = new ArrayList<>();
     }
 
+    @HideFromJS
     public RewardsBuilder(int experience, ResourceLocation[] loot, ResourceLocation[] recipes, CommandFunction.CacheableFunction function) {
         this.experience = experience;
         this.loot = loot;
         this.recipes = recipes;
         this.function = function;
+        this.mobEffectInstances = new ArrayList<>();
     }
 
     @Info("To give an amount of experience. Defaults to 0.")
@@ -48,7 +58,42 @@ public class RewardsBuilder {
         this.function = new CommandFunction.CacheableFunction(functionId);
     }
 
+    @Info(value = "To give effect.",
+        params = {
+            @Param(name = "mobEffect"),
+            @Param(name = "duration")
+        })
+    public void addEffect(MobEffect mobEffect, int duration) {
+        this.mobEffectInstances.add(new MobEffectInstance(mobEffect, duration));
+    }
+
+    @Info(value = "To give effect.",
+        params = {
+            @Param(name = "mobEffect"),
+            @Param(name = "duration"),
+            @Param(name = "amplifier")
+        })
+    public void addEffect(MobEffect mobEffect, int duration, int amplifier) {
+        this.mobEffectInstances.add(new MobEffectInstance(mobEffect, duration, amplifier));
+    }
+
+    @Info(value = "To give effect.",
+        params = {
+            @Param(name = "mobEffect"),
+            @Param(name = "duration"),
+            @Param(name = "amplifier"),
+            @Param(name = "ambient"),
+            @Param(name = "visible"),
+            @Param(name = "showIcon")
+        })
+    public void addEffect(MobEffect mobEffect, int duration, int amplifier, boolean ambient, boolean visible, boolean showIcon) {
+        this.mobEffectInstances.add(new MobEffectInstance(mobEffect, duration, amplifier, ambient, visible, showIcon));
+    }
+
+    @HideFromJS
     public AdvancementRewards build() {
-        return new AdvancementRewards(experience, loot, recipes, function);
+        RewardsAccessor accessor = (RewardsAccessor) new AdvancementRewards(experience, loot, recipes, function);
+        accessor.advJS$setMobEffectInstances(mobEffectInstances.toArray(MobEffectInstance[]::new));
+        return accessor.advJS$getSelf();
     }
 }

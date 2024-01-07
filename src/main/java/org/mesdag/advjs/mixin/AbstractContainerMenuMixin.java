@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static org.mesdag.advjs.adv.Data.EGG;
 import static org.mesdag.advjs.adv.Data.LOCK_MAP;
 
 @Mixin(AbstractContainerMenu.class)
@@ -46,11 +45,6 @@ public abstract class AbstractContainerMenuMixin {
                 Advancement advancement = server.getAdvancements().getAdvancement(LOCK_MAP.get(result));
                 if (advancement != null && !playerAdvancements.getOrStartProgress(advancement).isDone()) {
                     ci.cancel();
-
-                    Advancement egg = server.getAdvancements().getAdvancement(EGG);
-                    if (egg != null && !playerAdvancements.getOrStartProgress(egg).isDone()) {
-                        playerAdvancements.award(egg, "never");
-                    }
                 }
             }
         }

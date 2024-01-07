@@ -13,6 +13,8 @@ import org.mesdag.advjs.util.StatsWrapper;
 
 import java.nio.file.Files;
 
+import static org.mesdag.advjs.adv.Data.*;
+
 public class AdvJSPlugin extends KubeJSPlugin {
     public static boolean DEBUG;
 
@@ -37,6 +39,13 @@ public class AdvJSPlugin extends KubeJSPlugin {
     }
 
     @Override
+    public void onServerReload() {
+        BUILDER_MAP.clear();
+        GETTER_MAP.clear();
+        LOCK_MAP.clear();
+    }
+
+    @Override
     public void loadCommonProperties(CommonProperties properties) {
         boolean generate = properties.get("AdvJSExample", true);
         DEBUG = properties.get("AdvJSDebug", true);
@@ -47,11 +56,11 @@ public class AdvJSPlugin extends KubeJSPlugin {
         if (generate && Files.notExists(AdvJS.EXAMPLE)) {
             try {
                 Files.writeString(AdvJS.EXAMPLE, """
-                    // You Can Turn Off Auto Generate This Example In common.properties
+                    // You Can Turn Off Auto Generate In common.properties
                     ServerEvents.advancement((event) => {
                         const { BOUNDS, PREDICATE, TRIGGER } = event;
 
-                        // Define triggers
+                        // Define trigger
                         const jump5times = TRIGGER.tick((triggerBuilder) =>
                             triggerBuilder.addStat(Stats.JUMP, Stats.CUSTOM, BOUNDS.min$Integer(5)));
                         const bred_in_nether = TRIGGER.bredAnimals((triggerBuilder) => {
@@ -61,6 +70,8 @@ public class AdvJSPlugin extends KubeJSPlugin {
                                 }
                             }))
                         });
+                        // AdvJS custom trigger
+                        const destroy_dirt = TRIGGER.blockDestroyed((triggerBuilder) => triggerBuilder.setBlock("dirt"));
 
                         // Create root advancement
                         const root = event.create("advjs:hell")
@@ -69,7 +80,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
                                 displayBuilder.setDescription("Quick example")
                                 displayBuilder.setIcon("diamond")
                             })
-                            .criteria((criteriaBuilder) => criteriaBuilder.add("tick", TRIGGER.tick()));
+                            .criteria((criteriaBuilder) => criteriaBuilder.add("dirt", destroy_dirt));
 
                         // Add child for root
                         root.addChild("child1", (childBuilder) => {
