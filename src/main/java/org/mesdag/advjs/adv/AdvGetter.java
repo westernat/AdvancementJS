@@ -1,6 +1,7 @@
 package org.mesdag.advjs.adv;
 
 import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.UUID;
@@ -14,6 +15,7 @@ public class AdvGetter {
     private Consumer<RewardsBuilder> rewardsConsumer;
     private Consumer<CriteriaBuilder> criteriaConsumer;
 
+    @HideFromJS
     public AdvGetter(ResourceLocation savePath) {
         this.savePath = savePath;
         this.displayConsumer = displayBuilder -> {
@@ -66,17 +68,17 @@ public class AdvGetter {
         return child;
     }
 
-    @Info("Get display builder consumer that you just modified.")
+    @HideFromJS
     public Consumer<DisplayBuilder> getDisplayConsumer() {
         return displayConsumer;
     }
 
-    @Info("Get criteria builder consumer that you just modified.")
+    @HideFromJS
     public Consumer<CriteriaBuilder> getCriteriaConsumer() {
         return criteriaConsumer;
     }
 
-    @Info("Get rewards builder consumer that you just modified.")
+    @HideFromJS
     public Consumer<RewardsBuilder> getRewardsConsumer() {
         return rewardsConsumer;
     }

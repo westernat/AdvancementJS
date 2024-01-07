@@ -27,7 +27,9 @@ public abstract class AbstractContainerMenuMixin {
 
     @Inject(method = "doClick", at = @At("HEAD"), cancellable = true)
     private void advJS$checkAdvancement(int index, int p_150432_, ClickType clickType, Player player, CallbackInfo ci) {
-        if (index < 0) return;
+        if (index < 0) {
+            return;
+        }
 
         Slot slot = slots.get(index);
         if(!(slot.container instanceof ResultContainer)){

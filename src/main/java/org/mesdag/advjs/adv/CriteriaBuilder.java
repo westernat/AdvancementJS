@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
@@ -29,6 +30,7 @@ public class CriteriaBuilder {
         requirements = null;
     }
 
+    @HideFromJS
     public CriteriaBuilder(Map<String, Criterion> criteria, JsonArray requirements) {
         this.criteria = criteria;
         this.strategy = RequirementsStrategy.AND;
@@ -54,6 +56,7 @@ public class CriteriaBuilder {
         criteria.remove(name);
     }
 
+    @HideFromJS
     public Map<String, Criterion> getCriteria() {
         if (criteria.isEmpty()) {
             criteria.put("default", new Criterion(InventoryChangeTrigger.TriggerInstance.hasItems(Items.APPLE)));
@@ -94,6 +97,7 @@ public class CriteriaBuilder {
         this.requirements = astring;
     }
 
+    @HideFromJS
     public String[][] getRequirements() {
         Set<String> names = getCriteria().keySet();
         if (requirements == null) {

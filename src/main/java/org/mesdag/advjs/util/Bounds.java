@@ -2,7 +2,7 @@ package org.mesdag.advjs.util;
 
 import net.minecraft.advancements.critereon.MinMaxBounds;
 
-public class MinMaxBoundsProvider {
+public class Bounds {
     public MinMaxBounds.Doubles exactly$Double(double value) {
         return MinMaxBounds.Doubles.exactly(value);
     }

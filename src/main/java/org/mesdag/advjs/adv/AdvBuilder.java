@@ -1,6 +1,7 @@
 package org.mesdag.advjs.adv;
 
 import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.DisplayInfo;
@@ -26,6 +27,7 @@ public class AdvBuilder {
 
     private final boolean warn;
 
+    @HideFromJS
     public AdvBuilder(@Nullable ResourceLocation parent, String name, ResourceLocation rootPath, boolean warn) {
         this.parent = parent;
         this.name = name;
@@ -93,26 +95,27 @@ public class AdvBuilder {
         return new ResourceLocation(rootPath.getNamespace(), rootPath.getPath() + "/" + name);
     }
 
-    @Info("Get the built display.")
+    @HideFromJS
     public DisplayInfo getDisplayInfo() {
         return displayBuilder.build();
     }
 
-    @Info("Get the built criteria.")
+    @HideFromJS
     public Map<String, Criterion> getCriteria() {
         return criteriaBuilder.getCriteria();
     }
 
-    @Info("Get the built requirements.")
+    @HideFromJS
     public String[][] getRequirements() {
         return criteriaBuilder.getRequirements();
     }
 
-    @Info("Get the built rewards.")
+    @HideFromJS
     public AdvancementRewards getRewards() {
         return rewardsBuilder.build();
     }
 
+    @HideFromJS
     public boolean isSendsTelemetryEvent() {
         return sendsTelemetryEvent;
     }

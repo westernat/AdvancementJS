@@ -1,6 +1,7 @@
 package org.mesdag.advjs.adv;
 
 import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.network.chat.Component;
@@ -31,6 +32,7 @@ public class DisplayBuilder {
         this.hidden = false;
     }
 
+    @HideFromJS
     public DisplayBuilder(ItemStack icon, Component title, Component description, @Nullable ResourceLocation background, FrameType frameType, boolean showToast, boolean announceToChat, boolean hidden) {
         this.icon = icon;
         this.title = title;
@@ -91,6 +93,7 @@ public class DisplayBuilder {
         this.hidden = hidden;
     }
 
+    @HideFromJS
     public DisplayInfo build() {
         return new DisplayInfo(icon, title, description, background, frameType, showToast, announceToChat, hidden);
     }
