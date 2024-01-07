@@ -32,7 +32,7 @@ ServerEvents.advancement((event) => {
         })
         .criteria((criteriaBuilder) => criteriaBuilder.add("dirt", destroy_dirt))
         // AdvJS custom reward
-        .rewards((rewardsBuilder) => rewardsBuilder.addEffect("minecraft:absorption", 200));
+        .rewards((rewardsBuilder) => rewardsBuilder.addEffect("absorption", 200));
 
     // Add child for root
     root.addChild("child1", (childBuilder) => {
