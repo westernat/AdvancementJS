@@ -5,6 +5,7 @@ import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.*;
 import org.mesdag.advjs.trigger.custom.BlockDestroyedTrigger;
+import org.mesdag.advjs.trigger.custom.BossEventTrigger;
 import org.mesdag.advjs.trigger.custom.PlayerTouchTrigger;
 
 import java.util.function.Consumer;
@@ -20,6 +21,11 @@ public class Trigger {
         SingleEntityBuilder builder = new SingleEntityBuilder();
         consumer.accept(builder);
         return new PlayerTouchTrigger.TriggerInstance(builder.player, builder.entity);
+    }
+
+    @Info("Custom trigger, triggers when the play joins a boss fight.")
+    public BossEventTrigger.TriggerInstance bossEvent(Consumer<BossEventTrigger.Builder> consumer) {
+        return BossEventTrigger.bossEvent(consumer);
     }
 
     @Info("Never triggers.")

@@ -8,7 +8,8 @@
         "AdvancementRewardsMixin",
         "BlockMixin",
         "PlayerMixin",
-        "ServerAdvancementManagerMixin"
+        "ServerAdvancementManagerMixin",
+        "ServerBossEventMixin"
     ],
     "minVersion": "0.8.5"
 }
