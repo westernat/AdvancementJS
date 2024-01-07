@@ -17,14 +17,13 @@ public class RewardsBuilder {
     private ResourceLocation[] loot;
     private ResourceLocation[] recipes;
     private CommandFunction.CacheableFunction function;
-    private ArrayList<MobEffectInstance> mobEffectInstances;
+    private final ArrayList<MobEffectInstance> mobEffectInstances = new ArrayList<>();
 
     RewardsBuilder() {
         this.experience = 0;
         this.loot = new ResourceLocation[0];
         this.recipes = new ResourceLocation[0];
         this.function = CommandFunction.CacheableFunction.NONE;
-        this.mobEffectInstances = new ArrayList<>();
     }
 
     @HideFromJS
@@ -33,7 +32,6 @@ public class RewardsBuilder {
         this.loot = loot;
         this.recipes = recipes;
         this.function = function;
-        this.mobEffectInstances = new ArrayList<>();
     }
 
     @Info("To give an amount of experience. Defaults to 0.")
