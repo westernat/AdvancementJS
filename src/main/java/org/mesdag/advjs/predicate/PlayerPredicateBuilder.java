@@ -1,7 +1,8 @@
-package org.mesdag.advjs.trigger;
+package org.mesdag.advjs.predicate;
 
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -12,7 +13,7 @@ import net.minecraft.world.level.GameType;
 
 import javax.annotation.Nullable;
 
-class PlayerPredicateBuilder {
+public class PlayerPredicateBuilder {
     final PlayerPredicate.Builder playerBuilder = new PlayerPredicate.Builder();
     DistancePredicate distance = DistancePredicate.ANY;
     LocationPredicate location = LocationPredicate.ANY;
@@ -138,7 +139,8 @@ class PlayerPredicateBuilder {
         this.team = team;
     }
 
-    ContextAwarePredicate build() {
+    @HideFromJS
+    public ContextAwarePredicate build() {
         return EntityPredicate.wrap(EntityPredicate.Builder.entity()
             .subPredicate(playerBuilder.build())
             .distance(distance)

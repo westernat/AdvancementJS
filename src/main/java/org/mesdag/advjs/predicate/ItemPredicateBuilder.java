@@ -1,6 +1,7 @@
 package org.mesdag.advjs.predicate;
 
 import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
@@ -12,7 +13,7 @@ import net.minecraft.world.level.ItemLike;
 
 import java.util.stream.Stream;
 
-class ItemPredicateBuilder {
+public class ItemPredicateBuilder {
     final ItemPredicate.Builder builder = ItemPredicate.Builder.item();
 
     @Info("Check items.")
@@ -60,5 +61,10 @@ class ItemPredicateBuilder {
 
     ItemPredicate build() {
         return builder.build();
+    }
+
+    @HideFromJS
+    public ItemPredicate.Builder getBuilder() {
+        return builder;
     }
 }

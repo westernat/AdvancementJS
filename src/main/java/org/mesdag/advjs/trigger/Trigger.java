@@ -4,6 +4,9 @@ import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.*;
+import net.minecraft.world.level.storage.loot.predicates.LocationCheck;
+import net.minecraft.world.level.storage.loot.predicates.MatchTool;
+import org.mesdag.advjs.predicate.PlayerPredicateBuilder;
 import org.mesdag.advjs.trigger.custom.BlockDestroyedTrigger;
 import org.mesdag.advjs.trigger.custom.BossEventTrigger;
 import org.mesdag.advjs.trigger.custom.PlayerTouchTrigger;
@@ -199,7 +202,26 @@ public class Trigger {
         return new PickedUpItemTrigger.TriggerInstance(CriteriaTriggers.THROWN_ITEM_PICKED_UP_BY_PLAYER.getId(), builder.player, builder.item, builder.entity);
     }
 
-    // TODO ItemUsedOnLocationTrigger
+    public ItemUsedOnLocationTrigger.TriggerInstance placedBlock(Consumer<ItemUsedOnLocationBuilder> consumer) {
+        ItemUsedOnLocationBuilder builder = new ItemUsedOnLocationBuilder();
+        consumer.accept(builder);
+        ContextAwarePredicate contextawarepredicate = ContextAwarePredicate.create(LocationCheck.checkLocation(builder.getLPB()).build(), MatchTool.toolMatches(builder.getIPB()).build());
+        return new ItemUsedOnLocationTrigger.TriggerInstance(CriteriaTriggers.PLACED_BLOCK.getId(), builder.player, contextawarepredicate);
+    }
+
+    public ItemUsedOnLocationTrigger.TriggerInstance itemUsedOnBlock(Consumer<ItemUsedOnLocationBuilder> consumer) {
+        ItemUsedOnLocationBuilder builder = new ItemUsedOnLocationBuilder();
+        consumer.accept(builder);
+        ContextAwarePredicate contextawarepredicate = ContextAwarePredicate.create(LocationCheck.checkLocation(builder.getLPB()).build(), MatchTool.toolMatches(builder.getIPB()).build());
+        return new ItemUsedOnLocationTrigger.TriggerInstance(CriteriaTriggers.ITEM_USED_ON_BLOCK.getId(), builder.player, contextawarepredicate);
+    }
+
+    public ItemUsedOnLocationTrigger.TriggerInstance allayDropItemOnBlock(Consumer<ItemUsedOnLocationBuilder> consumer) {
+        ItemUsedOnLocationBuilder builder = new ItemUsedOnLocationBuilder();
+        consumer.accept(builder);
+        ContextAwarePredicate contextawarepredicate = ContextAwarePredicate.create(LocationCheck.checkLocation(builder.getLPB()).build(), MatchTool.toolMatches(builder.getIPB()).build());
+        return new ItemUsedOnLocationTrigger.TriggerInstance(CriteriaTriggers.ALLAY_DROP_ITEM_ON_BLOCK.getId(), builder.player, contextawarepredicate);
+    }
 
     @Info("Triggers after the player kills a mob or player using a crossbow in ranged combat.")
     public KilledByCrossbowTrigger.TriggerInstance killedByCrossbow(Consumer<KilledByCrossbowBuilder> consumer) {

@@ -1,12 +1,13 @@
 package org.mesdag.advjs.predicate;
 
 import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
-class LocationPredicateBuilder {
+public class LocationPredicateBuilder {
     final LocationPredicate.Builder builder = new LocationPredicate.Builder();
 
     @Info("The x position.")
@@ -61,5 +62,10 @@ class LocationPredicateBuilder {
 
     LocationPredicate build() {
         return builder.build();
+    }
+
+    @HideFromJS
+    public LocationPredicate.Builder getBuilder() {
+        return builder;
     }
 }

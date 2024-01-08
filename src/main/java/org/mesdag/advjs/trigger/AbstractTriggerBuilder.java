@@ -3,6 +3,7 @@ package org.mesdag.advjs.trigger;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.PlayerPredicate;
+import org.mesdag.advjs.predicate.PlayerPredicateBuilder;
 
 import java.util.function.Consumer;
 
