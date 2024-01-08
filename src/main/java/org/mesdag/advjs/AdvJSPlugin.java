@@ -47,11 +47,11 @@ public class AdvJSPlugin extends KubeJSPlugin {
         if (generate && Files.notExists(AdvJS.EXAMPLE)) {
             try {
                 Files.writeString(AdvJS.EXAMPLE, """
-                    // You Can Turn Off Auto Generate This Example In common.properties
+                    // You Can Turn Off Auto Generate In common.properties
                     ServerEvents.advancement((event) => {
                         const { BOUNDS, PREDICATE, TRIGGER } = event;
 
-                        // Define triggers
+                        // Define trigger
                         const jump5times = TRIGGER.tick((triggerBuilder) =>
                             triggerBuilder.addStat(Stats.JUMP, Stats.CUSTOM, BOUNDS.min$Integer(5)));
                         const bred_in_nether = TRIGGER.bredAnimals((triggerBuilder) => {
@@ -61,6 +61,8 @@ public class AdvJSPlugin extends KubeJSPlugin {
                                 }
                             }))
                         });
+                        // AdvJS custom trigger
+                        const destroy_dirt = TRIGGER.blockDestroyed((triggerBuilder) => triggerBuilder.setBlock("dirt"));
 
                         // Create root advancement
                         const root = event.create("advjs:hell")
@@ -69,7 +71,9 @@ public class AdvJSPlugin extends KubeJSPlugin {
                                 displayBuilder.setDescription("Quick example")
                                 displayBuilder.setIcon("diamond")
                             })
-                            .criteria((criteriaBuilder) => criteriaBuilder.add("tick", TRIGGER.tick()));
+                            .criteria((criteriaBuilder) => criteriaBuilder.add("dirt", destroy_dirt))
+                            // AdvJS custom reward
+                            .rewards((rewardsBuilder) => rewardsBuilder.addEffect("absorption", 200));
 
                         // Add child for root
                         root.addChild("child1", (childBuilder) => {
@@ -94,7 +98,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
                         // Remove an exist advancement
                         event.remove("minecraft:story/lava_bucket")
 
-                        // modify an exist advancement
+                        // Modify an exist advancement
                         event.get("minecraft:story/smelt_iron")
                             .modifyDisplay((displayBuilder) => displayBuilder.setIcon("diamond_pickaxe"))
                             .addChild("child2", (childBuilder) => {
@@ -105,6 +109,9 @@ public class AdvJSPlugin extends KubeJSPlugin {
                                     })
                                     .criteria((criteriaBuilder) => criteriaBuilder.add("jump", jump5times))
                             });
+                            
+                        // Lock recipe by advancement
+                        event.lock("stone_slab", "minecraft:story/smelt_iron")
                     })
                     """
                 );

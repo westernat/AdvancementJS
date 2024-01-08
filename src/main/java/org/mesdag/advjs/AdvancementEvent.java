@@ -15,7 +15,11 @@ import static org.mesdag.advjs.adv.Data.LOCK_MAP;
 import static org.mesdag.advjs.adv.Data.REMOVES;
 
 public class AdvancementEvent extends EventJS {
-    @Info("Trigger required in advancement.")
+    @Info("""
+        Trigger required in advancement.
+        
+        More details please goto https://minecraft.wiki/w/Advancement/JSON_format
+        """)
     public final Trigger TRIGGER = new Trigger();
     @Info("Predicate required in trigger.")
     public final Predicate PREDICATE = new Predicate();

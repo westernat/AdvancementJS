@@ -29,8 +29,8 @@ public class Predicate {
         return DamagePredicate.fromJson(o);
     }
 
-    public DamagePredicate damage(Consumer<DamagePredicate.Builder> consumer) {
-        DamagePredicate.Builder builder = new DamagePredicate.Builder();
+    public DamagePredicate damage(Consumer<DamagePredicateBuilder> consumer) {
+        DamagePredicateBuilder builder = new DamagePredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
@@ -45,6 +45,7 @@ public class Predicate {
     }
 
     public DamageSourcePredicate damageSource(Consumer<DamageSourcePredicate.Builder> consumer) {
+        // TODO Builder
         DamageSourcePredicate.Builder builder = DamageSourcePredicate.Builder.damageType();
         consumer.accept(builder);
         return builder.build();
@@ -104,17 +105,9 @@ public class Predicate {
         return EntityEquipmentPredicate.fromJson(o);
     }
 
-    @Info(value = "For testing the items that this entity holds in its equipment slots.",
-        params = {
-            @Param(name = "mainhand", value = "Test the item in the entity's main hand."),
-            @Param(name = "offhand", value = "Test the item in the entity's offhand."),
-            @Param(name = "head", value = "Test the item in the entity's head armor slot."),
-            @Param(name = "chest", value = "Test the item in the entity's chest armor slot."),
-            @Param(name = "legs", value = "Test the item in the entity's legs armor slot."),
-            @Param(name = "feet", value = "Test the item in the entity's feet armor slot.")
-        })
-    public EntityEquipmentPredicate entityEquipment(Consumer<EntityEquipmentPredicate.Builder> consumer) {
-        EntityEquipmentPredicate.Builder builder = EntityEquipmentPredicate.Builder.equipment();
+    @Info("For testing the items that this entity holds in its equipment slots.")
+    public EntityEquipmentPredicate entityEquipment(Consumer<EntityEquipmentPredicateBuilder> consumer) {
+        EntityEquipmentPredicateBuilder builder = new EntityEquipmentPredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
@@ -128,8 +121,8 @@ public class Predicate {
         return EntityFlagsPredicate.fromJson(o);
     }
 
-    public EntityFlagsPredicate entityFlags(Consumer<EntityFlagsPredicate.Builder> consumer) {
-        EntityFlagsPredicate.Builder builder = EntityFlagsPredicate.Builder.flags();
+    public EntityFlagsPredicate entityFlags(Consumer<EntityFlagsPredicateBuilder> consumer) {
+        EntityFlagsPredicateBuilder builder = new EntityFlagsPredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
@@ -143,8 +136,8 @@ public class Predicate {
         return EntityPredicate.fromJson(o);
     }
 
-    public EntityPredicate entity(Consumer<EntityPredicate.Builder> consumer) {
-        EntityPredicate.Builder builder = new EntityPredicate.Builder();
+    public EntityPredicate entity(Consumer<EntityPredicateBuilder> consumer) {
+        EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
@@ -155,7 +148,7 @@ public class Predicate {
     }
 
     @Info(value = "Check if fishing hook is in open water.",
-    params = @Param(name = "isOpenWater"))
+        params = @Param(name = "isOpenWater"))
     public FishingHookPredicate fishingHook(boolean isOpenWater) {
         return FishingHookPredicate.inOpenWater(isOpenWater);
     }
@@ -169,8 +162,8 @@ public class Predicate {
         return FluidPredicate.fromJson(o);
     }
 
-    public FluidPredicate fluid(Consumer<FluidPredicate.Builder> consumer) {
-        FluidPredicate.Builder builder = FluidPredicate.Builder.fluid();
+    public FluidPredicate fluid(Consumer<FluidPredicateBuilder> consumer) {
+        FluidPredicateBuilder builder = new FluidPredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
@@ -184,8 +177,8 @@ public class Predicate {
         return ItemPredicate.fromJson(o);
     }
 
-    public ItemPredicate item(Consumer<ItemPredicate.Builder> consumer) {
-        ItemPredicate.Builder builder = ItemPredicate.Builder.item();
+    public ItemPredicate item(Consumer<ItemPredicateBuilder> consumer) {
+        ItemPredicateBuilder builder = new ItemPredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
@@ -208,10 +201,8 @@ public class Predicate {
         return LightPredicate.fromJson(o);
     }
 
-    public LightPredicate light(Consumer<LightPredicate.Builder> consumer) {
-        LightPredicate.Builder builder = new LightPredicate.Builder();
-        consumer.accept(builder);
-        return builder.build();
+    public LightPredicate light(MinMaxBounds.Ints bounds) {
+        return LightPredicate.Builder.light().setComposite(bounds).build();
     }
 
     @Info("Any LightPredicate")
@@ -223,8 +214,8 @@ public class Predicate {
         return LocationPredicate.fromJson(o);
     }
 
-    public LocationPredicate location(Consumer<LocationPredicate.Builder> consumer) {
-        LocationPredicate.Builder builder = LocationPredicate.Builder.location();
+    public LocationPredicate location(Consumer<LocationPredicateBuilder> consumer) {
+        LocationPredicateBuilder builder = new LocationPredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }

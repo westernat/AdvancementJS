@@ -4,10 +4,35 @@ import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.*;
+import org.mesdag.advjs.trigger.custom.BlockDestroyedTrigger;
+import org.mesdag.advjs.trigger.custom.BossEventTrigger;
+import org.mesdag.advjs.trigger.custom.PlayerTouchTrigger;
 
 import java.util.function.Consumer;
 
 public class Trigger {
+    @Info("Custom trigger, triggers when the player breaks a block.")
+    public BlockDestroyedTrigger.TriggerInstance blockDestroyed(Consumer<BlockDestroyedTrigger.Builder> consumer) {
+        return BlockDestroyedTrigger.blockDestroyed(consumer);
+    }
+
+    @Info("Custom trigger, triggers when the player touch an entity.")
+    public PlayerTouchTrigger.TriggerInstance playerTouch(Consumer<SingleEntityBuilder> consumer) {
+        SingleEntityBuilder builder = new SingleEntityBuilder();
+        consumer.accept(builder);
+        return new PlayerTouchTrigger.TriggerInstance(builder.player, builder.entity);
+    }
+
+    @Info("Custom trigger, triggers when the play joins a boss fight.")
+    public BossEventTrigger.TriggerInstance bossEvent(Consumer<BossEventTrigger.Builder> consumer) {
+        return BossEventTrigger.bossEvent(consumer);
+    }
+
+    @Info("Never triggers.")
+    public ImpossibleTrigger.TriggerInstance impossible() {
+        return new ImpossibleTrigger.TriggerInstance();
+    }
+
     @Info("Triggers when the player breaks a bee nest or beehive.")
     public BeeNestDestroyedTrigger.TriggerInstance beeNestDestroyed(Consumer<BeeNestDestroyedBuilder> consumer) {
         BeeNestDestroyedBuilder builder = new BeeNestDestroyedBuilder();

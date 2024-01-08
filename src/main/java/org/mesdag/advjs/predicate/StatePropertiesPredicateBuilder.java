@@ -1,8 +1,11 @@
 package org.mesdag.advjs.predicate;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import org.mesdag.advjs.AdvJS;
 
@@ -29,11 +32,28 @@ class StatePropertiesPredicateBuilder {
         for (String pairString : pairStrings) {
             String[] pair = pairString.split("=");
             if (pair.length == 2) {
-                return match(pair[0].strip(), pair[1].strip());
+                match(pair[0].strip(), pair[1].strip());
             } else {
                 AdvJS.LOGGER.warn("Find a worse pair '" + pairString + "'");
             }
         }
+        return this;
+    }
+
+    @Info("""
+        Match all block states.
+                
+        Accept a list contains {key: string, value: string}.
+        """)
+    public StatePropertiesPredicateBuilder matchAll(JsonArray jsonArray) {
+        jsonArray.forEach(element -> {
+            JsonObject state = GsonHelper.convertToJsonObject(element, "state");
+            if (state.has("key") && state.has("value")) {
+                match(state.get("key").getAsString(), state.get("value").getAsString());
+            } else {
+                AdvJS.LOGGER.warn("Find a worse pair '" + state + "'");
+            }
+        });
         return this;
     }
 }
