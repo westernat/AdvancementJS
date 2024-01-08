@@ -21,11 +21,12 @@ public class BossEventTrigger extends SimpleCriterionTrigger<BossEventTrigger.Tr
         boolean darkenScreen = jsonObject.has("darken_screen") && jsonObject.get("darken_screen").getAsBoolean();
         boolean playBossMusic = jsonObject.has("play_boss_music") && jsonObject.get("play_boss_music").getAsBoolean();
         boolean createWorldFog = jsonObject.has("create_world_fog") && jsonObject.get("create_world_fog").getAsBoolean();
-        return new TriggerInstance(composite, darkenScreen, playBossMusic, createWorldFog);
+        String key = jsonObject.has("key") ? jsonObject.get("key").getAsString() : "";
+        return new TriggerInstance(composite, darkenScreen, playBossMusic, createWorldFog, key);
     }
 
-    public void trigger(ServerPlayer serverPlayer, boolean darkenScreen, boolean playBossMusic, boolean createWorldFog) {
-        this.trigger(serverPlayer, instance -> instance.matches(darkenScreen, playBossMusic, createWorldFog));
+    public void trigger(ServerPlayer serverPlayer, boolean darkenScreen, boolean playBossMusic, boolean createWorldFog, String key) {
+        this.trigger(serverPlayer, instance -> instance.matches(darkenScreen, playBossMusic, createWorldFog, key));
     }
 
     @Override
@@ -36,13 +37,14 @@ public class BossEventTrigger extends SimpleCriterionTrigger<BossEventTrigger.Tr
     public static TriggerInstance bossEvent(Consumer<Builder> consumer) {
         Builder builder = new Builder();
         consumer.accept(builder);
-        return new TriggerInstance(builder.player, builder.darkenScreen, builder.playBossMusic, builder.createWorldFog);
+        return new TriggerInstance(builder.player, builder.darkenScreen, builder.playBossMusic, builder.createWorldFog, builder.key);
     }
 
     public static class Builder extends AbstractTriggerBuilder {
         boolean darkenScreen = false;
         boolean playBossMusic = false;
         boolean createWorldFog = false;
+        String key = "";
 
         @Info("Check darken screen.")
         public void setDarkenScreen(boolean darkenScreen) {
@@ -58,22 +60,37 @@ public class BossEventTrigger extends SimpleCriterionTrigger<BossEventTrigger.Tr
         public void setCreateWorldFog(boolean createWorldFog) {
             this.createWorldFog = createWorldFog;
         }
+
+        @Info("""
+            Match 'translation key' or 'literal text' of boss bar.
+                        
+            If set to "", it will not check key. Defaults to "".
+            """)
+        public void setKey(String key) {
+            this.key = key;
+        }
     }
 
     public static class TriggerInstance extends AbstractCriterionTriggerInstance {
         private final boolean darkenScreen;
         private final boolean playBossMusic;
         private final boolean createWorldFog;
+        private final String key;
 
-        public TriggerInstance(ContextAwarePredicate composite, boolean darkenScreen, boolean playBossMusic, boolean createWorldFog) {
+        public TriggerInstance(ContextAwarePredicate composite, boolean darkenScreen, boolean playBossMusic, boolean createWorldFog, String key) {
             super(ID, composite);
             this.darkenScreen = darkenScreen;
             this.playBossMusic = playBossMusic;
             this.createWorldFog = createWorldFog;
+            this.key = key;
         }
 
-        public boolean matches(boolean darkenScreen, boolean playBossMusic, boolean createWorldFog) {
-            return this.darkenScreen == darkenScreen && this.playBossMusic && playBossMusic && this.createWorldFog == createWorldFog;
+        public boolean matches(boolean darkenScreen, boolean playBossMusic, boolean createWorldFog, String key) {
+            if (!this.key.equals("") && !this.key.equals(key)) {
+                return false;
+            } else {
+                return this.darkenScreen == darkenScreen && this.playBossMusic && playBossMusic && this.createWorldFog == createWorldFog;
+            }
         }
     }
 }
