@@ -4,9 +4,10 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancement.AdvancementCriterion;
 import net.minecraft.advancement.CriterionMerger;
-import net.minecraft.advancement.criterion.AbstractCriterionConditions;
+import net.minecraft.advancement.criterion.CriterionConditions;
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;
 import net.minecraft.item.Items;
 import net.minecraft.util.JsonHelper;
@@ -30,6 +31,7 @@ public class CriteriaBuilder {
         requirements = null;
     }
 
+    @HideFromJS
     public CriteriaBuilder(Map<String, AdvancementCriterion> criteria, JsonArray requirements) {
         this.criteria = criteria;
         this.strategy = CriterionMerger.AND;
@@ -41,12 +43,12 @@ public class CriteriaBuilder {
             @Param(name = "name", value = "The name of this trigger"),
             @Param(name = "trigger", value = "The trigger itself")
         })
-    public <Trigger extends AbstractCriterionConditions> void add(String name, Trigger instance) {
+    public <Trigger extends CriterionConditions> void add(String name, Trigger instance) {
         criteria.put(name, new AdvancementCriterion(instance));
     }
 
     @Info("Add a nameless trigger for this advancement.")
-    public <Trigger extends AbstractCriterionConditions> void add(Trigger instance) {
+    public <Trigger extends CriterionConditions> void add(Trigger instance) {
         criteria.put(UUID.randomUUID().toString(), new AdvancementCriterion(instance));
     }
 
@@ -55,6 +57,7 @@ public class CriteriaBuilder {
         criteria.remove(name);
     }
 
+    @HideFromJS
     public Map<String, AdvancementCriterion> getCriteria() {
         if (criteria.isEmpty()) {
             criteria.put("default", new AdvancementCriterion(InventoryChangedCriterion.Conditions.items(Items.APPLE)));
@@ -95,6 +98,7 @@ public class CriteriaBuilder {
         this.requirements = astring;
     }
 
+    @HideFromJS
     public String[][] getRequirements() {
         Set<String> names = getCriteria().keySet();
         if (requirements == null) {

@@ -5,6 +5,7 @@ import dev.latvian.mods.kubejs.KubeJSPaths;
 import dev.latvian.mods.kubejs.bindings.event.ServerEvents;
 import dev.latvian.mods.kubejs.event.EventHandler;
 import net.fabricmc.api.ModInitializer;
+import org.mesdag.advjs.trigger.custom.CriteriaTriggers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,5 +19,6 @@ public class AdvJS implements ModInitializer {
     @Override
     public void onInitialize() {
         CommonProperties.reload();
+        CriteriaTriggers.initialize();
     }
 }

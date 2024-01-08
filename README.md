@@ -10,7 +10,7 @@ Configure Advancements by KubeJS
 ServerEvents.advancement((event) => {
     const { BOUNDS, PREDICATE, TRIGGER } = event;
 
-    // Define triggers
+    // Define trigger
     const jump5times = TRIGGER.tick((triggerBuilder) =>
         triggerBuilder.addStat(Stats.JUMP, Stats.CUSTOM, BOUNDS.min$Integer(5)));
     const bred_in_nether = TRIGGER.bredAnimals((triggerBuilder) => {
@@ -20,6 +20,8 @@ ServerEvents.advancement((event) => {
             }
         }))
     });
+    // AdvJS custom trigger
+    const destroy_dirt = TRIGGER.blockDestroyed((triggerBuilder) => triggerBuilder.setBlock("dirt"));
 
     // Create root advancement
     const root = event.create("advjs:hell")
@@ -28,7 +30,9 @@ ServerEvents.advancement((event) => {
             displayBuilder.setDescription("Quick example")
             displayBuilder.setIcon("diamond")
         })
-        .criteria((criteriaBuilder) => criteriaBuilder.add("tick", TRIGGER.tick()));
+        .criteria((criteriaBuilder) => criteriaBuilder.add("dirt", destroy_dirt))
+        // AdvJS custom reward
+        .rewards((rewardsBuilder) => rewardsBuilder.addEffect("absorption", 200));
 
     // Add child for root
     root.addChild("child1", (childBuilder) => {
@@ -66,6 +70,23 @@ ServerEvents.advancement((event) => {
         });
     
     // Lock recipe by advancement
-    event.lock("stone_slab", "minecraft:story/smelt_iron")
+    event.lock("stone_slab", "minecraft:story/smelt_iron");
 })
 ```
+
+# How to reload
+Just use ```/reload```
+
+# Custom trigger
+- blockDestroyed: triggers when the player breaks a block.
+- playerTouch: triggers when the player touch an entity.
+- bossEvent: triggers when the play joins a boss fight.
+- More idea...
+
+# Custom reward
+- addEffect: to give effect.
+- More idea...
+
+# TODO
+- More non-vanilla triggers
+- More than vanilla rewards

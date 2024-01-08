@@ -9,18 +9,22 @@ import org.mesdag.advjs.adv.AdvBuilder;
 import org.mesdag.advjs.adv.AdvGetter;
 import org.mesdag.advjs.predicate.Predicate;
 import org.mesdag.advjs.trigger.Trigger;
-import org.mesdag.advjs.util.MinMaxBoundsProvider;
+import org.mesdag.advjs.util.Bounds;
 
 import static org.mesdag.advjs.adv.Data.LOCK_MAP;
 import static org.mesdag.advjs.adv.Data.REMOVES;
 
 public class AdvancementEvent extends EventJS {
-    @Info("Trigger required in advancement.")
+    @Info("""
+        Trigger required in advancement.
+        
+        More details please goto https://minecraft.wiki/w/Advancement/JSON_format
+        """)
     public final Trigger TRIGGER = new Trigger();
     @Info("Predicate required in trigger.")
     public final Predicate PREDICATE = new Predicate();
     @Info("Bounds required in predicate.")
-    public final MinMaxBoundsProvider BOUNDS = new MinMaxBoundsProvider();
+    public final Bounds BOUNDS = new Bounds();
 
     @Info("Create a new advancement root")
     public AdvBuilder create(Identifier rootPath) {

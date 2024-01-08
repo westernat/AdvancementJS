@@ -61,6 +61,8 @@ public class AdvJSPlugin extends KubeJSPlugin {
                                 }
                             }))
                         });
+                        // AdvJS custom trigger
+                        const destroy_dirt = TRIGGER.blockDestroyed((triggerBuilder) => triggerBuilder.setBlock("dirt"));
 
                         // Create root advancement
                         const root = event.create("advjs:hell")
@@ -69,7 +71,9 @@ public class AdvJSPlugin extends KubeJSPlugin {
                                 displayBuilder.setDescription("Quick example")
                                 displayBuilder.setIcon("diamond")
                             })
-                            .criteria((criteriaBuilder) => criteriaBuilder.add("tick", TRIGGER.tick()));
+                            .criteria((criteriaBuilder) => criteriaBuilder.add("dirt", destroy_dirt))
+                            // AdvJS custom reward
+                            .rewards((rewardsBuilder) => rewardsBuilder.addEffect("absorption", 200));
 
                         // Add child for root
                         root.addChild("child1", (childBuilder) => {

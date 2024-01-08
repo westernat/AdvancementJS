@@ -1,6 +1,7 @@
 package org.mesdag.advjs.adv;
 
 import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancement.AdvancementDisplay;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.item.ItemStack;
@@ -31,6 +32,7 @@ public class DisplayBuilder {
         this.hidden = false;
     }
 
+    @HideFromJS
     public DisplayBuilder(ItemStack icon, Text title, Text description, @Nullable Identifier background, AdvancementFrame frameType, boolean showToast, boolean announceToChat, boolean hidden) {
         this.icon = icon;
         this.title = title;
@@ -91,6 +93,7 @@ public class DisplayBuilder {
         this.hidden = hidden;
     }
 
+    @HideFromJS
     public AdvancementDisplay build() {
         return new AdvancementDisplay(icon, title, description, background, frameType, showToast, announceToChat, hidden);
     }

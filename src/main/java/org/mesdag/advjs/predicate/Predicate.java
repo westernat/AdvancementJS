@@ -32,8 +32,8 @@ public class Predicate {
         return DamagePredicate.fromJson(o);
     }
 
-    public DamagePredicate damage(Consumer<DamagePredicate.Builder> consumer) {
-        DamagePredicate.Builder builder = new DamagePredicate.Builder();
+    public DamagePredicate damage(Consumer<DamagePredicateBuilder> consumer) {
+        DamagePredicateBuilder builder = new DamagePredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
@@ -47,8 +47,8 @@ public class Predicate {
         return DamageSourcePredicate.fromJson(o);
     }
 
-    public DamageSourcePredicate damageSource(Consumer<DamageSourcePredicate.Builder> consumer) {
-        DamageSourcePredicate.Builder builder = DamageSourcePredicate.Builder.create();
+    public DamageSourcePredicate damageSource(Consumer<DamageSourcePredicateBuilder> consumer) {
+        DamageSourcePredicateBuilder builder = new DamageSourcePredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
@@ -116,8 +116,8 @@ public class Predicate {
             @Param(name = "legs", value = "Test the item in the entity's legs armor slot."),
             @Param(name = "feet", value = "Test the item in the entity's feet armor slot.")
         })
-    public EntityEquipmentPredicate entityEquipment(Consumer<EntityEquipmentPredicate.Builder> consumer) {
-        EntityEquipmentPredicate.Builder builder = EntityEquipmentPredicate.Builder.create();
+    public EntityEquipmentPredicate entityEquipment(Consumer<EntityEquipmentPredicateBuilder> consumer) {
+        EntityEquipmentPredicateBuilder builder =new EntityEquipmentPredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
@@ -131,8 +131,8 @@ public class Predicate {
         return EntityFlagsPredicate.fromJson(o);
     }
 
-    public EntityFlagsPredicate entityFlags(Consumer<EntityFlagsPredicate.Builder> consumer) {
-        EntityFlagsPredicate.Builder builder = EntityFlagsPredicate.Builder.create();
+    public EntityFlagsPredicate entityFlags(Consumer<EntityFlagsPredicateBuilder> consumer) {
+        EntityFlagsPredicateBuilder builder =new EntityFlagsPredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
@@ -146,8 +146,8 @@ public class Predicate {
         return EntityPredicate.fromJson(o);
     }
 
-    public EntityPredicate entity(Consumer<EntityPredicate.Builder> consumer) {
-        EntityPredicate.Builder builder = new EntityPredicate.Builder();
+    public EntityPredicate entity(Consumer<EntityPredicateBuilder> consumer) {
+        EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
@@ -172,8 +172,8 @@ public class Predicate {
         return FluidPredicate.fromJson(o);
     }
 
-    public FluidPredicate fluid(Consumer<FluidPredicate.Builder> consumer) {
-        FluidPredicate.Builder builder = FluidPredicate.Builder.create();
+    public FluidPredicate fluid(Consumer<FluidPredicateBuilder> consumer) {
+        FluidPredicateBuilder builder =new FluidPredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
@@ -187,8 +187,8 @@ public class Predicate {
         return ItemPredicate.fromJson(o);
     }
 
-    public ItemPredicate item(Consumer<ItemPredicate.Builder> consumer) {
-        ItemPredicate.Builder builder = ItemPredicate.Builder.create();
+    public ItemPredicate item(Consumer<ItemPredicateBuilder> consumer) {
+        ItemPredicateBuilder builder =new ItemPredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
@@ -202,6 +202,12 @@ public class Predicate {
         return LightningBoltPredicate.fromJson(o);
     }
 
+    public LightningBoltPredicate lightningBolt(Consumer<LightningBoltPredicateBuilder> consumer){
+        LightningBoltPredicateBuilder builder = new LightningBoltPredicateBuilder();
+        consumer.accept(builder);
+        return LightningBoltPredicate.fromJson(builder.toJson());
+    }
+
     @Info("Any LightningBoltPredicate")
     public LightningBoltPredicate lightningBolt() {
         return LightningBoltPredicate.of(NumberRange.IntRange.ANY);
@@ -211,10 +217,8 @@ public class Predicate {
         return LightPredicate.fromJson(o);
     }
 
-    public LightPredicate light(Consumer<LightPredicate.Builder> consumer) {
-        LightPredicate.Builder builder = new LightPredicate.Builder();
-        consumer.accept(builder);
-        return builder.build();
+    public LightPredicate light(NumberRange.IntRange bounds) {
+        return new LightPredicate.Builder().light(bounds).build();
     }
 
     @Info("Any LightPredicate")
@@ -226,8 +230,8 @@ public class Predicate {
         return LocationPredicate.fromJson(o);
     }
 
-    public LocationPredicate location(Consumer<LocationPredicate.Builder> consumer) {
-        LocationPredicate.Builder builder = LocationPredicate.Builder.create();
+    public LocationPredicate location(Consumer<LocationPredicateBuilder> consumer) {
+        LocationPredicateBuilder builder =new LocationPredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
