@@ -1,0 +1,35 @@
+{
+	"schemaVersion": 1,
+	"id": "advjs",
+	"version": "${version}",
+	"name": "Advancement JS",
+	"description": "Configure advancements by KubeJS",
+	"authors": [
+		"Westernat"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "LGPL v2.1",
+	"icon": "assets/advjs/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"org.mesdag.advjs.AdvJS"
+		]
+	},
+	"mixins": [
+		"advjs.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.3",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"kubejs": ">=2001.6.4-build.120",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

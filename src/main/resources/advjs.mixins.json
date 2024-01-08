@@ -1,0 +1,16 @@
+{
+	"required": true,
+	"package": "org.mesdag.advjs.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"AdvancementRewardsMixin",
+		"BlockMixin",
+		"PlayerEntityMixin",
+		"ScreenHandlerMixin",
+		"ServerAdvancementLoaderMixin",
+		"ServerBossBarMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
