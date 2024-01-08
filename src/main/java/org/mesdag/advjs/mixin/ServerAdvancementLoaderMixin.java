@@ -14,8 +14,7 @@ import net.minecraft.server.function.CommandFunction;
 import net.minecraft.util.Identifier;
 import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.AdvJSPlugin;
-import org.mesdag.advjs.AdvancementEvent;
-import org.mesdag.advjs.adv.*;
+import org.mesdag.advjs.configure.*;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import java.util.Map;
 
-import static org.mesdag.advjs.adv.Data.*;
+import static org.mesdag.advjs.configure.Data.*;
 
 @Mixin(ServerAdvancementLoader.class)
 public abstract class ServerAdvancementLoaderMixin {
@@ -37,7 +36,7 @@ public abstract class ServerAdvancementLoaderMixin {
         method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/advancement/AdvancementManager;load(Ljava/util/Map;)V"))
     private Map<Identifier, Advancement.Builder> advjs$reload(Map<Identifier, Advancement.Builder> map) {
-        AdvJS.ADVANCEMENT.post(new AdvancementEvent());
+        AdvJS.ADVANCEMENT.post(new AdvConfigureEvent());
         advJS$remove(map);
         advJS$modify(map, conditionManager);
         advJS$add(map);

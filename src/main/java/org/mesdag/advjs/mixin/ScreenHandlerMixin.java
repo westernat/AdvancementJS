@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static org.mesdag.advjs.adv.Data.LOCK_MAP;
+import static org.mesdag.advjs.configure.Data.LOCK_MAP;
 
 @Mixin(ScreenHandler.class)
 public abstract class ScreenHandlerMixin {

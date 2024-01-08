@@ -3,7 +3,8 @@ package org.mesdag.advjs.trigger;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.advancement.criterion.*;
-import net.minecraft.predicate.entity.EntityPredicate;
+import net.minecraft.loot.condition.LocationCheckLootCondition;
+import net.minecraft.loot.condition.MatchToolLootCondition;
 import net.minecraft.predicate.entity.LootContextPredicate;
 import org.mesdag.advjs.trigger.custom.BlockDestroyedCriterion;
 import org.mesdag.advjs.trigger.custom.BossEventConditions;
@@ -200,7 +201,29 @@ public class Trigger {
         return new ThrownItemPickedUpByEntityCriterion.Conditions(Criteria.THROWN_ITEM_PICKED_UP_BY_PLAYER.getId(), builder.player, builder.item, builder.entity);
     }
 
-    // TODO ItemCriterion
+    @Info("Triggers when the player places a block.")
+    public ItemCriterion.Conditions placedBlock(Consumer<ItemUsedOnLocationBuilder> consumer) {
+        ItemUsedOnLocationBuilder builder = new ItemUsedOnLocationBuilder();
+        consumer.accept(builder);
+        LootContextPredicate lootContextPredicate = LootContextPredicate.create(LocationCheckLootCondition.builder(builder.getLPB()).build(), MatchToolLootCondition.builder(builder.getIPB()).build());
+        return new ItemCriterion.Conditions(Criteria.PLACED_BLOCK.getId(), builder.player, lootContextPredicate);
+    }
+
+    @Info("Triggers when the player uses their hand or an item on a block.")
+    public ItemCriterion.Conditions itemUsedOnBlock(Consumer<ItemUsedOnLocationBuilder> consumer) {
+        ItemUsedOnLocationBuilder builder = new ItemUsedOnLocationBuilder();
+        consumer.accept(builder);
+        LootContextPredicate lootContextPredicate = LootContextPredicate.create(LocationCheckLootCondition.builder(builder.getLPB()).build(), MatchToolLootCondition.builder(builder.getIPB()).build());
+        return new ItemCriterion.Conditions(Criteria.ITEM_USED_ON_BLOCK.getId(), builder.player, lootContextPredicate);
+    }
+
+    @Info("Triggers when an allay drops an item on a block.")
+    public ItemCriterion.Conditions allayDropItemOnBlock(Consumer<ItemUsedOnLocationBuilder> consumer) {
+        ItemUsedOnLocationBuilder builder = new ItemUsedOnLocationBuilder();
+        consumer.accept(builder);
+        LootContextPredicate lootContextPredicate = LootContextPredicate.create(LocationCheckLootCondition.builder(builder.getLPB()).build(), MatchToolLootCondition.builder(builder.getIPB()).build());
+        return new ItemCriterion.Conditions(Criteria.ALLAY_DROP_ITEM_ON_BLOCK.getId(), builder.player, lootContextPredicate);
+    }
 
     @Info("Triggers after the player kills a mob or player using a crossbow in ranged combat.")
     public KilledByCrossbowCriterion.Conditions killedByCrossbow(Consumer<KilledByCrossbowBuilder> consumer) {

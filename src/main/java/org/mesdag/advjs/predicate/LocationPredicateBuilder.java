@@ -1,17 +1,17 @@
 package org.mesdag.advjs.predicate;
 
 import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.predicate.BlockPredicate;
 import net.minecraft.predicate.FluidPredicate;
 import net.minecraft.predicate.LightPredicate;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.LocationPredicate;
-import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
-class LocationPredicateBuilder {
+public class LocationPredicateBuilder {
     final LocationPredicate.Builder builder = new LocationPredicate.Builder();
 
     @Info("The x position.")
@@ -66,5 +66,10 @@ class LocationPredicateBuilder {
 
     LocationPredicate build() {
         return builder.build();
+    }
+
+    @HideFromJS
+    public LocationPredicate.Builder getBuilder() {
+        return builder;
     }
 }

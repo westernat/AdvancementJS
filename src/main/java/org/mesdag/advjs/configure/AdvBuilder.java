@@ -1,4 +1,4 @@
-package org.mesdag.advjs.adv;
+package org.mesdag.advjs.configure;
 
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -12,8 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static org.mesdag.advjs.adv.Data.BUILDER_MAP;
-import static org.mesdag.advjs.adv.Data.DEFAULT_BACKGROUND;
+import static org.mesdag.advjs.configure.Data.*;
 
 public class AdvBuilder {
     @Nullable
@@ -39,8 +38,6 @@ public class AdvBuilder {
     public AdvBuilder addChild(Consumer<AdvBuilder> advBuilderConsumer) {
         AdvBuilder child = new AdvBuilder(getSavePath(), UUID.randomUUID().toString(), rootPath, true);
         advBuilderConsumer.accept(child);
-
-        BUILDER_MAP.put(getSavePath(), this);
         return child;
     }
 
@@ -48,8 +45,6 @@ public class AdvBuilder {
     public AdvBuilder addChild(String name, Consumer<AdvBuilder> advBuilderConsumer) {
         AdvBuilder child = new AdvBuilder(getSavePath(), name, rootPath, false);
         advBuilderConsumer.accept(child);
-
-        BUILDER_MAP.put(getSavePath(), this);
         return child;
     }
 
@@ -59,30 +54,37 @@ public class AdvBuilder {
         if (isRoot() && displayBuilder.getBackground() == null) {
             displayBuilder.setBackground(DEFAULT_BACKGROUND);
         }
-
-        BUILDER_MAP.put(getSavePath(), this);
+        update();
         return this;
     }
 
     @Info("The criteria to be tracked by this advancement.")
     public AdvBuilder criteria(Consumer<CriteriaBuilder> criteriaBuilderConsumer) {
         criteriaBuilderConsumer.accept(criteriaBuilder);
-
-        BUILDER_MAP.put(getSavePath(), this);
+        update();
         return this;
     }
 
     @Info("The rewards provided when this advancement is obtained.")
     public AdvBuilder rewards(Consumer<RewardsBuilder> rewardsBuilderConsumer) {
         rewardsBuilderConsumer.accept(rewardsBuilder);
-
-        BUILDER_MAP.put(getSavePath(), this);
+        update();
         return this;
     }
 
     @Info("Determines whether telemetry data should be collected when this advancement is achieved or not. Defaults to false.")
     public void sendsTelemetryEvent(boolean sendsTelemetryEvent) {
         this.sendsTelemetryEvent = sendsTelemetryEvent;
+    }
+
+    @Info("It will check if parent done. Defaults do not check.")
+    public AdvBuilder requireParentDone() {
+        REQUIRE_DONE.add(getSavePath());
+        return this;
+    }
+
+    private void update() {
+        BUILDER_MAP.put(getSavePath(), this);
     }
 
     @Info("Get parent of this advancement.")
