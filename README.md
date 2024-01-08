@@ -90,4 +90,3 @@ Just use ```/reload```
 # TODO
 - More non-vanilla triggers
 - More than vanilla rewards
-- New event: posts when an advancement grant to a player, you can write code for it
