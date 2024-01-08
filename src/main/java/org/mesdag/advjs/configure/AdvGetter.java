@@ -1,4 +1,4 @@
-package org.mesdag.advjs.adv;
+package org.mesdag.advjs.configure;
 
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -7,7 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static org.mesdag.advjs.adv.Data.GETTER_MAP;
+import static org.mesdag.advjs.configure.Data.GETTER_MAP;
+import static org.mesdag.advjs.configure.Data.REQUIRE_DONE;
 
 public class AdvGetter {
     private final ResourceLocation savePath;
@@ -29,24 +30,21 @@ public class AdvGetter {
     @Info("Modify the display. Defaults to original display.")
     public AdvGetter modifyDisplay(Consumer<DisplayBuilder> displayBuilderConsumer) {
         this.displayConsumer = displayBuilderConsumer;
-
-        GETTER_MAP.put(savePath, this);
+        update();
         return this;
     }
 
     @Info("Modify the criteria. Defaults to original criteria.")
     public AdvGetter modifyCriteria(Consumer<CriteriaBuilder> criteriaBuilderConsumer) {
         this.criteriaConsumer = criteriaBuilderConsumer;
-
-        GETTER_MAP.put(savePath, this);
+        update();
         return this;
     }
 
     @Info("Modify the rewards. Defaults to original rewards.")
     public AdvGetter modifyRewards(Consumer<RewardsBuilder> rewardsBuilderConsumer) {
         this.rewardsConsumer = rewardsBuilderConsumer;
-
-        GETTER_MAP.put(savePath, this);
+        update();
         return this;
     }
 
@@ -54,8 +52,6 @@ public class AdvGetter {
     public AdvBuilder addChild(Consumer<AdvBuilder> advBuilderConsumer) {
         AdvBuilder child = new AdvBuilder(savePath, UUID.randomUUID().toString(), savePath, true);
         advBuilderConsumer.accept(child);
-
-        GETTER_MAP.put(savePath, this);
         return child;
     }
 
@@ -63,9 +59,17 @@ public class AdvGetter {
     public AdvBuilder addChild(String name, Consumer<AdvBuilder> advBuilderConsumer) {
         AdvBuilder child = new AdvBuilder(savePath, name, savePath, false);
         advBuilderConsumer.accept(child);
-
-        GETTER_MAP.put(savePath, this);
         return child;
+    }
+
+    @Info("It will check if parent done. Defaults do not check.")
+    public AdvGetter requireParentDone() {
+        REQUIRE_DONE.add(savePath);
+        return this;
+    }
+
+    private void update() {
+        GETTER_MAP.put(savePath, this);
     }
 
     @HideFromJS

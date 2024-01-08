@@ -14,8 +14,7 @@ import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.world.level.storage.loot.LootDataManager;
 import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.AdvJSPlugin;
-import org.mesdag.advjs.AdvancementEvent;
-import org.mesdag.advjs.adv.*;
+import org.mesdag.advjs.configure.*;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import java.util.Map;
 
-import static org.mesdag.advjs.adv.Data.*;
+import static org.mesdag.advjs.configure.Data.*;
 
 @Mixin(ServerAdvancementManager.class)
 public abstract class ServerAdvancementManagerMixin {
@@ -37,7 +36,7 @@ public abstract class ServerAdvancementManagerMixin {
         method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/AdvancementList;add(Ljava/util/Map;)V"))
     private Map<ResourceLocation, Advancement.Builder> advjs$reload(Map<ResourceLocation, Advancement.Builder> map) {
-        AdvJS.ADVANCEMENT.post(new AdvancementEvent());
+        AdvJS.CONFIGURE.post(new AdvConfigureEvent());
         advJS$remove(map);
         advJS$modify(map, lootData);
         advJS$add(map);

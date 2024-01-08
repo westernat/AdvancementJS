@@ -13,6 +13,8 @@ import org.mesdag.advjs.util.StatsWrapper;
 
 import java.nio.file.Files;
 
+import static org.mesdag.advjs.configure.Data.*;
+
 public class AdvJSPlugin extends KubeJSPlugin {
     public static boolean DEBUG;
 
@@ -34,6 +36,15 @@ public class AdvJSPlugin extends KubeJSPlugin {
         event.add("CREATIVE", GameType.CREATIVE);
         event.add("ADVENTURE", GameType.ADVENTURE);
         event.add("SPECTATOR", GameType.SPECTATOR);
+    }
+
+    @Override
+    public void onServerReload() {
+        REMOVES.clear();
+        GETTER_MAP.clear();
+        BUILDER_MAP.clear();
+        LOCK_MAP.clear();
+        REQUIRE_DONE.clear();
     }
 
     @Override
@@ -93,6 +104,8 @@ public class AdvJSPlugin extends KubeJSPlugin {
                                     rewardsBuilder.setRecipes("minecraft:lodestone", "minecraft:brewing_stand")
                                     rewardsBuilder.setExperience(100)
                                 })
+                                // Check if parent done, else it will not be done
+                                .requireParentDone()
                         });
 
                         // Remove an exist advancement

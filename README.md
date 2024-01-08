@@ -52,6 +52,8 @@ ServerEvents.advancement((event) => {
                 rewardsBuilder.setRecipes("minecraft:lodestone", "minecraft:brewing_stand")
                 rewardsBuilder.setExperience(100)
             })
+            // Check if parent done, else it will not be done
+            .requireParentDone()
     });
     
     // Remove an exist advancement

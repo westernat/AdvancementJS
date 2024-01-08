@@ -202,6 +202,7 @@ public class Trigger {
         return new PickedUpItemTrigger.TriggerInstance(CriteriaTriggers.THROWN_ITEM_PICKED_UP_BY_PLAYER.getId(), builder.player, builder.item, builder.entity);
     }
 
+    @Info("Triggers when the player places a block.")
     public ItemUsedOnLocationTrigger.TriggerInstance placedBlock(Consumer<ItemUsedOnLocationBuilder> consumer) {
         ItemUsedOnLocationBuilder builder = new ItemUsedOnLocationBuilder();
         consumer.accept(builder);
@@ -209,6 +210,7 @@ public class Trigger {
         return new ItemUsedOnLocationTrigger.TriggerInstance(CriteriaTriggers.PLACED_BLOCK.getId(), builder.player, contextawarepredicate);
     }
 
+    @Info("Triggers when the player uses their hand or an item on a block.")
     public ItemUsedOnLocationTrigger.TriggerInstance itemUsedOnBlock(Consumer<ItemUsedOnLocationBuilder> consumer) {
         ItemUsedOnLocationBuilder builder = new ItemUsedOnLocationBuilder();
         consumer.accept(builder);
@@ -216,6 +218,7 @@ public class Trigger {
         return new ItemUsedOnLocationTrigger.TriggerInstance(CriteriaTriggers.ITEM_USED_ON_BLOCK.getId(), builder.player, contextawarepredicate);
     }
 
+    @Info("Triggers when an allay drops an item on a block.")
     public ItemUsedOnLocationTrigger.TriggerInstance allayDropItemOnBlock(Consumer<ItemUsedOnLocationBuilder> consumer) {
         ItemUsedOnLocationBuilder builder = new ItemUsedOnLocationBuilder();
         consumer.accept(builder);

@@ -1,20 +1,18 @@
-package org.mesdag.advjs;
+package org.mesdag.advjs.configure;
 
 import dev.latvian.mods.kubejs.event.EventJS;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.mesdag.advjs.adv.AdvBuilder;
-import org.mesdag.advjs.adv.AdvGetter;
 import org.mesdag.advjs.predicate.Predicate;
 import org.mesdag.advjs.trigger.Trigger;
 import org.mesdag.advjs.util.Bounds;
 
-import static org.mesdag.advjs.adv.Data.LOCK_MAP;
-import static org.mesdag.advjs.adv.Data.REMOVES;
+import static org.mesdag.advjs.configure.Data.LOCK_MAP;
+import static org.mesdag.advjs.configure.Data.REMOVES;
 
-public class AdvancementEvent extends EventJS {
+public class AdvConfigureEvent extends EventJS {
     @Info("""
         Trigger required in advancement.
         

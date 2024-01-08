@@ -56,11 +56,6 @@ public class Predicate {
         return DamageSourcePredicate.ANY;
     }
 
-    @Info("""
-        To test the distance to the entity this predicate is invoked upon.
-                
-        Passes if the calculated distance is between the entered min and max, inclusive.
-        """)
     public DistancePredicate distance(JsonObject o) {
         return DistancePredicate.fromJson(o);
     }
@@ -283,6 +278,4 @@ public class Predicate {
     public StatePropertiesPredicate stateProperties() {
         return StatePropertiesPredicate.ANY;
     }
-
-    // TODO ContextAwarePredicate
 }
