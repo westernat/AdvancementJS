@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
-
 @Mod("advjs")
 public class AdvJS {
     public static final Logger LOGGER = LoggerFactory.getLogger("AdvJS");
