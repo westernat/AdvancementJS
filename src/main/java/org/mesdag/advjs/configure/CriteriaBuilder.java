@@ -1,4 +1,4 @@
-package org.mesdag.advjs.adv;
+package org.mesdag.advjs.configure;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;

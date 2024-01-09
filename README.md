@@ -52,6 +52,8 @@ ServerEvents.advancement((event) => {
                 rewardsBuilder.setRecipes("minecraft:lodestone", "minecraft:brewing_stand")
                 rewardsBuilder.setExperience(100)
             })
+            // Check if parent done, else it will not be done
+            .requireParentDone()
     });
     
     // Remove an exist advancement
@@ -77,15 +79,20 @@ ServerEvents.advancement((event) => {
 # How to reload
 Just use ```/reload```
 
-# Custom trigger
+# Features
+
+## Custom trigger
 - blockDestroyed: triggers when the player breaks a block.
 - playerTouch: triggers when the player touch an entity.
 - bossEvent: triggers when the play joins a boss fight.
 - More idea...
 
-# Custom reward
+## Custom reward
 - addEffect: to give effect.
 - More idea...
+
+## Custom condition
+- requireParentDone: check if parent done, else it will not be done
 
 # TODO
 - More non-vanilla triggers

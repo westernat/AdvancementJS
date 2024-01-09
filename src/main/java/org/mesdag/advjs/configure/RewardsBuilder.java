@@ -1,4 +1,4 @@
-package org.mesdag.advjs.adv;
+package org.mesdag.advjs.configure;
 
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
