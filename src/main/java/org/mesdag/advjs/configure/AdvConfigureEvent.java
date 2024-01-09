@@ -1,21 +1,23 @@
 package org.mesdag.advjs.configure;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.event.EventJS;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.ModList;
 import org.mesdag.advjs.predicate.Predicate;
 import org.mesdag.advjs.trigger.Trigger;
 import org.mesdag.advjs.util.Bounds;
 
-import static org.mesdag.advjs.configure.Data.LOCK_MAP;
-import static org.mesdag.advjs.configure.Data.REMOVES;
+import static org.mesdag.advjs.configure.Data.*;
 
 public class AdvConfigureEvent extends EventJS {
     @Info("""
         Trigger required in advancement.
-        
+                
         More details please goto https://minecraft.wiki/w/Advancement/JSON_format
         """)
     public final Trigger TRIGGER = new Trigger();
@@ -29,9 +31,27 @@ public class AdvConfigureEvent extends EventJS {
         return new AdvBuilder(null, "root", rootPath, false);
     }
 
-    @Info("Remove an exist advancement.")
-    public void remove(ResourceLocation remove) {
-        REMOVES.add(remove);
+    @Info("""
+        It will automatically remove all of its children.
+        
+        If you put in a string, it will remove advancement by its path.
+                
+        Else if you put in a json object, it will remove advancement by filter:
+                
+            modid: filter of modid.
+        """)
+    public void remove(JsonElement filter) {
+        if (filter.isJsonObject()) {
+            JsonObject object = filter.getAsJsonObject();
+            if (object.has("mod")) {
+                String modid = object.get("mod").getAsString();
+                if (ModList.get().isLoaded(modid)) {
+                    REMOVE_MODID.add(modid);
+                }
+            }
+        } else {
+            REMOVE_PATH.add(new ResourceLocation(filter.getAsString()));
+        }
     }
 
     @Info("Get an exist advancement to modify.")

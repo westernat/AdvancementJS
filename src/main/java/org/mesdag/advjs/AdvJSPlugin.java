@@ -40,7 +40,8 @@ public class AdvJSPlugin extends KubeJSPlugin {
 
     @Override
     public void onServerReload() {
-        REMOVES.clear();
+        REMOVE_PATH.clear();
+        REMOVE_MODID.clear();
         GETTER_MAP.clear();
         BUILDER_MAP.clear();
         LOCK_MAP.clear();

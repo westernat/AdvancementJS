@@ -11,6 +11,8 @@ import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.commands.CommandFunction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ServerAdvancementManager;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.storage.loot.PredicateManager;
 import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.AdvJSPlugin;
@@ -20,7 +22,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
 
@@ -32,29 +36,51 @@ public abstract class ServerAdvancementManagerMixin {
     @Final
     private PredicateManager predicateManager;
 
+    @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("HEAD"))
+    private void advJS$reload(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfo ci) {
+        AdvJS.ADVANCEMENT.post(new AdvConfigureEvent());
+        advJS$remove(map);
+    }
+
+    @Unique
+    private static void advJS$remove(Map<ResourceLocation,JsonElement>map){
+        int counter = 0;
+
+        for (ResourceLocation key : map.keySet()) {
+            if (key.getPath().startsWith("recipe")) {
+                // Filter all recipe advancement
+                continue;
+            }
+            for (String modid : REMOVE_MODID) {
+                if (key.getNamespace().equals(modid)) {
+                    map.remove(key);
+                    counter++;
+                }
+            }
+        }
+
+        for (ResourceLocation path : REMOVE_PATH) {
+            if (map.remove(path) != null) {
+                if (AdvJSPlugin.DEBUG) {
+                    AdvJS.LOGGER.debug("Advancement '{}' removed.", path);
+                }
+                counter++;
+            } else {
+                AdvJS.LOGGER.warn("Advancement '{}' is not exist", path);
+            }
+        }
+
+        AdvJS.LOGGER.info("Removed {} advancements", counter);
+    }
+
     @ModifyArg(
         method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/AdvancementList;add(Ljava/util/Map;)V"))
-    private Map<ResourceLocation, Advancement.Builder> advjs$reload(Map<ResourceLocation, Advancement.Builder> map) {
-        AdvJS.ADVANCEMENT.post(new AdvConfigureEvent());
-        advJS$remove(map);
+    private Map<ResourceLocation, Advancement.Builder> advjs$configure(Map<ResourceLocation, Advancement.Builder> map) {
         advJS$modify(map, predicateManager);
         advJS$add(map);
         AdvJS.LOGGER.info("AdvJS loaded!");
         return map;
-    }
-
-    @Unique
-    private static void advJS$remove(Map<ResourceLocation, Advancement.Builder> map) {
-        int counter = 0;
-        for (ResourceLocation remove : REMOVES) {
-            if (map.remove(remove) != null) {
-                counter++;
-            } else {
-                AdvJS.LOGGER.warn("Advancement '{}' is not exist", remove);
-            }
-        }
-        AdvJS.LOGGER.info("Removed {} advancements", counter);
     }
 
     @Unique
