@@ -5,12 +5,11 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
 public class Data {
-    public static final ArrayList<Identifier> REMOVES = new ArrayList<>();
+    public static final HashSet<RemoveFilter> FILTERS = new HashSet<>();
     public static final HashMap<Identifier, AdvGetter> GETTER_MAP = new HashMap<>();
     public static final HashMap<Identifier, AdvBuilder> BUILDER_MAP = new HashMap<>();
     public static final HashMap<Item, Identifier> LOCK_MAP = new HashMap<>();

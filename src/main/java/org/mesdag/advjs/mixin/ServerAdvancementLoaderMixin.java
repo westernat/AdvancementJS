@@ -1,5 +1,6 @@
 package org.mesdag.advjs.mixin;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -7,11 +8,15 @@ import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementCriterion;
 import net.minecraft.advancement.AdvancementDisplay;
 import net.minecraft.advancement.AdvancementRewards;
+import net.minecraft.item.Item;
 import net.minecraft.loot.LootManager;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.server.function.CommandFunction;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.JsonHelper;
+import net.minecraft.util.profiler.Profiler;
 import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.AdvJSPlugin;
 import org.mesdag.advjs.configure.*;
@@ -20,7 +25,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
 
@@ -32,27 +39,58 @@ public abstract class ServerAdvancementLoaderMixin {
     @Final
     private LootManager conditionManager;
 
+    @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("HEAD"))
+    private void advJS$remove(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
+        AdvJS.ADVANCEMENT.post(new AdvConfigureEvent());
+
+        int counter = 0;
+        ImmutableSet.Builder<Identifier> builder = new ImmutableSet.Builder<>();
+        for (Map.Entry<Identifier, JsonElement> entry : map.entrySet()) {
+            Identifier key = entry.getKey();
+            if (key.getPath().startsWith("recipe")) {
+                // Filter all recipe advancement
+                continue;
+            }
+
+            JsonObject value = entry.getValue().getAsJsonObject();
+            for (RemoveFilter filter : FILTERS) {
+                Item item;
+                String frame;
+                if (value.has("display")) {
+                    JsonObject display = value.get("display").getAsJsonObject();
+                    item = display.has("icon") ? JsonHelper.getItem(display.get("icon").getAsJsonObject(), "item", null) : null;
+                    frame = display.has("frame") ? display.get("frame").getAsString() : "task";
+                } else {
+                    continue;
+                }
+
+                String parent = null;
+                if (value.has("parent")) {
+                    parent = value.get("parent").getAsString();
+                }
+
+                if (filter.matches(key, item, frame, parent)) {
+                    builder.add(key);
+                }
+            }
+        }
+
+        for (Identifier remove : builder.build()) {
+            map.remove(remove);
+            counter++;
+        }
+
+        AdvJS.LOGGER.info("Removed {} advancements", counter);
+    }
+
     @ModifyArg(
         method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/advancement/AdvancementManager;load(Ljava/util/Map;)V"))
     private Map<Identifier, Advancement.Builder> advjs$reload(Map<Identifier, Advancement.Builder> map) {
-        AdvJS.ADVANCEMENT.post(new AdvConfigureEvent());
-        advJS$remove(map);
         advJS$modify(map, conditionManager);
         advJS$add(map);
         AdvJS.LOGGER.info("AdvJS Loaded!");
         return map;
-    }
-
-    @Unique
-    private static void advJS$remove(Map<Identifier, Advancement.Builder> map) {
-        int counter = 0;
-        for (Identifier remove : REMOVES) {
-            if (map.remove(remove) != null) {
-                counter++;
-            }
-        }
-        AdvJS.LOGGER.info("Removed {} advancements", counter);
     }
 
     @Unique

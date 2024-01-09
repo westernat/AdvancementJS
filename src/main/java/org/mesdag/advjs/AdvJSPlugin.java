@@ -40,7 +40,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
 
     @Override
     public void onServerReload() {
-        REMOVES.clear();
+        FILTERS.clear();
         GETTER_MAP.clear();
         BUILDER_MAP.clear();
         LOCK_MAP.clear();
@@ -108,8 +108,11 @@ public class AdvJSPlugin extends KubeJSPlugin {
                                 .requireParentDone()
                         });
 
-                        // Remove an exist advancement
-                        event.remove("minecraft:story/lava_bucket")
+                        // Remove an exist advancement by RemoveFilter, available filter was writen in doc.
+                        // you can also remove like this: 'event.remove("minecraft:story/lava_bucket");'
+                        event.remove({
+                            icon: "minecraft:lava_bucket"
+                        })
 
                         // Modify an exist advancement
                         event.get("minecraft:story/smelt_iron")
