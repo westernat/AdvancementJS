@@ -17,6 +17,7 @@ public class RemoveFilter {
     @Nullable Item icon;
     @Nullable String frame;
     @Nullable String parent;
+    private boolean initialFlag;
 
     public static RemoveFilter of(JsonElement jsonElement) {
         RemoveFilter filter = new RemoveFilter();
@@ -52,6 +53,7 @@ public class RemoveFilter {
             filter.path = new ResourceLocation(jsonElement.getAsString());
         }
 
+        filter.initialFlag = filter.modid != null || filter.icon != null || filter.frame != null || filter.parent != null;
         return filter;
     }
 
@@ -59,7 +61,7 @@ public class RemoveFilter {
         if (this.path != null && !this.path.equals(path)) {
             return false;
         } else {
-            boolean flag = this.modid != null || this.icon != null || this.frame != null || this.parent != null;
+            boolean flag = this.initialFlag;
             if (flag && this.modid != null) {
                 flag = this.modid.equals(path.getNamespace());
             }
