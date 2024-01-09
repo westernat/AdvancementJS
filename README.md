@@ -84,7 +84,7 @@ Just use ```/reload```
 ## Custom trigger
 - blockDestroyed: triggers when the player breaks a block.
 - playerTouch: triggers when the player touch an entity.
-- bossEvent: triggers when the play joins a boss fight.
+- bossEvent: triggers when the player joins a boss fight.
 - More idea...
 
 ## Custom reward
