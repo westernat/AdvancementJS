@@ -58,7 +58,7 @@ public abstract class ServerAdvancementManagerMixin {
                 String frame;
                 if (value.has("display")) {
                     JsonObject display = value.get("display").getAsJsonObject();
-                    item = display.has("icon") ? null : GsonHelper.getAsItem(display.get("icon").getAsJsonObject(), "item", null);
+                    item = display.has("icon") ? GsonHelper.getAsItem(display.get("icon").getAsJsonObject(), "item", null) : null;
                     frame = display.has("frame") ? display.get("frame").getAsString() : "task";
                 } else {
                     continue;
