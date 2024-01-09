@@ -1,5 +1,6 @@
 package org.mesdag.advjs.mixin;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -11,6 +12,10 @@ import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.commands.CommandFunction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ServerAdvancementManager;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.LootDataManager;
 import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.AdvJSPlugin;
@@ -20,7 +25,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
 
@@ -32,27 +39,58 @@ public abstract class ServerAdvancementManagerMixin {
     @Final
     private LootDataManager lootData;
 
+    @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("HEAD"))
+    private void advJS$remove(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfo ci) {
+        AdvJS.ADVANCEMENT.post(new AdvConfigureEvent());
+
+        int counter = 0;
+        ImmutableSet.Builder<ResourceLocation> builder = new ImmutableSet.Builder<>();
+        for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
+            ResourceLocation key = entry.getKey();
+            if (key.getPath().startsWith("recipe")) {
+                // Filter all recipe advancement
+                continue;
+            }
+
+            JsonObject value = entry.getValue().getAsJsonObject();
+            for (RemoveFilter filter : FILTERS) {
+                Item item;
+                String frame;
+                if (value.has("display")) {
+                    JsonObject display = value.get("display").getAsJsonObject();
+                    item = display.has("icon") ? null : GsonHelper.getAsItem(display.get("icon").getAsJsonObject(), "item", null);
+                    frame = display.has("frame") ? display.get("frame").getAsString() : "task";
+                } else {
+                    continue;
+                }
+
+                String parent = null;
+                if (value.has("parent")) {
+                    parent = value.get("parent").getAsString();
+                }
+
+                if (filter.matches(key, item, frame, parent)) {
+                    builder.add(key);
+                }
+            }
+        }
+
+        for (ResourceLocation remove : builder.build()) {
+            map.remove(remove);
+            counter++;
+        }
+
+        AdvJS.LOGGER.info("Removed {} advancements", counter);
+    }
+
     @ModifyArg(
         method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/AdvancementList;add(Ljava/util/Map;)V"))
     private Map<ResourceLocation, Advancement.Builder> advjs$reload(Map<ResourceLocation, Advancement.Builder> map) {
-        AdvJS.CONFIGURE.post(new AdvConfigureEvent());
-        advJS$remove(map);
         advJS$modify(map, lootData);
         advJS$add(map);
         AdvJS.LOGGER.info("AdvJS loaded!");
         return map;
-    }
-
-    @Unique
-    private static void advJS$remove(Map<ResourceLocation, Advancement.Builder> map) {
-        int counter = 0;
-        for (ResourceLocation remove : REMOVES) {
-            if (map.remove(remove) != null) {
-                counter++;
-            }
-        }
-        AdvJS.LOGGER.info("Removed {} advancements", counter);
     }
 
     @Unique
@@ -68,7 +106,7 @@ public abstract class ServerAdvancementManagerMixin {
             if (builder != null) {
                 AdvGetter getter = entry.getValue();
                 JsonObject oldJson = builder.serializeToJson();
-                ResourceLocation parentId = new ResourceLocation(oldJson.get("parent").getAsString());
+                ResourceLocation parentId = oldJson.has("parent") ? new ResourceLocation(oldJson.get("parent").getAsString()) : null;
 
                 DisplayInfo oldDisplay = DisplayInfo.fromJson(oldJson.get("display").getAsJsonObject());
                 DisplayBuilder neoDisplayBuilder = new DisplayBuilder(
