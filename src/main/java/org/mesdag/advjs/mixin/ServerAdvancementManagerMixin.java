@@ -1,5 +1,6 @@
 package org.mesdag.advjs.mixin;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -12,7 +13,9 @@ import net.minecraft.commands.CommandFunction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.PredicateManager;
 import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.AdvJSPlugin;
@@ -37,37 +40,44 @@ public abstract class ServerAdvancementManagerMixin {
     private PredicateManager predicateManager;
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("HEAD"))
-    private void advJS$reload(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfo ci) {
+    private void advJS$remove(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfo ci) {
         AdvJS.ADVANCEMENT.post(new AdvConfigureEvent());
-        advJS$remove(map);
-    }
 
-    @Unique
-    private static void advJS$remove(Map<ResourceLocation,JsonElement>map){
         int counter = 0;
-
-        for (ResourceLocation key : map.keySet()) {
+        ImmutableSet.Builder<ResourceLocation> builder = new ImmutableSet.Builder<>();
+        for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
+            ResourceLocation key = entry.getKey();
             if (key.getPath().startsWith("recipe")) {
                 // Filter all recipe advancement
                 continue;
             }
-            for (String modid : REMOVE_MODID) {
-                if (key.getNamespace().equals(modid)) {
-                    map.remove(key);
-                    counter++;
+
+            JsonObject value = entry.getValue().getAsJsonObject();
+            for (RemoveFilter filter : FILTERS) {
+                Item item;
+                String frame;
+                if (value.has("display")) {
+                    JsonObject display = value.get("display").getAsJsonObject();
+                    item = display.has("icon") ? null : GsonHelper.getAsItem(display.get("icon").getAsJsonObject(), "item", null);
+                    frame = display.has("frame") ? display.get("frame").getAsString() : "task";
+                } else {
+                    continue;
+                }
+
+                String parent = null;
+                if (value.has("parent")) {
+                    parent = value.get("parent").getAsString();
+                }
+
+                if (filter.matches(key, item, frame, parent)) {
+                    builder.add(key);
                 }
             }
         }
 
-        for (ResourceLocation path : REMOVE_PATH) {
-            if (map.remove(path) != null) {
-                if (AdvJSPlugin.DEBUG) {
-                    AdvJS.LOGGER.debug("Advancement '{}' removed.", path);
-                }
-                counter++;
-            } else {
-                AdvJS.LOGGER.warn("Advancement '{}' is not exist", path);
-            }
+        for (ResourceLocation remove : builder.build()) {
+            map.remove(remove);
+            counter++;
         }
 
         AdvJS.LOGGER.info("Removed {} advancements", counter);
@@ -96,7 +106,7 @@ public abstract class ServerAdvancementManagerMixin {
             if (builder != null) {
                 AdvGetter getter = entry.getValue();
                 JsonObject oldJson = builder.serializeToJson();
-                ResourceLocation parentId = new ResourceLocation(oldJson.get("parent").getAsString());
+                ResourceLocation parentId = oldJson.has("parent") ? new ResourceLocation(oldJson.get("parent").getAsString()) : null;
 
                 DisplayInfo oldDisplay = DisplayInfo.fromJson(oldJson.get("display").getAsJsonObject());
                 DisplayBuilder neoDisplayBuilder = new DisplayBuilder(

@@ -56,8 +56,11 @@ ServerEvents.advancement((event) => {
             .requireParentDone()
     });
     
-    // Remove an exist advancement
-    event.remove("minecraft:story/lava_bucket");
+    // Remove an exist advancement by RemoveFilter, available filter was writen in doc.
+    // you can also use like this: 'event.remove("minecraft:story/lava_bucket");'
+    event.remove({
+        icon: "minecraft:lava_bucket"
+    })
     
     // Modify an exist advancement
     event.get("minecraft:story/smelt_iron")
