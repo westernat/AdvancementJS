@@ -86,7 +86,7 @@ public abstract class ServerAdvancementLoaderMixin {
     @ModifyArg(
         method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/advancement/AdvancementManager;load(Ljava/util/Map;)V"))
-    private Map<Identifier, Advancement.Builder> advjs$reload(Map<Identifier, Advancement.Builder> map) {
+    private Map<Identifier, Advancement.Builder> advjs$configure(Map<Identifier, Advancement.Builder> map) {
         advJS$modify(map, conditionManager);
         advJS$add(map);
         AdvJS.LOGGER.info("AdvJS Loaded!");
@@ -224,7 +224,7 @@ public abstract class ServerAdvancementLoaderMixin {
                 counter++;
             } else { // advBuilder.parent != null
                 Identifier parentId = advBuilder.getParent();
-                if (builderMap.containsKey(parentId)) {
+                if (BUILDER_MAP.containsKey(parentId) || builderMap.containsKey(parentId)) {
                     Advancement.Builder builder = advJS$build(advBuilder);
                     builderMap.put(advBuilder.getSavePath(), builder.parent(parentId));
                     counter++;
