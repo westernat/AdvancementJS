@@ -6,6 +6,7 @@ import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.enchantment.Enchantment;
+import org.mesdag.advjs.util.Bounds;
 
 import javax.annotation.Nullable;
 
@@ -23,8 +24,8 @@ public class EnchantmentPredicateBuilder {
     }
 
     @Info("Match level of enchantment.")
-    public void setLevel(MinMaxBounds.Ints bounds) {
-        level = bounds;
+    public void setLevel(Bounds bounds) {
+        level = bounds.toIntegerBounds();
     }
 
     EnchantmentPredicate build() {

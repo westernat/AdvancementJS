@@ -3,6 +3,7 @@ package org.mesdag.advjs.predicate;
 import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.MobEffectsPredicate;
+import org.mesdag.advjs.util.Bounds;
 
 import javax.annotation.Nullable;
 
@@ -15,13 +16,13 @@ public class MobEffectInstancePredicateBuilder {
     Boolean visible = null;
 
     @Info("Test if the effect's amplifier matches an exact value. Level I is represented by 0.")
-    public void setAmplifier(MinMaxBounds.Ints bounds) {
-        amplifier = bounds;
+    public void setAmplifier(Bounds bounds) {
+        amplifier = bounds.toIntegerBounds();
     }
 
     @Info("Test if the effect's remaining time (in ticks) matches an exact value.")
-    public void setDuration(MinMaxBounds.Ints bounds) {
-        duration = bounds;
+    public void setDuration(Bounds bounds) {
+        duration = bounds.toIntegerBounds();
     }
 
     @Info("Test whether the effect is from a beacon.")

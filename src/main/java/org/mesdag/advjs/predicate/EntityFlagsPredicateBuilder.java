@@ -7,27 +7,27 @@ public class EntityFlagsPredicateBuilder {
     final EntityFlagsPredicate.Builder builder = new EntityFlagsPredicate.Builder();
 
     @Info("Test whether the entity is or is not on fire.")
-    public void isOnFire(Boolean bool) {
+    public void isOnFire(boolean bool) {
         builder.setOnFire(bool);
     }
 
     @Info("Test whether the entity is or is not sneaking.")
-    public void isSneaking(Boolean bool) {
+    public void isSneaking(boolean bool) {
         builder.setCrouching(bool);
     }
 
     @Info("Test whether the entity is or is not sprinting.")
-    public void isSprinting(Boolean bool) {
+    public void isSprinting(boolean bool) {
         builder.setSprinting(bool);
     }
 
     @Info("Test whether the entity is or is not swimming.")
-    public void isSwimming(Boolean bool) {
+    public void isSwimming(boolean bool) {
         builder.setSwimming(bool);
     }
 
     @Info("Test whether the entity is or is not a baby variant.")
-    public void isBaby(Boolean bool) {
+    public void isBaby(boolean bool) {
         builder.setIsBaby(bool);
     }
 

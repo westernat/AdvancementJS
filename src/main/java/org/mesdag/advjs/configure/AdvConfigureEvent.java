@@ -9,7 +9,6 @@ import net.minecraft.world.item.ItemStack;
 import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.predicate.Predicate;
 import org.mesdag.advjs.trigger.Trigger;
-import org.mesdag.advjs.util.Bounds;
 
 import static org.mesdag.advjs.configure.Data.FILTERS;
 import static org.mesdag.advjs.configure.Data.LOCK_MAP;
@@ -23,8 +22,6 @@ public class AdvConfigureEvent extends EventJS {
     public final Trigger TRIGGER = new Trigger();
     @Info("Predicate required in trigger.")
     public final Predicate PREDICATE = new Predicate();
-    @Info("Bounds required in predicate.")
-    public final Bounds BOUNDS = new Bounds();
 
     @Info("Create a new advancement root")
     public AdvBuilder create(ResourceLocation rootPath) {

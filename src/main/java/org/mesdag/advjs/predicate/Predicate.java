@@ -6,6 +6,7 @@ import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.nbt.CompoundTag;
+import org.mesdag.advjs.util.Bounds;
 
 import java.util.function.Consumer;
 
@@ -201,8 +202,8 @@ public class Predicate {
         return LightPredicate.fromJson(o);
     }
 
-    public LightPredicate light(MinMaxBounds.Ints bounds) {
-        return LightPredicate.Builder.light().setComposite(bounds).build();
+    public LightPredicate light(Bounds bounds) {
+        return LightPredicate.Builder.light().setComposite(bounds.toIntegerBounds()).build();
     }
 
     @Info("Any LightPredicate")

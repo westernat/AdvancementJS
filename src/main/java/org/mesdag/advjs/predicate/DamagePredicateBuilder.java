@@ -5,7 +5,7 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.critereon.DamagePredicate;
 import net.minecraft.advancements.critereon.DamageSourcePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.MinMaxBounds;
+import org.mesdag.advjs.util.Bounds;
 
 import java.util.function.Consumer;
 
@@ -13,13 +13,13 @@ public class DamagePredicateBuilder {
     final DamagePredicate.Builder builder = new DamagePredicate.Builder();
 
     @Info("Checks the amount of incoming damage before damage reduction.")
-    public void dealtDamage(MinMaxBounds.Doubles bounds) {
-        builder.dealtDamage(bounds);
+    public void dealtDamage(Bounds bounds) {
+        builder.dealtDamage(bounds.toDoubleBounds());
     }
 
     @Info("Checks the amount of incoming damage after damage reduction.")
-    public void takenDamage(MinMaxBounds.Doubles bounds) {
-        builder.takenDamage(bounds);
+    public void takenDamage(Bounds bounds) {
+        builder.takenDamage(bounds.toDoubleBounds());
     }
 
     @Info("Checks the entity that was the source of the damage (for example: The skeleton that shot the arrow).")
@@ -42,6 +42,13 @@ public class DamagePredicateBuilder {
     @Info("Checks the type of damage done.")
     public void type(DamageSourcePredicate damageSourcePredicate) {
         builder.type(damageSourcePredicate);
+    }
+
+    @Info("Checks the type of damage done.")
+    public void type(Consumer<DamageSourcePredicateBuilder> consumer) {
+        DamageSourcePredicateBuilder builder1 = new DamageSourcePredicateBuilder();
+        consumer.accept(builder1);
+        builder.type(builder1.build());
     }
 
     @HideFromJS

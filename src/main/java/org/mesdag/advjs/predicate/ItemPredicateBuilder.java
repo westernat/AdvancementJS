@@ -4,12 +4,12 @@ import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import org.mesdag.advjs.util.Bounds;
 
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -27,8 +27,8 @@ public class ItemPredicateBuilder {
                 
         Use an integer to test for a single value.
         """)
-    public void withCount(MinMaxBounds.Ints bounds) {
-        builder.withCount(bounds);
+    public void withCount(Bounds bounds) {
+        builder.withCount(bounds.toIntegerBounds());
     }
 
     @Info("""
@@ -36,8 +36,8 @@ public class ItemPredicateBuilder {
                 
         represented by the number of uses remaining (not number of uses consumed).
         """)
-    public void hasDurability(MinMaxBounds.Ints bounds) {
-        builder.hasDurability(bounds);
+    public void hasDurability(Bounds bounds) {
+        builder.hasDurability(bounds.toIntegerBounds());
     }
 
     @Info("Test the type of potion this item is. Accepts a brewed potion ID.")

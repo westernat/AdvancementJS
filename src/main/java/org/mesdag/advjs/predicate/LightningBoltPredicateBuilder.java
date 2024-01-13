@@ -5,6 +5,7 @@ import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.LighthingBoltPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
+import org.mesdag.advjs.util.Bounds;
 
 import java.util.function.Consumer;
 
@@ -13,8 +14,8 @@ public class LightningBoltPredicateBuilder {
     EntityPredicate entityStruck = EntityPredicate.ANY;
 
     @Info("Test the number of blocks set on fire by this lightning bolt is between a minimum and maximum value.")
-    public void blocksSetOnFire(MinMaxBounds.Ints bounds) {
-        this.blocksSetOnFire = bounds;
+    public void blocksSetOnFire(Bounds bounds) {
+        this.blocksSetOnFire = bounds.toIntegerBounds();
     }
 
     @Info("Test the properties of entities struck by this lightning bolt.")

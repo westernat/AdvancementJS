@@ -3,13 +3,15 @@ package org.mesdag.advjs;
 import dev.latvian.mods.kubejs.CommonProperties;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
+import dev.latvian.mods.kubejs.script.ScriptType;
+import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.world.level.GameType;
+import org.mesdag.advjs.util.Bounds;
 import org.mesdag.advjs.util.FrameTypeWrapper;
 import org.mesdag.advjs.util.GameTypeWrapper;
 import org.mesdag.advjs.util.RequirementsStrategyWrapper;
-import org.mesdag.advjs.util.StatsWrapper;
 
 import java.nio.file.Files;
 
@@ -29,13 +31,16 @@ public class AdvJSPlugin extends KubeJSPlugin {
         event.add("AND", RequirementsStrategy.AND);
         event.add("OR", RequirementsStrategy.OR);
 
-        event.add("Stats", StatsWrapper.class);
-
         event.add("GameType", GameTypeWrapper.class);
         event.add("SURVIVAL", GameType.SURVIVAL);
         event.add("CREATIVE", GameType.CREATIVE);
         event.add("ADVENTURE", GameType.ADVENTURE);
         event.add("SPECTATOR", GameType.SPECTATOR);
+    }
+
+    @Override
+    public void registerTypeWrappers(ScriptType type, TypeWrappers typeWrappers) {
+        typeWrappers.registerSimple(Bounds.class, Bounds::of);
     }
 
     @Override

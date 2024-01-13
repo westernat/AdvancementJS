@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.StatType;
 import net.minecraft.world.level.GameType;
+import org.mesdag.advjs.util.Bounds;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
@@ -30,8 +31,8 @@ public class PlayerPredicateBuilder {
     String team = null;
 
     @Info("Test the experience level of this player.")
-    public void setLevel(MinMaxBounds.Ints bounds) {
-        playerBuilder.setLevel(bounds);
+    public void setLevel(Bounds bounds) {
+        playerBuilder.setLevel(bounds.toIntegerBounds());
     }
 
     @Info(value = "Test player's statistics.",

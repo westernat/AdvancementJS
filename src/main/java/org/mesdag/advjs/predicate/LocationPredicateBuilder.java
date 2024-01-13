@@ -2,10 +2,14 @@ package org.mesdag.advjs.predicate;
 
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.rhino.util.HideFromJS;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.critereon.BlockPredicate;
+import net.minecraft.advancements.critereon.FluidPredicate;
+import net.minecraft.advancements.critereon.LightPredicate;
+import net.minecraft.advancements.critereon.LocationPredicate;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import org.mesdag.advjs.util.Bounds;
 
 import java.util.function.Consumer;
 
@@ -13,18 +17,18 @@ public class LocationPredicateBuilder {
     final LocationPredicate.Builder builder = new LocationPredicate.Builder();
 
     @Info("The x position.")
-    public void setX(MinMaxBounds.Doubles bounds) {
-        builder.setX(bounds);
+    public void setX(Bounds bounds) {
+        builder.setX(bounds.toDoubleBounds());
     }
 
     @Info("The y position.")
-    public void setY(MinMaxBounds.Doubles bounds) {
-        builder.setY(bounds);
+    public void setY(Bounds bounds) {
+        builder.setY(bounds.toDoubleBounds());
     }
 
     @Info("The z position.")
-    public void setZ(MinMaxBounds.Doubles bounds) {
-        builder.setZ(bounds);
+    public void setZ(Bounds bounds) {
+        builder.setZ(bounds.toDoubleBounds());
     }
 
     @Info("The biome at this location, as a resource location.")
@@ -48,8 +52,8 @@ public class LocationPredicateBuilder {
     }
 
     @Info("The light at the location. Test fails if the location is unloaded.")
-    public void setLight(MinMaxBounds.Ints level) {
-        builder.setLight(LightPredicate.Builder.light().setComposite(level).build());
+    public void setLight(Bounds level) {
+        builder.setLight(LightPredicate.Builder.light().setComposite(level.toIntegerBounds()).build());
     }
 
     @Info("The block at the location. Test fails if the location is unloaded.")
@@ -77,7 +81,7 @@ public class LocationPredicateBuilder {
     }
 
     @Info("When true, success if the block is closely above a campfire or soul campfire. When false, success if not.")
-    public void setSmokey(Boolean bool) {
+    public void setSmokey(boolean bool) {
         builder.setSmokey(bool);
     }
 
