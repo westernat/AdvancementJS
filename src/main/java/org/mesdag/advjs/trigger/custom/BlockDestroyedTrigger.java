@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mesdag.advjs.trigger.AbstractTriggerBuilder;
-import org.mesdag.advjs.util.BlockSetter;
 import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
@@ -57,15 +56,15 @@ public class BlockDestroyedTrigger extends SimpleCriterionTrigger<BlockDestroyed
         return new TriggerInstance(builder.player, builder.block, builder.statePredicate, builder.item);
     }
 
-    public static class Builder extends AbstractTriggerBuilder implements BlockSetter, ItemSetter {
+    public static class Builder extends AbstractTriggerBuilder implements ItemSetter {
         @Nullable
         Block block = null;
         StatePropertiesPredicate statePredicate = StatePropertiesPredicate.ANY;
         ItemPredicate item = ItemPredicate.ANY;
 
         @Info("Checks the block that was destroyed.")
-        public void setBlock(ResourceLocation blockId) {
-            this.block = warpBlock(blockId);
+        public void setBlock(@Nullable Block block) {
+            this.block = block;
         }
 
         @Info("Checks states of destroyed block.")

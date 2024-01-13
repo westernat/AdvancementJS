@@ -3,22 +3,20 @@ package org.mesdag.advjs.trigger;
 import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
-import org.mesdag.advjs.util.BlockSetter;
 import org.mesdag.advjs.util.ItemSetter;
 
-class BeeNestDestroyedBuilder extends AbstractTriggerBuilder implements ItemSetter, BlockSetter {
+class BeeNestDestroyedBuilder extends AbstractTriggerBuilder implements ItemSetter {
     @Nullable
     Block block = null;
     ItemPredicate item = ItemPredicate.ANY;
     MinMaxBounds.Ints bounds = MinMaxBounds.Ints.ANY;
 
     @Info("Checks the block that was destroyed.")
-    public void setBlock(ResourceLocation blockId) {
-        this.block = warpBlock(blockId);
+    public void setBlock(@Nullable Block block) {
+        this.block = block;
     }
 
     @Info("The item used to break the block.")

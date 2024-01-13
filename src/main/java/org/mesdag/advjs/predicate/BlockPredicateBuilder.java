@@ -1,6 +1,5 @@
 package org.mesdag.advjs.predicate;
 
-import com.google.common.collect.ImmutableSet;
 import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
@@ -9,9 +8,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
-import org.mesdag.advjs.util.BlockSetter;
 
-class BlockPredicateBuilder implements BlockSetter {
+import java.util.function.Consumer;
+
+public class BlockPredicateBuilder {
     final BlockPredicate.Builder builder = BlockPredicate.Builder.block();
 
     @Info("Match block's tag.")
@@ -20,12 +20,8 @@ class BlockPredicateBuilder implements BlockSetter {
     }
 
     @Info("Match all blocks.")
-    public void ofBlocks(ResourceLocation... blockIds) {
-        ImmutableSet.Builder<Block> setBuilder = ImmutableSet.builder();
-        for (ResourceLocation blockId : blockIds) {
-            setBuilder.add(warpBlock(blockId));
-        }
-        builder.of(setBuilder.build());
+    public void ofBlocks(Block... blocks) {
+        builder.of(blocks);
     }
 
     @Info("Match block state.")
@@ -33,8 +29,19 @@ class BlockPredicateBuilder implements BlockSetter {
         builder.setProperties(statePropertiesPredicate);
     }
 
+    @Info("Match block state.")
+    public void setProperties(Consumer<StatePropertiesPredicateBuilder> consumer) {
+        StatePropertiesPredicateBuilder builder1 = new StatePropertiesPredicateBuilder();
+        consumer.accept(builder1);
+        builder.setProperties(builder1.build());
+    }
+
     @Info("Match nbt.")
     public void hasNbt(CompoundTag nbt) {
         builder.hasNbt(nbt);
+    }
+
+    BlockPredicate build() {
+        return builder.build();
     }
 }

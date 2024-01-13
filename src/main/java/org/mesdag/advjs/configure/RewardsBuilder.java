@@ -1,5 +1,7 @@
 package org.mesdag.advjs.configure;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -26,12 +28,38 @@ public class RewardsBuilder {
         this.function = CommandFunction.CacheableFunction.NONE;
     }
 
-    @HideFromJS
-    public RewardsBuilder(int experience, ResourceLocation[] loot, ResourceLocation[] recipes, CommandFunction.CacheableFunction function) {
+    RewardsBuilder(int experience, ResourceLocation[] loot, ResourceLocation[] recipes, CommandFunction.CacheableFunction function) {
         this.experience = experience;
         this.loot = loot;
         this.recipes = recipes;
         this.function = function;
+    }
+
+    @HideFromJS
+    public static RewardsBuilder fromJson(JsonObject rewardsJson) {
+        int experience = rewardsJson.get("experience").getAsInt();
+        JsonArray lootArray = rewardsJson.get("loot").getAsJsonArray();
+        ResourceLocation[] loot = new ResourceLocation[lootArray.size()];
+
+        for (int j = 0; j < loot.length; ++j) {
+            loot[j] = new ResourceLocation(lootArray.get(j).getAsString());
+        }
+
+        JsonArray recipeArray = rewardsJson.get("recipes").getAsJsonArray();
+        ResourceLocation[] recipes = new ResourceLocation[recipeArray.size()];
+
+        for (int k = 0; k < recipes.length; ++k) {
+            recipes[k] = new ResourceLocation(recipeArray.get(k).getAsString());
+        }
+
+        CommandFunction.CacheableFunction function;
+        if (rewardsJson.has("function")) {
+            function = new CommandFunction.CacheableFunction(new ResourceLocation(rewardsJson.get("function").getAsString()));
+        } else {
+            function = CommandFunction.CacheableFunction.NONE;
+        }
+
+        return new RewardsBuilder(experience, loot, recipes, function);
     }
 
     @Info("To give an amount of experience. Defaults to 0.")

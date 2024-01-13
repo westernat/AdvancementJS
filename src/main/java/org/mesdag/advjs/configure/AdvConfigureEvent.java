@@ -6,6 +6,7 @@ import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.predicate.Predicate;
 import org.mesdag.advjs.trigger.Trigger;
 import org.mesdag.advjs.util.Bounds;
@@ -16,7 +17,7 @@ import static org.mesdag.advjs.configure.Data.LOCK_MAP;
 public class AdvConfigureEvent extends EventJS {
     @Info("""
         Trigger required in advancement.
-        
+
         More details please goto https://minecraft.wiki/w/Advancement/JSON_format
         """)
     public final Trigger TRIGGER = new Trigger();
@@ -42,11 +43,16 @@ public class AdvConfigureEvent extends EventJS {
             icon: the id of icon item/block.
 
             frame: type of frame for the icon. Available value is 'challenge', 'goal' or 'task'.
-            
+
             parent: the parent advancement path of this advancement.
         """)
     public void remove(JsonElement jsonElement) {
-        FILTERS.add(RemoveFilter.of(jsonElement));
+        RemoveFilter filter = RemoveFilter.of(jsonElement);
+        if (filter.fail()) {
+            AdvJS.LOGGER.warn("Failed create a filter");
+        } else {
+            FILTERS.add(filter);
+        }
     }
 
     @Info("Get an exist advancement to modify.")

@@ -3,9 +3,12 @@ package org.mesdag.advjs.predicate;
 import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.LighthingBoltPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 
-class LightningBoltPredicateBuilder {
+import java.util.function.Consumer;
+
+public class LightningBoltPredicateBuilder {
     MinMaxBounds.Ints blocksSetOnFire = MinMaxBounds.Ints.ANY;
     EntityPredicate entityStruck = EntityPredicate.ANY;
 
@@ -14,19 +17,22 @@ class LightningBoltPredicateBuilder {
         this.blocksSetOnFire = bounds;
     }
 
-    @Info("""
-        Test the properties of entities struck by this lightning bolt.
-        
-        Passes if at least one of the struck entities matches the entered conditions.
-        """)
+    @Info("Test the properties of entities struck by this lightning bolt.")
     public void entityStruck(EntityPredicate entityPredicate) {
         this.entityStruck = entityPredicate;
     }
 
-    JsonObject toJson() {
-        JsonObject jsonobject = new JsonObject();
-        jsonobject.add("blocks_set_on_fire", blocksSetOnFire.serializeToJson());
-        jsonobject.add("entity_struck", entityStruck.serializeToJson());
-        return jsonobject;
+    @Info("Test the properties of entities struck by this lightning bolt.")
+    public void entityStruck(Consumer<EntityPredicateBuilder> consumer) {
+        EntityPredicateBuilder builder = new EntityPredicateBuilder();
+        consumer.accept(builder);
+        this.entityStruck = builder.build();
+    }
+
+    LighthingBoltPredicate build(){
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("blocks_set_on_fire", blocksSetOnFire.serializeToJson());
+        jsonObject.add("entity_struck", entityStruck.serializeToJson());
+        return LighthingBoltPredicate.fromJson(jsonObject);
     }
 }

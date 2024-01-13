@@ -6,8 +6,12 @@ import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.crafting.Ingredient;
+import org.mesdag.advjs.predicate.EntityPredicateBuilder;
+import org.mesdag.advjs.predicate.ItemPredicateBuilder;
 import org.mesdag.advjs.util.EntitySetter;
 import org.mesdag.advjs.util.ItemSetter;
+
+import java.util.function.Consumer;
 
 class ItemPickedUpByEntityBuilder extends AbstractTriggerBuilder implements ItemSetter, EntitySetter {
     ItemPredicate item = ItemPredicate.ANY;
@@ -19,6 +23,13 @@ class ItemPickedUpByEntityBuilder extends AbstractTriggerBuilder implements Item
     }
 
     @Info("The thrown item which was picked up.")
+    public void setItem(Consumer<ItemPredicateBuilder> consumer) {
+        ItemPredicateBuilder builder = new ItemPredicateBuilder();
+        consumer.accept(builder);
+        this.item = builder.build();
+    }
+
+    @Info("The thrown item which was picked up.")
     public void setItem(Ingredient ingredient) {
         this.item = warpItem(ingredient);
     }
@@ -26,6 +37,13 @@ class ItemPickedUpByEntityBuilder extends AbstractTriggerBuilder implements Item
     @Info("The entity which picked up the item.")
     public void setEntity(EntityPredicate entity) {
         this.entity = EntityPredicate.wrap(entity);
+    }
+
+    @Info("The entity which picked up the item.")
+    public void setEntity(Consumer<EntityPredicateBuilder> consumer) {
+        EntityPredicateBuilder builder = new EntityPredicateBuilder();
+        consumer.accept(builder);
+        this.entity = EntityPredicate.wrap(builder.build());
     }
 
     @Info("The entity which picked up the item.")

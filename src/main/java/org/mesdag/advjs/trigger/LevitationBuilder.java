@@ -3,6 +3,9 @@ package org.mesdag.advjs.trigger;
 import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.DistancePredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
+import org.mesdag.advjs.predicate.DistancePredicateBuilder;
+
+import java.util.function.Consumer;
 
 class LevitationBuilder extends AbstractTriggerBuilder {
     DistancePredicate distance = DistancePredicate.ANY;
@@ -11,6 +14,13 @@ class LevitationBuilder extends AbstractTriggerBuilder {
     @Info("The distance between the position where the player started levitating and the player's current position.")
     public void setDistance(DistancePredicate distance) {
         this.distance = distance;
+    }
+
+    @Info("The distance between the position where the player started levitating and the player's current position.")
+    public void setDistance(Consumer<DistancePredicateBuilder> consumer) {
+        DistancePredicateBuilder builder = new DistancePredicateBuilder();
+        consumer.accept(builder);
+        this.distance = builder.build();
     }
 
     @Info("The duration of the levitation in ticks.")

@@ -1,6 +1,7 @@
 package org.mesdag.advjs.predicate;
 
 import dev.latvian.mods.kubejs.typings.Info;
+import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -8,7 +9,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 
 import javax.annotation.Nullable;
 
-class EnchantmentPredicateBuilder {
+public class EnchantmentPredicateBuilder {
     @Nullable
     Enchantment enchantment = null;
     MinMaxBounds.Ints level = MinMaxBounds.Ints.ANY;
@@ -24,5 +25,9 @@ class EnchantmentPredicateBuilder {
     @Info("Match level of enchantment.")
     public void setLevel(MinMaxBounds.Ints bounds) {
         level = bounds;
+    }
+
+    EnchantmentPredicate build() {
+        return new EnchantmentPredicate(enchantment, level);
     }
 }

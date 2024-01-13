@@ -49,9 +49,8 @@ public class AdvJSPlugin extends KubeJSPlugin {
 
     @Override
     public void loadCommonProperties(CommonProperties properties) {
-        boolean generate = properties.get("AdvJSExample", true);
         DEBUG = properties.get("AdvJSDebug", true);
-        example(generate);
+        example(properties.get("AdvJSExample", true));
     }
 
     private static void example(boolean generate) {
@@ -125,16 +124,16 @@ public class AdvJSPlugin extends KubeJSPlugin {
                                     })
                                     .criteria((criteriaBuilder) => criteriaBuilder.add("jump", jump5times))
                             });
-                            
+
                         // Lock recipe by advancement
                         event.lock("stone_slab", "minecraft:story/smelt_iron");
                     })
                     """
                 );
+                AdvJS.LOGGER.info("Generated advancement.js");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            AdvJS.LOGGER.info("Generated advancement.js");
         }
     }
 }

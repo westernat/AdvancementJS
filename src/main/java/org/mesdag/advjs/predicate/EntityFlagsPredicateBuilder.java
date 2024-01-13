@@ -3,7 +3,7 @@ package org.mesdag.advjs.predicate;
 import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.EntityFlagsPredicate;
 
-class EntityFlagsPredicateBuilder {
+public class EntityFlagsPredicateBuilder {
     final EntityFlagsPredicate.Builder builder = new EntityFlagsPredicate.Builder();
 
     @Info("Test whether the entity is or is not on fire.")

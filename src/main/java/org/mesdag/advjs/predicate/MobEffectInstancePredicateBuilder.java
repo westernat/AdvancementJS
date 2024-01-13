@@ -2,10 +2,11 @@ package org.mesdag.advjs.predicate;
 
 import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.advancements.critereon.MobEffectsPredicate;
 
 import javax.annotation.Nullable;
 
-class MobEffectInstancePredicateBuilder {
+public class MobEffectInstancePredicateBuilder {
     MinMaxBounds.Ints amplifier = MinMaxBounds.Ints.ANY;
     MinMaxBounds.Ints duration = MinMaxBounds.Ints.ANY;
     @Nullable
@@ -31,5 +32,9 @@ class MobEffectInstancePredicateBuilder {
     @Info("Test if the effect has visible particles.")
     public void setVisible(boolean bool) {
         visible = bool;
+    }
+
+    MobEffectsPredicate.MobEffectInstancePredicate build() {
+        return new MobEffectsPredicate.MobEffectInstancePredicate(amplifier, duration, ambient, visible);
     }
 }

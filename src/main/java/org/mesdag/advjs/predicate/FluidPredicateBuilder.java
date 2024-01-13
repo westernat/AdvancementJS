@@ -5,7 +5,9 @@ import net.minecraft.advancements.critereon.FluidPredicate;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.world.level.material.Fluid;
 
-class FluidPredicateBuilder {
+import java.util.function.Consumer;
+
+public class FluidPredicateBuilder {
     final FluidPredicate.Builder builder = FluidPredicate.Builder.fluid();
 
     @Info("Check fluid.")
@@ -16,6 +18,13 @@ class FluidPredicateBuilder {
     @Info("Check states of fluid.")
     public void setProperties(StatePropertiesPredicate statePropertiesPredicate) {
         builder.setProperties(statePropertiesPredicate);
+    }
+
+    @Info("Check states of fluid.")
+    public void setProperties(Consumer<StatePropertiesPredicateBuilder> consumer) {
+        StatePropertiesPredicateBuilder builder1 = new StatePropertiesPredicateBuilder();
+        consumer.accept(builder1);
+        builder.setProperties(builder1.build());
     }
 
     FluidPredicate build() {

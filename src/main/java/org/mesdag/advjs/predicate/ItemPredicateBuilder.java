@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class ItemPredicateBuilder {
@@ -54,12 +55,27 @@ public class ItemPredicateBuilder {
         builder.hasEnchantment(enchantmentPredicate);
     }
 
+    @Info("Test the enchantment.")
+    public void hasEnchantment(Consumer<EnchantmentPredicateBuilder> consumer) {
+        EnchantmentPredicateBuilder builder1 = new EnchantmentPredicateBuilder();
+        consumer.accept(builder1);
+        builder.hasEnchantment(builder1.build());
+    }
+
     @Info("To test for stored enchantments on an enchanted book.")
     public void hasStoredEnchantment(EnchantmentPredicate enchantmentPredicate) {
         builder.hasStoredEnchantment(enchantmentPredicate);
     }
 
-    ItemPredicate build() {
+    @Info("To test for stored enchantments on an enchanted book.")
+    public void hasStoredEnchantment(Consumer<EnchantmentPredicateBuilder> consumer) {
+        EnchantmentPredicateBuilder builder1 = new EnchantmentPredicateBuilder();
+        consumer.accept(builder1);
+        builder.hasStoredEnchantment(builder1.build());
+    }
+
+    @HideFromJS
+    public ItemPredicate build() {
         return builder.build();
     }
 

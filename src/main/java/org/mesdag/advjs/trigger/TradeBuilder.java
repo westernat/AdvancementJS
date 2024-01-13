@@ -5,7 +5,11 @@ import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.world.item.crafting.Ingredient;
+import org.mesdag.advjs.predicate.EntityPredicateBuilder;
+import org.mesdag.advjs.predicate.ItemPredicateBuilder;
 import org.mesdag.advjs.util.ItemSetter;
+
+import java.util.function.Consumer;
 
 class TradeBuilder extends AbstractTriggerBuilder implements ItemSetter {
     ContextAwarePredicate villager = ContextAwarePredicate.ANY;
@@ -16,6 +20,13 @@ class TradeBuilder extends AbstractTriggerBuilder implements ItemSetter {
         this.villager = EntityPredicate.wrap(villager);
     }
 
+    @Info("The villager the item was purchased from.")
+    public void setVillager(Consumer<EntityPredicateBuilder> consumer) {
+        EntityPredicateBuilder builder = new EntityPredicateBuilder();
+        consumer.accept(builder);
+        this.villager = EntityPredicate.wrap(builder.build());
+    }
+
     @Info("""
         The item that was purchased.
                 
@@ -23,6 +34,17 @@ class TradeBuilder extends AbstractTriggerBuilder implements ItemSetter {
         """)
     public void setItem(ItemPredicate item) {
         this.item = item;
+    }
+
+    @Info("""
+        The item that was purchased.
+                
+        The 'count' tag checks the count from one trade, not multiple.
+        """)
+    public void setItem(Consumer<ItemPredicateBuilder> consumer) {
+        ItemPredicateBuilder builder = new ItemPredicateBuilder();
+        consumer.accept(builder);
+        this.item = builder.build();
     }
 
     @Info("""

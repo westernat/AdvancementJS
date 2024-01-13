@@ -4,7 +4,7 @@ license = "${mod_license}"
 
 [[mods]]
 modId = "advjs"
-version = "2001forge-1.5.5"
+version = "2001forge-1.9.0"
 displayName = "AdvancementJS"
 authors = "Weternat"
 description = '''Configure advancements by KubeJS'''

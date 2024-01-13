@@ -1,12 +1,15 @@
 package org.mesdag.advjs.predicate;
 
 import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.critereon.DamagePredicate;
 import net.minecraft.advancements.critereon.DamageSourcePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 
-class DamagePredicateBuilder {
+import java.util.function.Consumer;
+
+public class DamagePredicateBuilder {
     final DamagePredicate.Builder builder = new DamagePredicate.Builder();
 
     @Info("Checks the amount of incoming damage before damage reduction.")
@@ -24,6 +27,13 @@ class DamagePredicateBuilder {
         builder.sourceEntity(entityPredicate);
     }
 
+    @Info("Checks the entity that was the source of the damage (for example: The skeleton that shot the arrow).")
+    public void sourceEntity(Consumer<EntityPredicateBuilder> consumer) {
+        EntityPredicateBuilder builder1 = new EntityPredicateBuilder();
+        consumer.accept(builder1);
+        builder.sourceEntity(builder1.build());
+    }
+
     @Info("Checks if the damage was successfully blocked.")
     public void blocked(boolean bool) {
         builder.blocked(bool);
@@ -34,7 +44,8 @@ class DamagePredicateBuilder {
         builder.type(damageSourcePredicate);
     }
 
-    DamagePredicate build() {
+    @HideFromJS
+    public DamagePredicate build() {
         return builder.build();
     }
 }

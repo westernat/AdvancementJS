@@ -5,12 +5,11 @@ import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.LocationPredicate;
 import org.mesdag.advjs.predicate.ItemPredicateBuilder;
 import org.mesdag.advjs.predicate.LocationPredicateBuilder;
-import org.mesdag.advjs.util.BlockSetter;
 import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
 
-class ItemUsedOnLocationBuilder extends AbstractTriggerBuilder implements BlockSetter, ItemSetter {
+class ItemUsedOnLocationBuilder extends AbstractTriggerBuilder implements ItemSetter {
     LocationPredicateBuilder locationBuilder = new LocationPredicateBuilder();
     ItemPredicateBuilder toolBuilder = new ItemPredicateBuilder();
 

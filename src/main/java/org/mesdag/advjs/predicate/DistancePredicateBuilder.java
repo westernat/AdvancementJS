@@ -1,9 +1,11 @@
 package org.mesdag.advjs.predicate;
 
 import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.rhino.util.HideFromJS;
+import net.minecraft.advancements.critereon.DistancePredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 
-class DistancePredicateBuilder {
+public class DistancePredicateBuilder {
     MinMaxBounds.Doubles x = MinMaxBounds.Doubles.ANY;
     MinMaxBounds.Doubles y = MinMaxBounds.Doubles.ANY;
     MinMaxBounds.Doubles z = MinMaxBounds.Doubles.ANY;
@@ -33,5 +35,10 @@ class DistancePredicateBuilder {
     @Info("Test the distance between the two points in 3D space.")
     public void setAbsolute(MinMaxBounds.Doubles absolute) {
         this.absolute = absolute;
+    }
+
+    @HideFromJS
+    public DistancePredicate build() {
+        return new DistancePredicate(x, y, z, horizontal, absolute);
     }
 }
