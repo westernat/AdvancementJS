@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.function.Consumer;
 
-public class BlockPredicateBuilder implements BlockSetter {
+public class BlockPredicateBuilder {
     final BlockPredicate.Builder builder = BlockPredicate.Builder.create();
 
     @Info("Match block's tag.")

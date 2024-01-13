@@ -5,19 +5,18 @@ import net.minecraft.block.Block;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.mesdag.advjs.util.ItemSetter;
 
-class BeeNestDestroyedBuilder extends AbstractTriggerBuilder implements ItemSetter, BlockSetter {
+class BeeNestDestroyedBuilder extends AbstractTriggerBuilder implements ItemSetter {
     @Nullable
     Block block = null;
     ItemPredicate item = ItemPredicate.ANY;
     NumberRange.IntRange bounds = NumberRange.IntRange.ANY;
 
     @Info("Checks the block that was destroyed.")
-    public void setBlock(Identifier blockId) {
-        this.block = warpBlock(blockId);
+    public void setBlock(@Nullable Block block) {
+        this.block = block;
     }
 
     @Info("The item used to break the block.")
