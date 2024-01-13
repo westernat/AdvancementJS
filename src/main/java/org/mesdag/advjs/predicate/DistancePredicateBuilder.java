@@ -2,9 +2,11 @@ package org.mesdag.advjs.predicate;
 
 
 import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.predicate.NumberRange;
+import net.minecraft.predicate.entity.DistancePredicate;
 
-class DistancePredicateBuilder {
+public class DistancePredicateBuilder {
     NumberRange.FloatRange x = NumberRange.FloatRange.ANY;
     NumberRange.FloatRange y = NumberRange.FloatRange.ANY;
     NumberRange.FloatRange z = NumberRange.FloatRange.ANY;
@@ -34,5 +36,10 @@ class DistancePredicateBuilder {
     @Info("Test the distance between the two points in 3D space.")
     public void setAbsolute(NumberRange.FloatRange absolute) {
         this.absolute = absolute;
+    }
+
+    @HideFromJS
+    public DistancePredicate build() {
+        return new DistancePredicate(x, y, z, horizontal, absolute);
     }
 }

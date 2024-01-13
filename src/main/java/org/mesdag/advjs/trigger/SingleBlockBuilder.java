@@ -3,21 +3,28 @@ package org.mesdag.advjs.trigger;
 
 import net.minecraft.block.Block;
 import net.minecraft.predicate.StatePredicate;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
-import org.mesdag.advjs.util.BlockSetter;
+import org.mesdag.advjs.predicate.StatePropertiesPredicateBuilder;
+
+import java.util.function.Consumer;
 
 
-class SingleBlockBuilder extends AbstractTriggerBuilder implements BlockSetter {
+class SingleBlockBuilder extends AbstractTriggerBuilder {
     @Nullable
     Block block = null;
     StatePredicate state = StatePredicate.ANY;
 
-    public void setBlock(Identifier blockId) {
-        this.block = warpBlock(blockId);
+    public void setBlock(@Nullable Block block) {
+        this.block = block;
     }
 
     public void setState(StatePredicate state) {
         this.state = state;
+    }
+
+    public void setState(Consumer<StatePropertiesPredicateBuilder> consumer) {
+        StatePropertiesPredicateBuilder builder = new StatePropertiesPredicateBuilder();
+        consumer.accept(builder);
+        this.state = builder.build();
     }
 }

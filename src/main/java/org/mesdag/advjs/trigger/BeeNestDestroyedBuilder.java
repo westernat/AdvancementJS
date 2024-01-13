@@ -7,7 +7,6 @@ import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
-import org.mesdag.advjs.util.BlockSetter;
 import org.mesdag.advjs.util.ItemSetter;
 
 class BeeNestDestroyedBuilder extends AbstractTriggerBuilder implements ItemSetter, BlockSetter {

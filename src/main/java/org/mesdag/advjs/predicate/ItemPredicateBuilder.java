@@ -11,6 +11,7 @@ import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class ItemPredicateBuilder {
@@ -54,12 +55,27 @@ public class ItemPredicateBuilder {
         builder.enchantment(enchantmentPredicate);
     }
 
+    @Info("Test the enchantment.")
+    public void hasEnchantment(Consumer<EnchantmentPredicateBuilder> consumer) {
+        EnchantmentPredicateBuilder builder1 = new EnchantmentPredicateBuilder();
+        consumer.accept(builder1);
+        builder.enchantment(builder1.build());
+    }
+
     @Info("To test for stored enchantments on an enchanted book.")
     public void hasStoredEnchantment(EnchantmentPredicate enchantmentPredicate) {
         builder.storedEnchantment(enchantmentPredicate);
     }
 
-    ItemPredicate build() {
+    @Info("To test for stored enchantments on an enchanted book.")
+    public void hasStoredEnchantment(Consumer<EnchantmentPredicateBuilder> consumer) {
+        EnchantmentPredicateBuilder builder1 = new EnchantmentPredicateBuilder();
+        consumer.accept(builder1);
+        builder.storedEnchantment(builder1.build());
+    }
+
+    @HideFromJS
+    public ItemPredicate build() {
         return builder.build();
     }
 

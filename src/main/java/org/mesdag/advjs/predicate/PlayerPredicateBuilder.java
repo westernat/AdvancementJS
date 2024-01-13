@@ -1,7 +1,8 @@
-package org.mesdag.advjs.trigger;
+package org.mesdag.advjs.predicate;
 
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.predicate.NbtPredicate;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.*;
@@ -13,11 +14,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.Nullable;
 
-class PlayerPredicateBuilder {
+import java.util.function.Consumer;
+
+public class PlayerPredicateBuilder {
     final PlayerPredicate.Builder playerBuilder = new PlayerPredicate.Builder();
     DistancePredicate distance = DistancePredicate.ANY;
     LocationPredicate location = LocationPredicate.ANY;
-    LocationPredicate steppingOnLocation = LocationPredicate.ANY;
+    LocationPredicate steppingOn = LocationPredicate.ANY;
     EntityEffectPredicate effects = EntityEffectPredicate.EMPTY;
     NbtPredicate nbt = NbtPredicate.ANY;
     EntityFlagsPredicate flags = EntityFlagsPredicate.ANY;
@@ -53,9 +56,13 @@ class PlayerPredicateBuilder {
         }
     }
 
-    @Info("Test if recipes are known or unknown to this player.")
-    public void addRecipe(Identifier recipe, boolean unlocked) {
-        playerBuilder.recipe(recipe, unlocked);
+    @Info(value = "Test if recipes are known or unknown to this player.",
+        params = {
+            @Param(name = "recipeId"),
+            @Param(name = "unlocked")
+        })
+    public void addRecipe(Identifier recipeId, boolean unlocked) {
+        playerBuilder.recipe(recipeId, unlocked);
     }
 
     @Info("Test the game mode of this player.")
@@ -65,14 +72,29 @@ class PlayerPredicateBuilder {
 
     @Info("""
         Test properties of the entity that this player is looking at, as long as it is visible and within a radius of 100 blocks.
-        
+
         Visibility is defined through the line from the player's eyes to the entity's eyes, rather than the direction that the player is looking in.
         """)
     public void setLookingAt(EntityPredicate entityPredicate) {
         playerBuilder.lookingAt(entityPredicate);
     }
 
-    @Info("Test if the player's advancement done.")
+    @Info("""
+        Test properties of the entity that this player is looking at, as long as it is visible and within a radius of 100 blocks.
+                
+        Visibility is defined through the line from the player's eyes to the entity's eyes, rather than the direction that the player is looking in.
+        """)
+    public void setLookingAt(Consumer<EntityPredicateBuilder> consumer) {
+        EntityPredicateBuilder builder = new EntityPredicateBuilder();
+        consumer.accept(builder);
+        playerBuilder.lookingAt(builder.build());
+    }
+
+    @Info(value = "Test if the player's advancement done.",
+        params = {
+            @Param(name = "advancement"),
+            @Param(name = "done")
+        })
     public void checkAdvancementDone(Identifier advancement, boolean done) {
         playerBuilder.advancement(advancement, done);
     }
@@ -88,19 +110,51 @@ class PlayerPredicateBuilder {
         this.distance = distance;
     }
 
+    @Info("""
+        Test the distance to player this predicate is invoked upon.
+                
+        Passes if the calculated distance is between the entered min and max, inclusive.
+        """)
+    public void setDistance(Consumer<DistancePredicateBuilder> consumer) {
+        DistancePredicateBuilder builder = new DistancePredicateBuilder();
+        consumer.accept(builder);
+        this.distance = builder.build();
+    }
+
     @Info("Test properties of player's location.")
     public void setLocation(LocationPredicate location) {
         this.location = location;
     }
 
+    @Info("Test properties of player's location.")
+    public void setLocation(Consumer<LocationPredicateBuilder> consumer) {
+        LocationPredicateBuilder builder1 = new LocationPredicateBuilder();
+        consumer.accept(builder1);
+        this.location = builder1.build();
+    }
+
     @Info("Test properties of the block player is standing on, using a location predicate.")
-    public void setSteppingOnLocation(LocationPredicate steppingOnLocation) {
-        this.steppingOnLocation = steppingOnLocation;
+    public void setSteppingOn(LocationPredicate steppingOn) {
+        this.steppingOn = steppingOn;
+    }
+
+    @Info("Test properties of the block player is standing on, using a location predicate.")
+    public void setSteppingOn(Consumer<LocationPredicateBuilder> consumer) {
+        LocationPredicateBuilder builder1 = new LocationPredicateBuilder();
+        consumer.accept(builder1);
+        this.steppingOn = builder1.build();
     }
 
     @Info("Test the active status effects on player.")
     public void setEffects(EntityEffectPredicate effects) {
         this.effects = effects;
+    }
+
+    @Info("Test the active status effects on player.")
+    public void setEffects(Consumer<MobEffectsPredicateBuilder> consumer) {
+        MobEffectsPredicateBuilder builder1 = new MobEffectsPredicateBuilder();
+        consumer.accept(builder1);
+        this.effects = builder1.build();
     }
 
     @Info("Test NBT data of player.")
@@ -113,9 +167,23 @@ class PlayerPredicateBuilder {
         this.flags = flags;
     }
 
+    @Info("Test flags of player.")
+    public void setFlags(Consumer<EntityFlagsPredicateBuilder> consumer) {
+        EntityFlagsPredicateBuilder builder1 = new EntityFlagsPredicateBuilder();
+        consumer.accept(builder1);
+        this.flags = builder1.build();
+    }
+
     @Info("Test the items that player holds in its equipment slots.")
     public void setEquipment(EntityEquipmentPredicate equipment) {
         this.equipment = equipment;
+    }
+
+    @Info("Test the items that player holds in its equipment slots.")
+    public void setEquipment(Consumer<EntityEquipmentPredicateBuilder> consumer) {
+        EntityEquipmentPredicateBuilder builder1 = new EntityEquipmentPredicateBuilder();
+        consumer.accept(builder1);
+        this.equipment = builder1.build();
     }
 
     @Info("Test properties of the vehicle entity that player is riding upon.")
@@ -123,9 +191,23 @@ class PlayerPredicateBuilder {
         this.vehicle = vehicle;
     }
 
+    @Info("Test properties of the vehicle entity that player is riding upon.")
+    public void setVehicle(Consumer<EntityPredicateBuilder> consumer) {
+        EntityPredicateBuilder builder1 = new EntityPredicateBuilder();
+        consumer.accept(builder1);
+        this.vehicle = builder1.build();
+    }
+
     @Info("Test the entity directly riding player.")
     public void setPassenger(EntityPredicate passenger) {
         this.passenger = passenger;
+    }
+
+    @Info("Test the entity directly riding player.")
+    public void setPassenger(Consumer<EntityPredicateBuilder> consumer) {
+        EntityPredicateBuilder builder1 = new EntityPredicateBuilder();
+        consumer.accept(builder1);
+        this.passenger = builder1.build();
     }
 
     @Info("Test properties of the entity which player is targeting for attacks.")
@@ -133,17 +215,25 @@ class PlayerPredicateBuilder {
         this.targetedEntity = targetedEntity;
     }
 
+    @Info("Test properties of the entity which player is targeting for attacks.")
+    public void setTargetedEntity(Consumer<EntityPredicateBuilder> consumer) {
+        EntityPredicateBuilder builder1 = new EntityPredicateBuilder();
+        consumer.accept(builder1);
+        this.targetedEntity = builder1.build();
+    }
+
     @Info("Passes if the team of player matches this string.")
     public void setTeam(@Nullable String team) {
         this.team = team;
     }
 
-    LootContextPredicate build() {
+    @HideFromJS
+    public LootContextPredicate build() {
         return EntityPredicate.asLootContextPredicate(EntityPredicate.Builder.create()
             .typeSpecific(playerBuilder.build())
             .distance(distance)
             .location(location)
-            .steppingOn(steppingOnLocation)
+            .steppingOn(steppingOn)
             .effects(effects)
             .nbt(nbt)
             .flags(flags)

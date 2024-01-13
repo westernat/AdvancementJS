@@ -51,7 +51,7 @@ public class AdvBuilder {
     @Info("Data related to the advancement's display.")
     public AdvBuilder display(Consumer<DisplayBuilder> displayBuilderConsumer) {
         displayBuilderConsumer.accept(displayBuilder);
-        if (isRoot() && displayBuilder.getBackground() == null) {
+        if (parent == null && displayBuilder.getBackground() == null) {
             displayBuilder.setBackground(DEFAULT_BACKGROUND);
         }
         update();
@@ -120,11 +120,6 @@ public class AdvBuilder {
     @HideFromJS
     public boolean isSendsTelemetryEvent() {
         return sendsTelemetryEvent;
-    }
-
-    @Info("If it is a root advancement.")
-    public boolean isRoot() {
-        return parent == null;
     }
 
     @Info("If it is a warn advancement.")

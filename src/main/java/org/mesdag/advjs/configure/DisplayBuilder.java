@@ -33,15 +33,15 @@ public class DisplayBuilder {
     }
 
     @HideFromJS
-    public DisplayBuilder(ItemStack icon, Text title, Text description, @Nullable Identifier background, AdvancementFrame frameType, boolean showToast, boolean announceToChat, boolean hidden) {
-        this.icon = icon;
-        this.title = title;
-        this.description = description;
-        this.background = background;
-        this.frameType = frameType;
-        this.showToast = showToast;
-        this.announceToChat = announceToChat;
-        this.hidden = hidden;
+    public DisplayBuilder(AdvancementDisplay displayInfo) {
+        this.icon = displayInfo.getIcon();
+        this.title = displayInfo.getTitle();
+        this.description = displayInfo.getDescription();
+        this.background = displayInfo.getBackground();
+        this.frameType = displayInfo.getFrame();
+        this.showToast = displayInfo.shouldShowToast();
+        this.announceToChat = displayInfo.shouldAnnounceToChat();
+        this.hidden = displayInfo.isHidden();
     }
 
     @Info("The ItemStack containing data for the advancement's icon.")
@@ -86,7 +86,7 @@ public class DisplayBuilder {
 
     @Info("""
         Whether to hide this advancement and all its children from the advancement screen until this advancement have been completed.
-                
+
         Has no effect on root advancements themselves, but still affects all their children. Defaults to false.
         """)
     public void setHidden(boolean hidden) {

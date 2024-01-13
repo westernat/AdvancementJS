@@ -6,6 +6,7 @@ import net.minecraft.advancement.criterion.*;
 import net.minecraft.loot.condition.LocationCheckLootCondition;
 import net.minecraft.loot.condition.MatchToolLootCondition;
 import net.minecraft.predicate.entity.LootContextPredicate;
+import org.mesdag.advjs.predicate.PlayerPredicateBuilder;
 import org.mesdag.advjs.trigger.custom.BlockDestroyedCriterion;
 import org.mesdag.advjs.trigger.custom.BossEventConditions;
 import org.mesdag.advjs.trigger.custom.PlayerTouchConditions;

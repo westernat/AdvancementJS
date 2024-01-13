@@ -57,7 +57,7 @@ ServerEvents.advancement((event) => {
     });
     
     // Remove an exist advancement by RemoveFilter, available filter was writen in doc.
-    // you can also use like this: 'event.remove("minecraft:story/lava_bucket");'
+    // you can also remove like this: 'event.remove("minecraft:story/lava_bucket");'
     event.remove({
         icon: "minecraft:lava_bucket"
     });
@@ -82,15 +82,18 @@ ServerEvents.advancement((event) => {
 # How to reload
 Just use ```/reload```
 
-# Custom trigger
-- blockDestroyed: triggers when the player breaks a block.
-- playerTouch: triggers when the player touch an entity.
-- bossEvent: triggers when the play joins a boss fight.
-- More idea...
-
-# Custom reward
-- addEffect: to give effect.
-- More idea...
+# Features
+- Custom trigger
+    - blockDestroyed: triggers when the player breaks a block.
+    - playerTouch: triggers when the player touch an entity.
+    - bossEvent: triggers when the play joins a boss fight.
+    - More idea...
+- Custom reward
+    - addEffect: to give effect.
+    - More idea...
+- Custom condition
+    - requireParentDone: check if parent done, else it will not be done
+    - More idea...
 
 # TODO
 - More non-vanilla triggers

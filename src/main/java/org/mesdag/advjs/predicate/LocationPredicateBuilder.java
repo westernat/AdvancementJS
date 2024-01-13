@@ -11,6 +11,8 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
+import java.util.function.Consumer;
+
 public class LocationPredicateBuilder {
     final LocationPredicate.Builder builder = new LocationPredicate.Builder();
 
@@ -49,9 +51,21 @@ public class LocationPredicateBuilder {
         builder.light(light);
     }
 
+    @Info("The light at the location. Test fails if the location is unloaded.")
+    public void setLight(NumberRange.IntRange level) {
+        builder.light(LightPredicate.Builder.create().light(level).build());
+    }
+
     @Info("The block at the location. Test fails if the location is unloaded.")
     public void setBlock(BlockPredicate block) {
         builder.block(block);
+    }
+
+    @Info("The block at the location. Test fails if the location is unloaded.")
+    public void setBlock(Consumer<BlockPredicateBuilder> consumer) {
+        BlockPredicateBuilder builder1 = new BlockPredicateBuilder();
+        consumer.accept(builder1);
+        builder.block(builder1.build());
     }
 
     @Info("The fluid at the location. Test fails if the location is unloaded.")
@@ -59,12 +73,20 @@ public class LocationPredicateBuilder {
         builder.fluid(fluid);
     }
 
+    @Info("The fluid at the location. Test fails if the location is unloaded.")
+    public void setFluid(Consumer<FluidPredicateBuilder> consumer) {
+        FluidPredicateBuilder builder1 = new FluidPredicateBuilder();
+        consumer.accept(builder1);
+        builder.fluid(builder1.build());
+    }
+
     @Info("When true, success if the block is closely above a campfire or soul campfire. When false, success if not.")
     public void setSmokey(Boolean bool) {
         builder.smokey(bool);
     }
 
-    LocationPredicate build() {
+    @HideFromJS
+    public LocationPredicate build() {
         return builder.build();
     }
 

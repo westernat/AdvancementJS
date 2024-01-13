@@ -4,8 +4,11 @@ import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.EntityPredicate;
+import net.minecraft.predicate.entity.LightningBoltPredicate;
 
-class LightningBoltPredicateBuilder {
+import java.util.function.Consumer;
+
+public class LightningBoltPredicateBuilder {
     NumberRange.IntRange blocksSetOnFire = NumberRange.IntRange.ANY;
     EntityPredicate entityStruck = EntityPredicate.ANY;
 
@@ -14,19 +17,22 @@ class LightningBoltPredicateBuilder {
         this.blocksSetOnFire = bounds;
     }
 
-    @Info("""
-        Test the properties of entities struck by this lightning bolt.
-        
-        Passes if at least one of the struck entities matches the entered conditions.
-        """)
+    @Info("Test the properties of entities struck by this lightning bolt.")
     public void entityStruck(EntityPredicate entityPredicate) {
         this.entityStruck = entityPredicate;
     }
 
-    JsonObject toJson() {
-        JsonObject jsonobject = new JsonObject();
-        jsonobject.add("blocks_set_on_fire", blocksSetOnFire.toJson());
-        jsonobject.add("entity_struck", entityStruck.toJson());
-        return jsonobject;
+    @Info("Test the properties of entities struck by this lightning bolt.")
+    public void entityStruck(Consumer<EntityPredicateBuilder> consumer) {
+        EntityPredicateBuilder builder = new EntityPredicateBuilder();
+        consumer.accept(builder);
+        this.entityStruck = builder.build();
+    }
+
+    LightningBoltPredicate build(){
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("blocks_set_on_fire", blocksSetOnFire.toJson());
+        jsonObject.add("entity_struck", entityStruck.toJson());
+        return LightningBoltPredicate.fromJson(jsonObject);
     }
 }

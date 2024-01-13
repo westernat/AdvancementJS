@@ -16,6 +16,7 @@ public class RemoveFilter {
     @Nullable Item icon;
     @Nullable String frame;
     @Nullable String parent;
+    private boolean resolved = false;
 
     public static RemoveFilter of(JsonElement jsonElement) {
         RemoveFilter filter = new RemoveFilter();
@@ -47,28 +48,32 @@ public class RemoveFilter {
         } else if (jsonElement.isJsonPrimitive()) {
             filter.path = new Identifier(jsonElement.getAsString());
         }
-
         return filter;
     }
 
+    public boolean isResolved() {
+        return resolved;
+    }
+
+    public boolean fail() {
+        return path == null && modid == null && icon == null && frame == null && parent == null;
+    }
+
     public boolean matches(Identifier path, Item icon, String frame, String parent) {
-        if (this.path != null && !this.path.equals(path)) {
+        if (this.path != null) {
+            if (this.path.equals(path)) {
+                resolved = true;
+                return true;
+            }
             return false;
-        } else {
-            boolean flag = this.modid != null || this.icon != null || this.frame != null || this.parent != null;
-            if (flag && this.modid != null) {
-                flag = this.modid.equals(path.getNamespace());
-            }
-            if (flag && this.icon != null) {
-                flag = this.icon == icon;
-            }
-            if (flag && this.frame != null) {
-                flag = this.frame.equals(frame);
-            }
-            if (flag && this.parent != null) {
-                flag = this.parent.equals(parent);
-            }
-            return flag;
         }
+
+        if (this.modid != null && !this.modid.equals(path.getNamespace())) {
+            return false;
+        } else if (this.icon != null && this.icon != icon) {
+            return false;
+        } else if (this.frame != null && !this.frame.equals(frame)) {
+            return false;
+        } else return this.parent == null || this.parent.equals(parent);
     }
 }

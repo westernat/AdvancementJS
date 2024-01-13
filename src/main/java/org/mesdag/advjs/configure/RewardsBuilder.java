@@ -1,6 +1,8 @@
 package org.mesdag.advjs.configure;
 
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -27,12 +29,38 @@ public class RewardsBuilder {
         this.function = CommandFunction.LazyContainer.EMPTY;
     }
 
-    @HideFromJS
-    public RewardsBuilder(int experience, Identifier[] loot, Identifier[] recipes, CommandFunction.LazyContainer function) {
+    RewardsBuilder(int experience, Identifier[] loot, Identifier[] recipes, CommandFunction.LazyContainer function) {
         this.experience = experience;
         this.loot = loot;
         this.recipes = recipes;
         this.function = function;
+    }
+
+    @HideFromJS
+    public static RewardsBuilder fromJson(JsonObject rewardsJson) {
+        int experience = rewardsJson.get("experience").getAsInt();
+        JsonArray lootArray = rewardsJson.get("loot").getAsJsonArray();
+        Identifier[] loot = new Identifier[lootArray.size()];
+
+        for (int j = 0; j < loot.length; ++j) {
+            loot[j] = new Identifier(lootArray.get(j).getAsString());
+        }
+
+        JsonArray recipeArray = rewardsJson.get("recipes").getAsJsonArray();
+        Identifier[] recipes = new Identifier[recipeArray.size()];
+
+        for (int k = 0; k < recipes.length; ++k) {
+            recipes[k] = new Identifier(recipeArray.get(k).getAsString());
+        }
+
+        CommandFunction.LazyContainer function;
+        if (rewardsJson.has("function")) {
+            function = new CommandFunction.LazyContainer(new Identifier(rewardsJson.get("function").getAsString()));
+        } else {
+            function = CommandFunction.LazyContainer.EMPTY;
+        }
+
+        return new RewardsBuilder(experience, loot, recipes, function);
     }
 
     @Info("To give an amount of experience. Defaults to 0.")

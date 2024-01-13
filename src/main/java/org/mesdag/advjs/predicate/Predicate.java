@@ -20,7 +20,7 @@ public class Predicate {
     public BlockPredicate block(Consumer<BlockPredicateBuilder> consumer) {
         BlockPredicateBuilder builder = new BlockPredicateBuilder();
         consumer.accept(builder);
-        return builder.builder.build();
+        return builder.build();
     }
 
     @Info("Any BlockPredicate")
@@ -47,9 +47,8 @@ public class Predicate {
         return DamageSourcePredicate.fromJson(o);
     }
 
-    public DamageSourcePredicate damageSource(Consumer<DamageSourcePredicate.Builder> consumer) {
-        // TODO DamageSourcePredicateBuilder
-        DamageSourcePredicate.Builder builder = new DamageSourcePredicate.Builder();
+    public DamageSourcePredicate damageSource(Consumer<DamageSourcePredicateBuilder> consumer) {
+        DamageSourcePredicateBuilder builder = new DamageSourcePredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
@@ -71,7 +70,7 @@ public class Predicate {
     public DistancePredicate distance(Consumer<DistancePredicateBuilder> consumer) {
         DistancePredicateBuilder builder = new DistancePredicateBuilder();
         consumer.accept(builder);
-        return new DistancePredicate(builder.x, builder.y, builder.z, builder.horizontal, builder.absolute);
+        return builder.build();
     }
 
     @Info("Any DistancePredicate")
@@ -86,7 +85,7 @@ public class Predicate {
     public EnchantmentPredicate enchantment(Consumer<EnchantmentPredicateBuilder> consumer) {
         EnchantmentPredicateBuilder builder = new EnchantmentPredicateBuilder();
         consumer.accept(builder);
-        return new EnchantmentPredicate(builder.enchantment, builder.level);
+        return builder.build();
     }
 
     @Info("Any EnchantmentPredicate")
@@ -201,7 +200,7 @@ public class Predicate {
     public LightningBoltPredicate lightningBolt(Consumer<LightningBoltPredicateBuilder> consumer){
         LightningBoltPredicateBuilder builder = new LightningBoltPredicateBuilder();
         consumer.accept(builder);
-        return LightningBoltPredicate.fromJson(builder.toJson());
+        return builder.build();
     }
 
     @Info("Any LightningBoltPredicate")
@@ -246,7 +245,7 @@ public class Predicate {
     public EntityEffectPredicate mobEffects(Consumer<MobEffectsPredicateBuilder> consumer) {
         MobEffectsPredicateBuilder builder = new MobEffectsPredicateBuilder();
         consumer.accept(builder);
-        return new EntityEffectPredicate(builder.effects);
+        return builder.build();
     }
 
     @Info("Any MobEffectsPredicate")
@@ -261,7 +260,7 @@ public class Predicate {
     public EntityEffectPredicate.EffectData mobEffectInstance(Consumer<MobEffectInstancePredicateBuilder> consumer) {
         MobEffectInstancePredicateBuilder builder = new MobEffectInstancePredicateBuilder();
         consumer.accept(builder);
-        return new EntityEffectPredicate.EffectData(builder.amplifier, builder.duration, builder.ambient, builder.visible);
+        return builder.build();
     }
 
     public EntityEffectPredicate.EffectData mobEffectInstance() {
@@ -294,5 +293,20 @@ public class Predicate {
     @Info("Any StatePropertiesPredicate")
     public StatePredicate stateProperties() {
         return StatePredicate.ANY;
+    }
+
+    public EntityTypePredicate entityType(JsonObject o) {
+        return EntityTypePredicate.fromJson(o);
+    }
+
+    public EntityTypePredicate entityType(Consumer<EntityTypePredicateBuilder> consumer) {
+        EntityTypePredicateBuilder builder = new EntityTypePredicateBuilder();
+        consumer.accept(builder);
+        return builder.predicate;
+    }
+
+    @Info("Any EntityTypePredicate")
+    public EntityTypePredicate entityType() {
+        return EntityTypePredicate.ANY;
     }
 }

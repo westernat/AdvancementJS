@@ -2,11 +2,12 @@ package org.mesdag.advjs.predicate;
 
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.predicate.StatePredicate;
 import net.minecraft.state.property.BooleanProperty;
 import org.mesdag.advjs.AdvJS;
 
-class StatePropertiesPredicateBuilder {
+public class StatePropertiesPredicateBuilder {
     final StatePredicate.Builder builder = StatePredicate.Builder.create();
 
     @Info(value = "Match one block state.",
@@ -35,5 +36,10 @@ class StatePropertiesPredicateBuilder {
             }
         }
         return this;
+    }
+
+    @HideFromJS
+    public StatePredicate build() {
+        return builder.build();
     }
 }

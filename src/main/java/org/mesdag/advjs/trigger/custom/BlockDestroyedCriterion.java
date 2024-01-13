@@ -20,7 +20,6 @@ import net.minecraft.util.JsonHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mesdag.advjs.trigger.AbstractTriggerBuilder;
-import org.mesdag.advjs.util.BlockSetter;
 import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
@@ -40,8 +39,8 @@ public class BlockDestroyedCriterion extends AbstractCriterion<BlockDestroyedCri
     @Nullable
     private static Block deserializeBlock(JsonObject jsonObject) {
         if (jsonObject.has("block")) {
-            Identifier resourcelocation = new Identifier(JsonHelper.asString(jsonObject, "block"));
-            return Registries.BLOCK.getOrEmpty(resourcelocation).orElseThrow(() -> new JsonSyntaxException("Unknown block type '" + resourcelocation + "'"));
+            Identifier identifier = new Identifier(JsonHelper.asString(jsonObject, "block"));
+            return Registries.BLOCK.getOrEmpty(identifier).orElseThrow(() -> new JsonSyntaxException("Unknown block type '" + identifier + "'"));
         } else {
             return null;
         }
@@ -62,15 +61,15 @@ public class BlockDestroyedCriterion extends AbstractCriterion<BlockDestroyedCri
         return new Conditions(builder.player, builder.block, builder.statePredicate, builder.item);
     }
 
-    public static class Builder extends AbstractTriggerBuilder implements BlockSetter, ItemSetter {
+    public static class Builder extends AbstractTriggerBuilder implements ItemSetter {
         @Nullable
         Block block = null;
         StatePredicate statePredicate = StatePredicate.ANY;
         ItemPredicate item = ItemPredicate.ANY;
 
         @Info("Checks the block that was destroyed.")
-        public void setBlock(Identifier blockId) {
-            this.block = warpBlock(blockId);
+        public void setBlock(@Nullable Block block) {
+            this.block = block;
         }
 
         @Info("Checks states of destroyed block.")

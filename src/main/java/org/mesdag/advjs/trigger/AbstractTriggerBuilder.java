@@ -3,6 +3,7 @@ package org.mesdag.advjs.trigger;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.LootContextPredicate;
 import net.minecraft.predicate.entity.PlayerPredicate;
+import org.mesdag.advjs.predicate.PlayerPredicateBuilder;
 
 import java.util.function.Consumer;
 

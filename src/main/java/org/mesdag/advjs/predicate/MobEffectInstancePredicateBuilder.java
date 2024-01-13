@@ -2,10 +2,11 @@ package org.mesdag.advjs.predicate;
 
 import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.predicate.NumberRange;
+import net.minecraft.predicate.entity.EntityEffectPredicate;
 import org.jetbrains.annotations.Nullable;
 
 
-class MobEffectInstancePredicateBuilder {
+public class MobEffectInstancePredicateBuilder {
     NumberRange.IntRange amplifier = NumberRange.IntRange.ANY;
     NumberRange.IntRange duration = NumberRange.IntRange.ANY;
     @Nullable
@@ -31,5 +32,9 @@ class MobEffectInstancePredicateBuilder {
     @Info("Test if the effect has visible particles.")
     public void setVisible(boolean bool) {
         visible = bool;
+    }
+
+    EntityEffectPredicate.EffectData build() {
+        return new EntityEffectPredicate.EffectData(amplifier, duration, ambient, visible);
     }
 }
