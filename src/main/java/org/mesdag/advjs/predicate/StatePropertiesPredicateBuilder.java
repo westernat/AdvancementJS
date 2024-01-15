@@ -2,10 +2,10 @@ package org.mesdag.advjs.predicate;
 
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
+import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.predicate.StatePredicate;
 import net.minecraft.state.property.BooleanProperty;
-import org.mesdag.advjs.AdvJS;
 
 public class StatePropertiesPredicateBuilder {
     final StatePredicate.Builder builder = StatePredicate.Builder.create();
@@ -32,7 +32,7 @@ public class StatePropertiesPredicateBuilder {
             if (pair.length == 2) {
                 return match(pair[0].strip(), pair[1].strip());
             } else {
-                AdvJS.LOGGER.warn("Find a worse pair '" + pairString + "'");
+                ConsoleJS.SERVER.warn("Find a worse pair '" + pairString + "'");
             }
         }
         return this;
@@ -41,5 +41,10 @@ public class StatePropertiesPredicateBuilder {
     @HideFromJS
     public StatePredicate build() {
         return builder.build();
+    }
+
+    @HideFromJS
+    public StatePredicate.Builder getBuilder() {
+        return builder;
     }
 }

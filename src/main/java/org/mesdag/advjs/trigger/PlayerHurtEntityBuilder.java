@@ -28,7 +28,7 @@ class PlayerHurtEntityBuilder extends AbstractTriggerBuilder implements EntitySe
     }
 
     @Info("The entity that was damaged.")
-    public void setEntity(EntityPredicate entity) {
+    public void setEntityByPredicate(EntityPredicate entity) {
         this.entity = EntityPredicate.asLootContextPredicate(entity);
     }
 
@@ -38,7 +38,7 @@ class PlayerHurtEntityBuilder extends AbstractTriggerBuilder implements EntitySe
     }
 
     @Info("The entity that was damaged.")
-    public void setEntity(Consumer<EntityPredicateBuilder> consumer) {
+    public void setEntityByType(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
         this.entity = EntityPredicate.asLootContextPredicate(builder.build());

@@ -3,13 +3,14 @@ package org.mesdag.advjs;
 import dev.latvian.mods.kubejs.CommonProperties;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
-import net.minecraft.advancement.AdvancementFrame;
+import dev.latvian.mods.kubejs.script.ScriptType;
+import dev.latvian.mods.kubejs.util.ConsoleJS;
+import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
 import net.minecraft.advancement.CriterionMerger;
-import net.minecraft.world.GameMode;
+import org.mesdag.advjs.util.Bounds;
 import org.mesdag.advjs.util.FrameTypeWrapper;
 import org.mesdag.advjs.util.GameTypeWrapper;
 import org.mesdag.advjs.util.RequirementsStrategyWrapper;
-import org.mesdag.advjs.util.StatsWrapper;
 
 import java.nio.file.Files;
 
@@ -21,21 +22,17 @@ public class AdvJSPlugin extends KubeJSPlugin {
     @Override
     public void registerBindings(BindingsEvent event) {
         event.add("FrameType", FrameTypeWrapper.class);
-        event.add("TASK", AdvancementFrame.TASK);
-        event.add("GOAL", AdvancementFrame.GOAL);
-        event.add("CHALLENGE", AdvancementFrame.CHALLENGE);
 
         event.add("RequirementsStrategy", RequirementsStrategyWrapper.class);
         event.add("AND", CriterionMerger.AND);
         event.add("OR", CriterionMerger.OR);
 
-        event.add("Stats", StatsWrapper.class);
-
         event.add("GameType", GameTypeWrapper.class);
-        event.add("SURVIVAL", GameMode.SURVIVAL);
-        event.add("CREATIVE", GameMode.CREATIVE);
-        event.add("ADVENTURE", GameMode.ADVENTURE);
-        event.add("SPECTATOR", GameMode.SPECTATOR);
+    }
+
+    @Override
+    public void registerTypeWrappers(ScriptType type, TypeWrappers typeWrappers) {
+        typeWrappers.registerSimple(Bounds.class, Bounds::of);
     }
 
     @Override
@@ -131,7 +128,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
                     })
                     """
                 );
-                AdvJS.LOGGER.info("Generated advancement.js");
+                ConsoleJS.SERVER.info("Generated advancement.js");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

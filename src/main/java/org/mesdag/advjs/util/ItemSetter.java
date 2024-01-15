@@ -10,7 +10,7 @@ import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.recipe.Ingredient;
 
 public interface ItemSetter {
-    default ItemPredicate warpItem(Ingredient ingredient) {
+    default ItemPredicate wrapItem(Ingredient ingredient) {
         ImmutableSet.Builder<Item> builder = ImmutableSet.builder();
         for (ItemStack itemStack : ingredient.getMatchingStacks()) {
             builder.add(itemStack.getItem());

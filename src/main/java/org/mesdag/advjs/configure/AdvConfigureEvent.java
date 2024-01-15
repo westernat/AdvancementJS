@@ -4,11 +4,12 @@ import com.google.gson.JsonElement;
 import dev.latvian.mods.kubejs.event.EventJS;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
+import dev.latvian.mods.kubejs.util.ConsoleJS;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import org.mesdag.advjs.predicate.Predicate;
 import org.mesdag.advjs.trigger.Trigger;
-import org.mesdag.advjs.util.Bounds;
+import org.mesdag.advjs.util.Provider;
 
 import static org.mesdag.advjs.configure.Data.FILTERS;
 import static org.mesdag.advjs.configure.Data.LOCK_MAP;
@@ -22,8 +23,7 @@ public class AdvConfigureEvent extends EventJS {
     public final Trigger TRIGGER = new Trigger();
     @Info("Predicate required in trigger.")
     public final Predicate PREDICATE = new Predicate();
-    @Info("Bounds required in predicate.")
-    public final Bounds BOUNDS = new Bounds();
+    public final Provider PROVIDER = new Provider();
 
     @Info("Create a new advancement root")
     public AdvBuilder create(Identifier rootPath) {
@@ -46,7 +46,12 @@ public class AdvConfigureEvent extends EventJS {
             parent: the parent advancement path of this advancement.
         """)
     public void remove(JsonElement jsonElement) {
-        FILTERS.add(RemoveFilter.of(jsonElement));
+        RemoveFilter filter = RemoveFilter.of(jsonElement);
+        if (filter.fail()) {
+            ConsoleJS.SERVER.warn("Failed create a filter");
+        } else {
+            FILTERS.add(filter);
+        }
     }
 
     @Info("Get an exist advancement to modify.")

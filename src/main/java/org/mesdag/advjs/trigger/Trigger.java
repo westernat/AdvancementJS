@@ -3,17 +3,20 @@ package org.mesdag.advjs.trigger;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.advancement.criterion.*;
-import net.minecraft.loot.condition.LocationCheckLootCondition;
-import net.minecraft.loot.condition.MatchToolLootCondition;
 import net.minecraft.predicate.entity.LootContextPredicate;
+import net.minecraft.predicate.item.ItemPredicate;
+import net.minecraft.recipe.Ingredient;
+import net.minecraft.util.Identifier;
 import org.mesdag.advjs.predicate.PlayerPredicateBuilder;
 import org.mesdag.advjs.trigger.custom.BlockDestroyedCriterion;
 import org.mesdag.advjs.trigger.custom.BossEventConditions;
 import org.mesdag.advjs.trigger.custom.PlayerTouchConditions;
+import org.mesdag.advjs.util.ItemSetter;
 
+import java.util.List;
 import java.util.function.Consumer;
 
-public class Trigger {
+public class Trigger implements ItemSetter {
     @Info("Custom trigger, triggers when the player breaks a block.")
     public BlockDestroyedCriterion.Conditions blockDestroyed(Consumer<BlockDestroyedCriterion.Builder> consumer) {
         return BlockDestroyedCriterion.blockDestroyed(consumer);
@@ -75,7 +78,7 @@ public class Trigger {
     public ConstructBeaconCriterion.Conditions constructedBeacon(Consumer<ConstructBeaconBuilder> consumer) {
         ConstructBeaconBuilder builder = new ConstructBeaconBuilder();
         consumer.accept(builder);
-        return new ConstructBeaconCriterion.Conditions(builder.player, builder.bounds);
+        return new ConstructBeaconCriterion.Conditions(builder.player, builder.level);
     }
 
     @Info("Triggers when the player cures a zombie villager.")
@@ -181,6 +184,16 @@ public class Trigger {
         return new InventoryChangedCriterion.Conditions(builder.player, builder.slotsOccupied, builder.slotsFull, builder.slotsEmpty, builder.items);
     }
 
+    @Info("Triggers after any changes happen to the player's inventory.")
+    public InventoryChangedCriterion.Conditions hasItems(ItemPredicate... itemPredicates) {
+        return InventoryChangedCriterion.Conditions.items(itemPredicates);
+    }
+
+    @Info("Triggers after any changes happen to the player's inventory.")
+    public InventoryChangedCriterion.Conditions hasItems(Ingredient ingredient) {
+        return InventoryChangedCriterion.Conditions.items(wrapItem(ingredient));
+    }
+
     @Info("Triggers after any item in the inventory has been damaged in any form.")
     public ItemDurabilityChangedCriterion.Conditions itemDurability(Consumer<ItemDurabilityBuilder> consumer) {
         ItemDurabilityBuilder builder = new ItemDurabilityBuilder();
@@ -206,24 +219,21 @@ public class Trigger {
     public ItemCriterion.Conditions placedBlock(Consumer<ItemUsedOnLocationBuilder> consumer) {
         ItemUsedOnLocationBuilder builder = new ItemUsedOnLocationBuilder();
         consumer.accept(builder);
-        LootContextPredicate lootContextPredicate = LootContextPredicate.create(LocationCheckLootCondition.builder(builder.getLPB()).build(), MatchToolLootCondition.builder(builder.getIPB()).build());
-        return new ItemCriterion.Conditions(Criteria.PLACED_BLOCK.getId(), builder.player, lootContextPredicate);
+        return new ItemCriterion.Conditions(Criteria.PLACED_BLOCK.getId(), builder.player, builder.createContext());
     }
 
     @Info("Triggers when the player uses their hand or an item on a block.")
     public ItemCriterion.Conditions itemUsedOnBlock(Consumer<ItemUsedOnLocationBuilder> consumer) {
         ItemUsedOnLocationBuilder builder = new ItemUsedOnLocationBuilder();
         consumer.accept(builder);
-        LootContextPredicate lootContextPredicate = LootContextPredicate.create(LocationCheckLootCondition.builder(builder.getLPB()).build(), MatchToolLootCondition.builder(builder.getIPB()).build());
-        return new ItemCriterion.Conditions(Criteria.ITEM_USED_ON_BLOCK.getId(), builder.player, lootContextPredicate);
+        return new ItemCriterion.Conditions(Criteria.ITEM_USED_ON_BLOCK.getId(), builder.player, builder.createContext());
     }
 
     @Info("Triggers when an allay drops an item on a block.")
     public ItemCriterion.Conditions allayDropItemOnBlock(Consumer<ItemUsedOnLocationBuilder> consumer) {
         ItemUsedOnLocationBuilder builder = new ItemUsedOnLocationBuilder();
         consumer.accept(builder);
-        LootContextPredicate lootContextPredicate = LootContextPredicate.create(LocationCheckLootCondition.builder(builder.getLPB()).build(), MatchToolLootCondition.builder(builder.getIPB()).build());
-        return new ItemCriterion.Conditions(Criteria.ALLAY_DROP_ITEM_ON_BLOCK.getId(), builder.player, lootContextPredicate);
+        return new ItemCriterion.Conditions(Criteria.ALLAY_DROP_ITEM_ON_BLOCK.getId(), builder.player, builder.createContext());
     }
 
     @Info("Triggers after the player kills a mob or player using a crossbow in ranged combat.")
@@ -275,6 +285,11 @@ public class Trigger {
         return new PlayerGeneratesContainerLootCriterion.Conditions(builder.player, builder.lootTable);
     }
 
+    @Info("Triggers when the player generates the contents of a container with a loot table set.")
+    public PlayerGeneratesContainerLootCriterion.Conditions lootTableUsed(Identifier id) {
+        return PlayerGeneratesContainerLootCriterion.Conditions.create(id);
+    }
+
     @Info("Triggers after the player hurts a mob or player.")
     public PlayerHurtEntityCriterion.Conditions playerHurtEntity(Consumer<PlayerHurtEntityBuilder> consumer) {
         PlayerHurtEntityBuilder builder = new PlayerHurtEntityBuilder();
@@ -294,6 +309,21 @@ public class Trigger {
         RecipeUnlockedBuilder builder = new RecipeUnlockedBuilder();
         consumer.accept(builder);
         return new RecipeUnlockedCriterion.Conditions(builder.player, builder.recipe);
+    }
+
+    //TODO info
+    public RecipeCraftedCriterion.Conditions recipeCrafted(Consumer<RecipeCraftedBuilder> consumer) {
+        RecipeCraftedBuilder builder = new RecipeCraftedBuilder();
+        consumer.accept(builder);
+        return new RecipeCraftedCriterion.Conditions(builder.player, builder.recipe, builder.predicates);
+    }
+
+    public static RecipeCraftedCriterion.Conditions craftedItem(Identifier recipe, List<ItemPredicate> itemPredicates) {
+        return new RecipeCraftedCriterion.Conditions(LootContextPredicate.EMPTY, recipe, itemPredicates);
+    }
+
+    public static RecipeCraftedCriterion.Conditions craftedItem(Identifier recipe) {
+        return new RecipeCraftedCriterion.Conditions(LootContextPredicate.EMPTY, recipe, List.of());
     }
 
     @Info(value = "Triggers when the player shoots a crossbow.",
@@ -354,7 +384,7 @@ public class Trigger {
     }
 
     @Info("Triggers when the player shoots a target block.")
-    public TargetHitCriterion.Conditions targetBlock(Consumer<TargetHitBuilder> consumer) {
+    public TargetHitCriterion.Conditions targetHit(Consumer<TargetHitBuilder> consumer) {
         TargetHitBuilder builder = new TargetHitBuilder();
         consumer.accept(builder);
         return new TargetHitCriterion.Conditions(builder.player, builder.signalStrength, builder.projectile);
@@ -386,21 +416,11 @@ public class Trigger {
         return new TickCriterion.Conditions(Criteria.SLEPT_IN_BED.getId(), builder.build());
     }
 
-    @Info("Triggers when the player enters a bed.")
-    public TickCriterion.Conditions sleptInBed() {
-        return new TickCriterion.Conditions(Criteria.SLEPT_IN_BED.getId(), LootContextPredicate.EMPTY);
-    }
-
     @Info("Triggers when a raid ends in victory and the player has attacked at least one raider from that raid.")
     public TickCriterion.Conditions raidWon(Consumer<PlayerPredicateBuilder> consumer) {
         PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
         consumer.accept(builder);
         return new TickCriterion.Conditions(Criteria.HERO_OF_THE_VILLAGE.getId(), builder.build());
-    }
-
-    @Info("Triggers when a raid ends in victory and the player has attacked at least one raider from that raid.")
-    public TickCriterion.Conditions raidWon() {
-        return new TickCriterion.Conditions(Criteria.HERO_OF_THE_VILLAGE.getId(), LootContextPredicate.EMPTY);
     }
 
     @Info("Triggers when the player causes a raid.")
@@ -410,21 +430,11 @@ public class Trigger {
         return new TickCriterion.Conditions(Criteria.VOLUNTARY_EXILE.getId(), builder.build());
     }
 
-    @Info("Triggers when the player causes a raid.")
-    public TickCriterion.Conditions badOmen() {
-        return new TickCriterion.Conditions(Criteria.VOLUNTARY_EXILE.getId(), LootContextPredicate.EMPTY);
-    }
-
     @Info("Triggers when a vibration event is ignored because the source player is crouching.")
     public TickCriterion.Conditions avoidVibration(Consumer<PlayerPredicateBuilder> consumer) {
         PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
         consumer.accept(builder);
         return new TickCriterion.Conditions(Criteria.AVOID_VIBRATION.getId(), builder.build());
-    }
-
-    @Info("Triggers when a vibration event is ignored because the source player is crouching.")
-    public TickCriterion.Conditions avoidVibration() {
-        return new TickCriterion.Conditions(Criteria.AVOID_VIBRATION.getId(), LootContextPredicate.EMPTY);
     }
 
     @Info("Triggers after the player trades with a villager or a wandering trader.")

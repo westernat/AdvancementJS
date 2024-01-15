@@ -6,14 +6,23 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.NbtPredicate;
 import net.minecraft.predicate.entity.*;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.Identifier;
 
 import java.util.function.Consumer;
 
 public class EntityPredicateBuilder {
     final EntityPredicate.Builder builder = new EntityPredicate.Builder();
 
+    @Info("Accept entity's id.")
     public void of(EntityType<?> entityType) {
         builder.type(entityType);
+    }
+
+    @Info("Accept entity's tag.")
+    public void tag(Identifier tag) {
+        builder.type(TagKey.of(RegistryKeys.ENTITY_TYPE, tag));
     }
 
     @Info("Test this entity's type.")

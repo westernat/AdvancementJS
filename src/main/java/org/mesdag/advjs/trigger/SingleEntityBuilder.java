@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 class SingleEntityBuilder extends AbstractTriggerBuilder implements EntitySetter {
     LootContextPredicate entity = LootContextPredicate.EMPTY;
 
-    public void setEntity(EntityPredicate entity) {
+    public void setEntityByPredicate(EntityPredicate entity) {
         this.entity = EntityPredicate.asLootContextPredicate(entity);
     }
 
@@ -21,7 +21,7 @@ class SingleEntityBuilder extends AbstractTriggerBuilder implements EntitySetter
         this.entity = EntityPredicate.asLootContextPredicate(builder.build());
     }
 
-    public void setEntity(EntityType<?> entityType) {
+    public void setEntityByType(EntityType<?> entityType) {
         this.entity = warpEntity(entityType);
     }
 }

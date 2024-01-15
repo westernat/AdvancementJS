@@ -31,16 +31,16 @@ public class ItemPickedUpByPlayerBuilder extends AbstractTriggerBuilder implemen
 
     @Info("The item thrown.")
     public void setItem(Ingredient ingredient) {
-        this.item = warpItem(ingredient);
+        this.item = wrapItem(ingredient);
     }
 
     @Info("The entity that threw the item.")
-    public void setEntity(EntityPredicate entity) {
+    public void setEntityByPredicate(EntityPredicate entity) {
         this.entity = EntityPredicate.asLootContextPredicate(entity);
     }
 
     @Info("The entity that threw the item.")
-    public void setEntity(Consumer<EntityPredicateBuilder> consumer) {
+    public void setEntityByType(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
         this.entity = EntityPredicate.asLootContextPredicate(builder.build());

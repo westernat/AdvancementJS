@@ -3,6 +3,7 @@ package org.mesdag.advjs.predicate;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.NbtPredicate;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.*;
@@ -13,6 +14,7 @@ import net.minecraft.stat.StatType;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.Nullable;
+import org.mesdag.advjs.util.Bounds;
 
 import java.util.function.Consumer;
 
@@ -42,8 +44,8 @@ public class PlayerPredicateBuilder {
             @Param(name = "statType", value = "The statistic type."),
             @Param(name = "value", value = "Test if the value of the statistic matches an exact number.")
         })
-    public void addStat(Identifier statId, StatType<?> statType, NumberRange.IntRange bounds) {
-        playerBuilder.stat(getStat(statType, statId), bounds);
+    public void addStat(Identifier statId, StatType<?> statType, Bounds bounds) {
+        playerBuilder.stat(getStat(statType, statId), bounds.toIntegerBounds());
     }
 
     private static <T> Stat<T> getStat(StatType<T> statType, Identifier statId) {
@@ -158,8 +160,8 @@ public class PlayerPredicateBuilder {
     }
 
     @Info("Test NBT data of player.")
-    public void setNbt(NbtPredicate nbt) {
-        this.nbt = nbt;
+    public void setNbt(NbtCompound nbt) {
+        this.nbt = new NbtPredicate(nbt);
     }
 
     @Info("Test flags of player.")

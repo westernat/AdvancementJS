@@ -4,6 +4,7 @@ import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.DistancePredicate;
 import org.mesdag.advjs.predicate.DistancePredicateBuilder;
+import org.mesdag.advjs.util.Bounds;
 
 import java.util.function.Consumer;
 
@@ -24,7 +25,7 @@ class LevitationBuilder extends AbstractTriggerBuilder {
     }
 
     @Info("The duration of the levitation in ticks.")
-    public void setDuration(NumberRange.IntRange duration) {
-        this.duration = duration;
+    public void setDuration(Bounds duration) {
+        this.duration = duration.toIntegerBounds();
     }
 }

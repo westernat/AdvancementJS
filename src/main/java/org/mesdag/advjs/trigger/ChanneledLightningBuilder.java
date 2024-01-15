@@ -16,7 +16,7 @@ public class ChanneledLightningBuilder extends AbstractTriggerBuilder implements
                 
         All entities in this list must be hit.
         """)
-    public void setVictims(EntityPredicate... entities) {
+    public void setVictimsByPredicate(EntityPredicate... entities) {
         this.victims = Stream.of(entities).map(EntityPredicate::asLootContextPredicate).toArray(LootContextPredicate[]::new);
     }
 
@@ -25,7 +25,7 @@ public class ChanneledLightningBuilder extends AbstractTriggerBuilder implements
                 
         All entities in this list must be hit.
         """)
-    public void setVictims(EntityType<?>... entityTypes) {
+    public void setVictimsByType(EntityType<?>... entityTypes) {
         this.victims = Stream.of(entityTypes).map(this::warpEntity).toArray(LootContextPredicate[]::new);
     }
 }

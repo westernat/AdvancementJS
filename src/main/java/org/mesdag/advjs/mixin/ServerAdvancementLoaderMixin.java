@@ -3,6 +3,7 @@ package org.mesdag.advjs.mixin;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import dev.latvian.mods.kubejs.util.ConsoleJS;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementCriterion;
 import net.minecraft.advancement.AdvancementDisplay;
@@ -72,7 +73,7 @@ public abstract class ServerAdvancementLoaderMixin {
             counter++;
         }
 
-        AdvJS.LOGGER.info("advJS$remove: removed {} advancements", counter);
+        ConsoleJS.SERVER.info("advJS$remove: removed " + counter + " advancements");
     }
 
     @ModifyArg(
@@ -81,14 +82,14 @@ public abstract class ServerAdvancementLoaderMixin {
     private Map<Identifier, Advancement.Builder> advjs$configure(Map<Identifier, Advancement.Builder> map) {
         advJS$modify(map, conditionManager);
         advJS$add(map);
-        AdvJS.LOGGER.info("AdvJS Loaded!");
+        ConsoleJS.SERVER.info("AdvJS Loaded!");
         return map;
     }
 
     @Unique
     private static void advJS$modify(Map<Identifier, Advancement.Builder> map, LootManager predicateManager) {
         if (AdvJSPlugin.DEBUG) {
-            AdvJS.LOGGER.debug("Modification details:");
+            ConsoleJS.SERVER.debug("Modification details:");
         }
 
         int counter = 0;
@@ -96,7 +97,7 @@ public abstract class ServerAdvancementLoaderMixin {
             Identifier path = entry.getKey();
             Advancement.Builder builder = map.get(path);
             if (builder == null) {
-                AdvJS.LOGGER.error("advJS$modify: advancement '{}' is not exist", path);
+                ConsoleJS.SERVER.error("Advancement '" + path + "' is not exist");
                 continue;
             }
             AdvGetter getter = entry.getValue();
@@ -135,39 +136,41 @@ public abstract class ServerAdvancementLoaderMixin {
             counter++;
 
             if (AdvJSPlugin.DEBUG) {
-                AdvJS.LOGGER.debug("""
-                        identifier: {}
-                            parent: {}
-                            display:
-                                icon: {} -> {}
-                                title: {} -> {}
-                                description: {} -> {}
-                                background: {} -> {}
-                                frame: {} -> {}
-                                showToast: {} -> {}
-                                announceToChat: {} -> {}
-                                hidden: {} -> {}
-                            rewards: {}
-                            requirements: {}
-                            criteria: {}
-                        """,
-                    path,
-                    parentId,
-                    oldDisplay.getIcon().getTranslationKey(), neoDisplay.getIcon().getTranslationKey(),
-                    oldDisplay.getTitle().getString(), neoDisplay.getTitle().getString(),
-                    oldDisplay.getDescription().getString(), neoDisplay.getDescription().getString(),
-                    oldDisplay.getBackground(), neoDisplay.getBackground(),
-                    oldDisplay.getFrame().getId(), neoDisplay.getFrame().getId(),
-                    oldDisplay.shouldShowToast(), neoDisplay.shouldShowToast(),
-                    oldDisplay.shouldAnnounceToChat(), neoDisplay.shouldAnnounceToChat(),
-                    oldDisplay.isHidden(), neoDisplay.isHidden(),
-                    neoRewards,
-                    neoRequirements,
-                    String.join(",", neo.getCriteria().keySet())
+                ConsoleJS.SERVER.debug("""
+                    identifier: %s
+                        parent: %s
+                        display:
+                            icon: %s -> %s
+                            title: %s -> %s
+                            description: %s -> %s
+                            background: %s -> %s
+                            frame: %s -> %s
+                            showToast: %s -> %s
+                            announceToChat: %s -> %s
+                            hidden: %s -> %s
+                        rewards: %s
+                        requirements: %s
+                        criteria: %s
+                    """
+                    .formatted(
+                        path,
+                        parentId,
+                        oldDisplay.getIcon().getTranslationKey(), neoDisplay.getIcon().getTranslationKey(),
+                        oldDisplay.getTitle().getString(), neoDisplay.getTitle().getString(),
+                        oldDisplay.getDescription().getString(), neoDisplay.getDescription().getString(),
+                        oldDisplay.getBackground(), neoDisplay.getBackground(),
+                        oldDisplay.getFrame().getId(), neoDisplay.getFrame().getId(),
+                        oldDisplay.shouldShowToast(), neoDisplay.shouldShowToast(),
+                        oldDisplay.shouldAnnounceToChat(), neoDisplay.shouldAnnounceToChat(),
+                        oldDisplay.isHidden(), neoDisplay.isHidden(),
+                        neoRewards,
+                        neoRequirements,
+                        String.join(",", neo.getCriteria().keySet())
+                    )
                 );
             }
         }
-        AdvJS.LOGGER.info("advJS$modify: modified {} advancements", counter);
+        ConsoleJS.SERVER.info("advJS$modify: modified " + counter + " advancements");
     }
 
     @Unique
@@ -187,10 +190,10 @@ public abstract class ServerAdvancementLoaderMixin {
                 map.put(advBuilder.getSavePath(), builder.parent(parentId));
                 counter++;
             } else {
-                AdvJS.LOGGER.error("advJS$add: advancement '{}' is not exist", parentId);
+                ConsoleJS.SERVER.error("Advancement '" + parentId + "' is not exist");
             }
         }
-        AdvJS.LOGGER.info("advJS$add: added {} advancements", counter);
+        ConsoleJS.SERVER.info("advJS$add: added " + counter + " advancements");
     }
 
     @Unique
@@ -200,7 +203,7 @@ public abstract class ServerAdvancementLoaderMixin {
                 builder.setTitle(ATTENTION);
                 builder.setDescription(ATTENTION_DESC);
             });
-            AdvJS.LOGGER.warn("advJS$build: a warn advancement created, the parent is '{}'", advBuilder.getParent());
+            ConsoleJS.SERVER.warn("A warn advancement created, the parent is '" + advBuilder.getParent() + "'");
         }
         return new Advancement(
             advBuilder.getSavePath(),

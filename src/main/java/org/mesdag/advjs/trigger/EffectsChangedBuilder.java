@@ -34,7 +34,7 @@ class EffectsChangedBuilder extends AbstractTriggerBuilder implements EntitySett
                 
         the test passes only if the source is not specified.
         """)
-    public void setSource(EntityPredicate source) {
+    public void setSourceByPredicate(EntityPredicate source) {
         this.source = EntityPredicate.asLootContextPredicate(source);
     }
 
@@ -58,7 +58,7 @@ class EffectsChangedBuilder extends AbstractTriggerBuilder implements EntitySett
                 
         the test passes only if the source is not specified.
         """)
-    public void setSource(EntityType<?> entityType) {
+    public void setSourceByType(EntityType<?> entityType) {
         this.source = warpEntity(entityType);
     }
 }

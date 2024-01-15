@@ -84,7 +84,7 @@ public class BlockDestroyedCriterion extends AbstractCriterion<BlockDestroyedCri
 
         @Info("The item used to break the block.")
         public void setItem(Ingredient ingredient) {
-            this.item = warpItem(ingredient);
+            this.item = wrapItem(ingredient);
         }
     }
 

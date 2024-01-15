@@ -31,11 +31,11 @@ public class ItemPickedUpByEntityBuilder extends AbstractTriggerBuilder implemen
 
     @Info("The thrown item which was picked up.")
     public void setItem(Ingredient ingredient) {
-        this.item = warpItem(ingredient);
+        this.item = wrapItem(ingredient);
     }
 
     @Info("The entity which picked up the item.")
-    public void setEntity(EntityPredicate entity) {
+    public void setEntityByPredicate(EntityPredicate entity) {
         this.entity = EntityPredicate.asLootContextPredicate(entity);
     }
 
@@ -47,7 +47,7 @@ public class ItemPickedUpByEntityBuilder extends AbstractTriggerBuilder implemen
     }
 
     @Info("The entity which picked up the item.")
-    public void setEntity(EntityType<?> entityType) {
+    public void setEntityByType(EntityType<?> entityType) {
         this.entity = warpEntity(entityType);
     }
 }

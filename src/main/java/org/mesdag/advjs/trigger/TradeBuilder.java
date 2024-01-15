@@ -53,6 +53,6 @@ class TradeBuilder extends AbstractTriggerBuilder implements ItemSetter {
         The 'count' tag checks the count from one trade, not multiple.
         """)
     public void setItem(Ingredient ingredient) {
-        this.item = warpItem(ingredient);
+        this.item = wrapItem(ingredient);
     }
 }

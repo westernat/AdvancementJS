@@ -8,18 +8,26 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.item.EnchantmentPredicate;
 import net.minecraft.predicate.item.ItemPredicate;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class ItemPredicateBuilder {
     final ItemPredicate.Builder builder = ItemPredicate.Builder.create();
 
     @Info("Check items.")
-    public void of(ItemStack... itemStacks) {
-        builder.items(Stream.of(itemStacks).map(ItemStack::getItem).toArray(ItemConvertible[]::new));
+    public void of(Ingredient ingredient) {
+        builder.items(Arrays.stream(ingredient.getMatchingStacks()).map(ItemStack::getItem).toArray(ItemConvertible[]::new));
+    }
+
+    @Info("Check tag.")
+    public void tag(Identifier tag) {
+        builder.tag(TagKey.of(RegistryKeys.ITEM, tag));
     }
 
     @Info("""

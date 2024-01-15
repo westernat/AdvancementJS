@@ -6,6 +6,7 @@ import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.LootContextPredicate;
 import org.mesdag.advjs.predicate.EntityPredicateBuilder;
+import org.mesdag.advjs.util.Bounds;
 import org.mesdag.advjs.util.EntitySetter;
 
 import java.util.function.Consumer;
@@ -15,12 +16,12 @@ class TargetHitBuilder extends AbstractTriggerBuilder implements EntitySetter {
     LootContextPredicate projectile = LootContextPredicate.EMPTY;
 
     @Info("The redstone signal that will come out of the target block.")
-    public void setSignalStrength(NumberRange.IntRange signalStrength) {
-        this.signalStrength = signalStrength;
+    public void setSignalStrength(Bounds signalStrength) {
+        this.signalStrength = signalStrength.toIntegerBounds();
     }
 
     @Info("The projectile hit the target block.")
-    public void setProjectile(EntityPredicate projectile) {
+    public void setProjectileByPredicate(EntityPredicate projectile) {
         this.projectile = EntityPredicate.asLootContextPredicate(projectile);
     }
 
@@ -32,7 +33,7 @@ class TargetHitBuilder extends AbstractTriggerBuilder implements EntitySetter {
     }
 
     @Info("The projectile hit the target block.")
-    public void setProjectile(EntityType<?> entityType) {
+    public void setProjectileByType(EntityType<?> entityType) {
         this.projectile = warpEntity(entityType);
     }
 }

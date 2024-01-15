@@ -19,7 +19,8 @@ public class AdvBuilder {
     private final Identifier parent;
     private final String name;
     private final Identifier rootPath;
-    private final DisplayBuilder displayBuilder = new DisplayBuilder();
+    @Nullable
+    private DisplayBuilder displayBuilder;
     private final RewardsBuilder rewardsBuilder = new RewardsBuilder();
     private final CriteriaBuilder criteriaBuilder = new CriteriaBuilder();
     private boolean sendsTelemetryEvent = false;
@@ -50,10 +51,12 @@ public class AdvBuilder {
 
     @Info("Data related to the advancement's display.")
     public AdvBuilder display(Consumer<DisplayBuilder> displayBuilderConsumer) {
-        displayBuilderConsumer.accept(displayBuilder);
-        if (parent == null && displayBuilder.getBackground() == null) {
-            displayBuilder.setBackground(DEFAULT_BACKGROUND);
+        DisplayBuilder builder = new DisplayBuilder();
+        displayBuilderConsumer.accept(builder);
+        if (parent == null && builder.getBackground() == null) {
+            builder.setBackground(DEFAULT_BACKGROUND);
         }
+        this.displayBuilder = builder;
         update();
         return this;
     }
@@ -99,7 +102,7 @@ public class AdvBuilder {
 
     @HideFromJS
     public AdvancementDisplay getDisplayInfo() {
-        return displayBuilder.build();
+        return displayBuilder == null ? null : displayBuilder.build();
     }
 
     @HideFromJS

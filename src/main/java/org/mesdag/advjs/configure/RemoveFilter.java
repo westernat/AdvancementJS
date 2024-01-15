@@ -2,12 +2,13 @@ package org.mesdag.advjs.configure;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import dev.latvian.mods.kubejs.util.ConsoleJS;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
-import org.mesdag.advjs.AdvJS;
 
 
 public class RemoveFilter {
@@ -23,8 +24,12 @@ public class RemoveFilter {
         if (jsonElement.isJsonObject()) {
             JsonObject object = jsonElement.getAsJsonObject();
             if (object.has("mod")) {
-                // TODO if check mod loaded
-                filter.modid = object.get("mod").getAsString();
+                String modid = object.get("mod").getAsString();
+                if (FabricLoader.getInstance().isModLoaded(modid)) {
+                    filter.modid = modid;
+                } else {
+                    ConsoleJS.SERVER.warn("Mod '" + modid + "' not found");
+                }
             }
 
             if (object.has("icon")) {
@@ -34,7 +39,7 @@ public class RemoveFilter {
                 if (item != Items.AIR) {
                     filter.icon = item;
                 } else {
-                    AdvJS.LOGGER.warn("RemoveFilter: Icon '{}' not found", icon);
+                    ConsoleJS.SERVER.warn("RemoveFilter: Icon '" + icon + "' not found");
                 }
             }
 

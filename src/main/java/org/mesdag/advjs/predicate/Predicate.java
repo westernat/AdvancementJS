@@ -4,11 +4,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.*;
 import net.minecraft.predicate.entity.*;
 import net.minecraft.predicate.item.EnchantmentPredicate;
 import net.minecraft.predicate.item.ItemPredicate;
+import org.mesdag.advjs.predicate.condition.*;
+import org.mesdag.advjs.util.Bounds;
 
 import java.util.function.Consumer;
 
@@ -102,15 +105,7 @@ public class Predicate {
         return EntityEquipmentPredicate.fromJson(o);
     }
 
-    @Info(value = "For testing the items that this entity holds in its equipment slots.",
-        params = {
-            @Param(name = "mainhand", value = "Test the item in the entity's main hand."),
-            @Param(name = "offhand", value = "Test the item in the entity's offhand."),
-            @Param(name = "head", value = "Test the item in the entity's head armor slot."),
-            @Param(name = "chest", value = "Test the item in the entity's chest armor slot."),
-            @Param(name = "legs", value = "Test the item in the entity's legs armor slot."),
-            @Param(name = "feet", value = "Test the item in the entity's feet armor slot.")
-        })
+    @Info("For testing the items that this entity holds in its equipment slots.")
     public EntityEquipmentPredicate entityEquipment(Consumer<EntityEquipmentPredicateBuilder> consumer) {
         EntityEquipmentPredicateBuilder builder =new EntityEquipmentPredicateBuilder();
         consumer.accept(builder);
@@ -193,27 +188,23 @@ public class Predicate {
         return ItemPredicate.ANY;
     }
 
-    public LightningBoltPredicate lightningBolt(JsonObject o) {
-        return LightningBoltPredicate.fromJson(o);
-    }
-
     public LightningBoltPredicate lightningBolt(Consumer<LightningBoltPredicateBuilder> consumer){
         LightningBoltPredicateBuilder builder = new LightningBoltPredicateBuilder();
         consumer.accept(builder);
-        return builder.build();
+        return builder.predicate();
     }
 
     @Info("Any LightningBoltPredicate")
     public LightningBoltPredicate lightningBolt() {
-        return LightningBoltPredicate.of(NumberRange.IntRange.ANY);
+        return LightningBoltPredicate.ANY;
     }
 
     public LightPredicate light(JsonObject o) {
         return LightPredicate.fromJson(o);
     }
 
-    public LightPredicate light(NumberRange.IntRange bounds) {
-        return new LightPredicate.Builder().light(bounds).build();
+    public LightPredicate light(Bounds bounds) {
+        return new LightPredicate.Builder().light(bounds.toIntegerBounds()).build();
     }
 
     @Info("Any LightPredicate")
@@ -308,5 +299,25 @@ public class Predicate {
     @Info("Any EntityTypePredicate")
     public EntityTypePredicate entityType() {
         return EntityTypePredicate.ANY;
+    }
+
+    public Condition anyOf(Check... checks) {
+        return Condition.any(checks);
+    }
+
+    public Condition allOf(Check... checks) {
+        return Condition.all(checks);
+    }
+
+    public LocationCheck locationCheck() {
+        return new LocationCheck();
+    }
+
+    public MatchTool matchTool(Consumer<ItemPredicateBuilder> consumer) {
+        return new MatchTool(consumer);
+    }
+
+    public BlockStatePropertyCheck blockStatePropertyCheck(Block block) {
+        return new BlockStatePropertyCheck(block);
     }
 }

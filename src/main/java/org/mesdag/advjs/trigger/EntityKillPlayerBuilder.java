@@ -20,7 +20,7 @@ public class EntityKillPlayerBuilder extends AbstractTriggerBuilder implements E
         
         (for example: The skeleton that shot the arrow)
         """)
-    public void setKiller(EntityPredicate killer) {
+    public void setKillerByPredicate(EntityPredicate killer) {
         this.killer = EntityPredicate.asLootContextPredicate(killer);
     }
 
@@ -40,7 +40,7 @@ public class EntityKillPlayerBuilder extends AbstractTriggerBuilder implements E
         
         (for example: The skeleton that shot the arrow)
         """)
-    public void setKiller(EntityType<?> killer) {
+    public void setKillerByType(EntityType<?> killer) {
         this.killer = warpEntity(killer);
     }
 

@@ -10,6 +10,7 @@ import net.minecraft.predicate.entity.LocationPredicate;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
+import org.mesdag.advjs.util.Bounds;
 
 import java.util.function.Consumer;
 
@@ -17,18 +18,18 @@ public class LocationPredicateBuilder {
     final LocationPredicate.Builder builder = new LocationPredicate.Builder();
 
     @Info("The x position.")
-    public void setX(NumberRange.FloatRange bounds) {
-        builder.x(bounds);
+    public void setX(Bounds bounds) {
+        builder.x(bounds.toFloatBounds());
     }
 
     @Info("The y position.")
-    public void setY(NumberRange.FloatRange bounds) {
-        builder.y(bounds);
+    public void setY(Bounds bounds) {
+        builder.y(bounds.toFloatBounds());
     }
 
     @Info("The z position.")
-    public void setZ(NumberRange.FloatRange bounds) {
-        builder.z(bounds);
+    public void setZ(Bounds bounds) {
+        builder.z(bounds.toFloatBounds());
     }
 
     @Info("The biome at this location, as a resource location.")

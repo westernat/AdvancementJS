@@ -4,6 +4,8 @@ import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.LootContextPredicate;
 import org.mesdag.advjs.predicate.EntityPredicateBuilder;
+import org.mesdag.advjs.predicate.LightningBoltPredicate;
+import org.mesdag.advjs.predicate.LightningBoltPredicateBuilder;
 
 import java.util.function.Consumer;
 
@@ -12,15 +14,15 @@ class LightningStrikeBuilder extends AbstractTriggerBuilder{
     LootContextPredicate bystander =LootContextPredicate.EMPTY;
 
     @Info("The lightning bolt that disappeared.")
-    public void setLightning(EntityPredicate lightning) {
-        this.lightning = EntityPredicate.asLootContextPredicate(lightning);
+    public void setLightning(LightningBoltPredicate lightning) {
+        this.lightning = lightning.build();
     }
 
     @Info("The lightning bolt that disappeared.")
-    public void setLightning(Consumer<EntityPredicateBuilder> consumer) {
-        EntityPredicateBuilder builder = new EntityPredicateBuilder();
+    public void setLightning(Consumer<LightningBoltPredicateBuilder> consumer) {
+        LightningBoltPredicateBuilder builder = new LightningBoltPredicateBuilder();
         consumer.accept(builder);
-        this.lightning = EntityPredicate.asLootContextPredicate(builder.build());
+        this.lightning = builder.predicate().build();
     }
 
     @Info("An entity not hurt by the lightning strike but in a certain area around it.")

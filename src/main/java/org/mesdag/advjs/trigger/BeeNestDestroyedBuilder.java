@@ -6,6 +6,7 @@ import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.recipe.Ingredient;
 import org.jetbrains.annotations.Nullable;
+import org.mesdag.advjs.util.Bounds;
 import org.mesdag.advjs.util.ItemSetter;
 
 class BeeNestDestroyedBuilder extends AbstractTriggerBuilder implements ItemSetter {
@@ -26,11 +27,11 @@ class BeeNestDestroyedBuilder extends AbstractTriggerBuilder implements ItemSett
 
     @Info("The item used to break the block.")
     public void setItem(Ingredient ingredient){
-        this.item = warpItem(ingredient);
+        this.item = wrapItem(ingredient);
     }
 
     @Info("The number of bees that were inside the bee nest/beehive before it was broken.")
-    public void setBounds(NumberRange.IntRange bounds) {
-        this.bounds = bounds;
+    public void setBounds(Bounds bounds) {
+        this.bounds = bounds.toIntegerBounds();
     }
 }
