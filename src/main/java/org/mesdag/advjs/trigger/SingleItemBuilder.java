@@ -21,6 +21,6 @@ class SingleItemBuilder extends AbstractTriggerBuilder implements ItemSetter {
     }
 
     public void setItem(Ingredient item) {
-        this.item = warpItem(item);
+        this.item = wrapItem(item);
     }
 }

@@ -4,16 +4,18 @@ import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.*;
-import net.minecraft.world.level.storage.loot.predicates.LocationCheck;
-import net.minecraft.world.level.storage.loot.predicates.MatchTool;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.mesdag.advjs.predicate.PlayerPredicateBuilder;
 import org.mesdag.advjs.trigger.custom.BlockDestroyedTrigger;
 import org.mesdag.advjs.trigger.custom.BossEventTrigger;
 import org.mesdag.advjs.trigger.custom.PlayerTouchTrigger;
+import org.mesdag.advjs.util.ItemSetter;
 
+import java.util.List;
 import java.util.function.Consumer;
 
-public class Trigger {
+public class Trigger implements ItemSetter {
     @Info("Custom trigger, triggers when the player breaks a block.")
     public BlockDestroyedTrigger.TriggerInstance blockDestroyed(Consumer<BlockDestroyedTrigger.Builder> consumer) {
         return BlockDestroyedTrigger.blockDestroyed(consumer);
@@ -181,6 +183,16 @@ public class Trigger {
         return new InventoryChangeTrigger.TriggerInstance(builder.player, builder.slotsOccupied, builder.slotsFull, builder.slotsEmpty, builder.items);
     }
 
+    @Info("Triggers after any changes happen to the player's inventory.")
+    public InventoryChangeTrigger.TriggerInstance hasItems(ItemPredicate... itemPredicates) {
+        return InventoryChangeTrigger.TriggerInstance.hasItems(itemPredicates);
+    }
+
+    @Info("Triggers after any changes happen to the player's inventory.")
+    public InventoryChangeTrigger.TriggerInstance hasItems(Ingredient ingredient) {
+        return InventoryChangeTrigger.TriggerInstance.hasItems(wrapItem(ingredient));
+    }
+
     @Info("Triggers after any item in the inventory has been damaged in any form.")
     public ItemDurabilityTrigger.TriggerInstance itemDurability(Consumer<ItemDurabilityBuilder> consumer) {
         ItemDurabilityBuilder builder = new ItemDurabilityBuilder();
@@ -206,24 +218,21 @@ public class Trigger {
     public ItemUsedOnLocationTrigger.TriggerInstance placedBlock(Consumer<ItemUsedOnLocationBuilder> consumer) {
         ItemUsedOnLocationBuilder builder = new ItemUsedOnLocationBuilder();
         consumer.accept(builder);
-        ContextAwarePredicate contextawarepredicate = ContextAwarePredicate.create(LocationCheck.checkLocation(builder.getLPB()).build(), MatchTool.toolMatches(builder.getIPB()).build());
-        return new ItemUsedOnLocationTrigger.TriggerInstance(CriteriaTriggers.PLACED_BLOCK.getId(), builder.player, contextawarepredicate);
+        return new ItemUsedOnLocationTrigger.TriggerInstance(CriteriaTriggers.PLACED_BLOCK.getId(), builder.player, builder.createContext());
     }
 
     @Info("Triggers when the player uses their hand or an item on a block.")
     public ItemUsedOnLocationTrigger.TriggerInstance itemUsedOnBlock(Consumer<ItemUsedOnLocationBuilder> consumer) {
         ItemUsedOnLocationBuilder builder = new ItemUsedOnLocationBuilder();
         consumer.accept(builder);
-        ContextAwarePredicate contextawarepredicate = ContextAwarePredicate.create(LocationCheck.checkLocation(builder.getLPB()).build(), MatchTool.toolMatches(builder.getIPB()).build());
-        return new ItemUsedOnLocationTrigger.TriggerInstance(CriteriaTriggers.ITEM_USED_ON_BLOCK.getId(), builder.player, contextawarepredicate);
+        return new ItemUsedOnLocationTrigger.TriggerInstance(CriteriaTriggers.ITEM_USED_ON_BLOCK.getId(), builder.player, builder.createContext());
     }
 
     @Info("Triggers when an allay drops an item on a block.")
     public ItemUsedOnLocationTrigger.TriggerInstance allayDropItemOnBlock(Consumer<ItemUsedOnLocationBuilder> consumer) {
         ItemUsedOnLocationBuilder builder = new ItemUsedOnLocationBuilder();
         consumer.accept(builder);
-        ContextAwarePredicate contextawarepredicate = ContextAwarePredicate.create(LocationCheck.checkLocation(builder.getLPB()).build(), MatchTool.toolMatches(builder.getIPB()).build());
-        return new ItemUsedOnLocationTrigger.TriggerInstance(CriteriaTriggers.ALLAY_DROP_ITEM_ON_BLOCK.getId(), builder.player, contextawarepredicate);
+        return new ItemUsedOnLocationTrigger.TriggerInstance(CriteriaTriggers.ALLAY_DROP_ITEM_ON_BLOCK.getId(), builder.player, builder.createContext());
     }
 
     @Info("Triggers after the player kills a mob or player using a crossbow in ranged combat.")
@@ -275,6 +284,11 @@ public class Trigger {
         return new LootTableTrigger.TriggerInstance(builder.player, builder.lootTable);
     }
 
+    @Info("Triggers when the player generates the contents of a container with a loot table set.")
+    public LootTableTrigger.TriggerInstance lootTableUsed(ResourceLocation id) {
+        return LootTableTrigger.TriggerInstance.lootTableUsed(id);
+    }
+
     @Info("Triggers after the player hurts a mob or player.")
     public PlayerHurtEntityTrigger.TriggerInstance playerHurtEntity(Consumer<PlayerHurtEntityBuilder> consumer) {
         PlayerHurtEntityBuilder builder = new PlayerHurtEntityBuilder();
@@ -294,6 +308,21 @@ public class Trigger {
         RecipeUnlockedBuilder builder = new RecipeUnlockedBuilder();
         consumer.accept(builder);
         return new RecipeUnlockedTrigger.TriggerInstance(builder.player, builder.recipe);
+    }
+
+    //TODO info
+    public RecipeCraftedTrigger.TriggerInstance recipeCrafted(Consumer<RecipeCraftedBuilder> consumer) {
+        RecipeCraftedBuilder builder = new RecipeCraftedBuilder();
+        consumer.accept(builder);
+        return new RecipeCraftedTrigger.TriggerInstance(builder.player, builder.recipe, builder.predicates);
+    }
+
+    public static RecipeCraftedTrigger.TriggerInstance craftedItem(ResourceLocation recipe, List<ItemPredicate> itemPredicates) {
+        return new RecipeCraftedTrigger.TriggerInstance(ContextAwarePredicate.ANY, recipe, itemPredicates);
+    }
+
+    public static RecipeCraftedTrigger.TriggerInstance craftedItem(ResourceLocation recipe) {
+        return new RecipeCraftedTrigger.TriggerInstance(ContextAwarePredicate.ANY, recipe, List.of());
     }
 
     @Info(value = "Triggers when the player shoots a crossbow.",
@@ -386,21 +415,11 @@ public class Trigger {
         return new PlayerTrigger.TriggerInstance(CriteriaTriggers.SLEPT_IN_BED.getId(), builder.build());
     }
 
-    @Info("Triggers when the player enters a bed.")
-    public PlayerTrigger.TriggerInstance sleptInBed() {
-        return new PlayerTrigger.TriggerInstance(CriteriaTriggers.SLEPT_IN_BED.getId(), ContextAwarePredicate.ANY);
-    }
-
     @Info("Triggers when a raid ends in victory and the player has attacked at least one raider from that raid.")
     public PlayerTrigger.TriggerInstance raidWon(Consumer<PlayerPredicateBuilder> consumer) {
         PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
         consumer.accept(builder);
         return new PlayerTrigger.TriggerInstance(CriteriaTriggers.RAID_WIN.getId(), builder.build());
-    }
-
-    @Info("Triggers when a raid ends in victory and the player has attacked at least one raider from that raid.")
-    public PlayerTrigger.TriggerInstance raidWon() {
-        return new PlayerTrigger.TriggerInstance(CriteriaTriggers.RAID_WIN.getId(), ContextAwarePredicate.ANY);
     }
 
     @Info("Triggers when the player causes a raid.")
@@ -410,21 +429,11 @@ public class Trigger {
         return new PlayerTrigger.TriggerInstance(CriteriaTriggers.BAD_OMEN.getId(), builder.build());
     }
 
-    @Info("Triggers when the player causes a raid.")
-    public PlayerTrigger.TriggerInstance badOmen() {
-        return new PlayerTrigger.TriggerInstance(CriteriaTriggers.BAD_OMEN.getId(), ContextAwarePredicate.ANY);
-    }
-
     @Info("Triggers when a vibration event is ignored because the source player is crouching.")
     public PlayerTrigger.TriggerInstance avoidVibration(Consumer<PlayerPredicateBuilder> consumer) {
         PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
         consumer.accept(builder);
         return new PlayerTrigger.TriggerInstance(CriteriaTriggers.AVOID_VIBRATION.getId(), builder.build());
-    }
-
-    @Info("Triggers when a vibration event is ignored because the source player is crouching.")
-    public PlayerTrigger.TriggerInstance avoidVibration() {
-        return new PlayerTrigger.TriggerInstance(CriteriaTriggers.AVOID_VIBRATION.getId(), ContextAwarePredicate.ANY);
     }
 
     @Info("Triggers after the player trades with a villager or a wandering trader.")

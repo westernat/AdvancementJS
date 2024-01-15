@@ -6,6 +6,7 @@ import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
+import org.mesdag.advjs.util.Bounds;
 import org.mesdag.advjs.util.ItemSetter;
 
 class BeeNestDestroyedBuilder extends AbstractTriggerBuilder implements ItemSetter {
@@ -26,11 +27,11 @@ class BeeNestDestroyedBuilder extends AbstractTriggerBuilder implements ItemSett
 
     @Info("The item used to break the block.")
     public void setItem(Ingredient ingredient){
-        this.item = warpItem(ingredient);
+        this.item = wrapItem(ingredient);
     }
 
     @Info("The number of bees that were inside the bee nest/beehive before it was broken.")
-    public void setBounds(MinMaxBounds.Ints bounds) {
-        this.bounds = bounds;
+    public void setBounds(Bounds bounds) {
+        this.bounds = bounds.toIntegerBounds();
     }
 }

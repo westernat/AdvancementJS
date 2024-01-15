@@ -24,6 +24,12 @@ public class DamageSourcePredicateBuilder {
         builder.tag(new TagPredicate<>(TagKey.create(Registries.DAMAGE_TYPE, tagName), expected));
     }
 
+    @Info(value = "Damage type tag that the type of the damage should be included in. Excepted is true.",
+        params = @Param(name = "tagName"))
+    public void tag(ResourceLocation tagName) {
+        builder.tag(new TagPredicate<>(TagKey.create(Registries.DAMAGE_TYPE, tagName), true));
+    }
+
     @Info("The entity that was the direct cause of the damage.")
     public void direct(EntityPredicate direct) {
         builder.direct(direct);

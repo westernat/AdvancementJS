@@ -14,7 +14,7 @@ public class Bounds {
     @Nullable
     private final Number max;
 
-    public Bounds(@Nullable Number min, @Nullable Number max) {
+    Bounds(@Nullable Number min, @Nullable Number max) {
         this.min = min;
         this.max = max;
     }

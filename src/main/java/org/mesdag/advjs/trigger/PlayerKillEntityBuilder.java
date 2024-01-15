@@ -16,7 +16,7 @@ class PlayerKillEntityBuilder extends AbstractTriggerBuilder implements EntitySe
     DamageSourcePredicate killingBlow = DamageSourcePredicate.ANY;
 
     @Info("The entity that was killed.")
-    public void setKilled(EntityPredicate killed) {
+    public void setKilledByPredicate(EntityPredicate killed) {
         this.killed = EntityPredicate.wrap(killed);
     }
 
@@ -28,7 +28,7 @@ class PlayerKillEntityBuilder extends AbstractTriggerBuilder implements EntitySe
     }
 
     @Info("The entity that was killed.")
-    public void setKilled(EntityType<?> killed) {
+    public void setKilledByType(EntityType<?> killed) {
         this.killed = warpEntity(killed);
     }
 

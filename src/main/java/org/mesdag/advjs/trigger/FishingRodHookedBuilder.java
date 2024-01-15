@@ -30,7 +30,7 @@ class FishingRodHookedBuilder extends AbstractTriggerBuilder implements ItemSett
 
     @Info("The fishing rod used.")
     public void setRod(Ingredient rod) {
-        this.item = warpItem(rod);
+        this.item = wrapItem(rod);
     }
 
     @Info("The entity that was pulled, or the fishing bobber if no entity is pulled.")
@@ -59,6 +59,6 @@ class FishingRodHookedBuilder extends AbstractTriggerBuilder implements ItemSett
 
     @Info("The item that was caught.")
     public void setItem(Ingredient ingredient) {
-        this.item = warpItem(ingredient);
+        this.item = wrapItem(ingredient);
     }
 }

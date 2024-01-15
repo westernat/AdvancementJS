@@ -5,6 +5,7 @@ import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.mesdag.advjs.predicate.ItemPredicateBuilder;
+import org.mesdag.advjs.util.Bounds;
 import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
@@ -28,16 +29,16 @@ class ItemDurabilityBuilder extends AbstractTriggerBuilder implements ItemSetter
 
     @Info("The item before it was damaged, allows you to check the durability before the item was damaged.")
     public void setItem(Ingredient ingredient) {
-        this.item = warpItem(ingredient);
+        this.item = wrapItem(ingredient);
     }
 
     @Info("The remaining durability of the item.")
-    public void setDurability(MinMaxBounds.Ints durability) {
-        this.durability = durability;
+    public void setDurability(Bounds durability) {
+        this.durability = durability.toIntegerBounds();
     }
 
     @Info("The change in durability (negative numbers are used to indicate a decrease in durability).")
-    public void setDelta(MinMaxBounds.Ints delta) {
-        this.delta = delta;
+    public void setDelta(Bounds delta) {
+        this.delta = delta.toIntegerBounds();
     }
 }

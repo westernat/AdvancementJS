@@ -5,21 +5,29 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import org.mesdag.advjs.util.Bounds;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class ItemPredicateBuilder {
     final ItemPredicate.Builder builder = ItemPredicate.Builder.item();
 
     @Info("Check items.")
-    public void of(ItemStack... itemStacks) {
-        builder.of(Stream.of(itemStacks).map(ItemStack::getItem).toArray(ItemLike[]::new));
+    public void of(Ingredient ingredient) {
+        builder.of(Arrays.stream(ingredient.getItems()).map(ItemStack::getItem).toArray(ItemLike[]::new));
+    }
+
+    @Info("Check tag.")
+    public void tag(ResourceLocation tag) {
+        builder.of(TagKey.create(Registries.ITEM, tag));
     }
 
     @Info("""

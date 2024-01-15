@@ -79,7 +79,7 @@ public class BlockDestroyedTrigger extends SimpleCriterionTrigger<BlockDestroyed
 
         @Info("The item used to break the block.")
         public void setItem(Ingredient ingredient) {
-            this.item = warpItem(ingredient);
+            this.item = wrapItem(ingredient);
         }
     }
 

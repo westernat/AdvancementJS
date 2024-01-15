@@ -4,11 +4,12 @@ import com.google.gson.JsonElement;
 import dev.latvian.mods.kubejs.event.EventJS;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
+import dev.latvian.mods.kubejs.util.ConsoleJS;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.predicate.Predicate;
 import org.mesdag.advjs.trigger.Trigger;
+import org.mesdag.advjs.util.Provider;
 
 import static org.mesdag.advjs.configure.Data.FILTERS;
 import static org.mesdag.advjs.configure.Data.LOCK_MAP;
@@ -22,6 +23,7 @@ public class AdvConfigureEvent extends EventJS {
     public final Trigger TRIGGER = new Trigger();
     @Info("Predicate required in trigger.")
     public final Predicate PREDICATE = new Predicate();
+    public final Provider PROVIDER = new Provider();
 
     @Info("Create a new advancement root")
     public AdvBuilder create(ResourceLocation rootPath) {
@@ -46,7 +48,7 @@ public class AdvConfigureEvent extends EventJS {
     public void remove(JsonElement jsonElement) {
         RemoveFilter filter = RemoveFilter.of(jsonElement);
         if (filter.fail()) {
-            AdvJS.LOGGER.warn("Failed create a filter");
+            ConsoleJS.SERVER.warn("Failed create a filter");
         } else {
             FILTERS.add(filter);
         }

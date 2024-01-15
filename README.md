@@ -8,11 +8,11 @@ Configure Advancements by KubeJS
 
 ```js
 ServerEvents.advancement((event) => {
-    const { BOUNDS, PREDICATE, TRIGGER } = event;
+    const { PREDICATE, TRIGGER } = event;
 
     // Define trigger
     const jump5times = TRIGGER.tick((triggerBuilder) =>
-        triggerBuilder.addStat(Stats.JUMP, Stats.CUSTOM, BOUNDS.min$Integer(5)));
+        triggerBuilder.addStat(Stats.JUMP, Stats.CUSTOM, {min: 5}));
     const bred_in_nether = TRIGGER.bredAnimals((triggerBuilder) => {
         triggerBuilder.setChild(PREDICATE.entity({
             stepping_on: {
@@ -92,7 +92,7 @@ Just use ```/reload```
   - addEffect: to give effect.
   - More idea...
 - Custom condition
-  - requireParentDone: check if parent done, else it will not be done
+  - requireParentDone: locationCheck if parent done, else it will not be done
   - More idea...
 
 # TODO

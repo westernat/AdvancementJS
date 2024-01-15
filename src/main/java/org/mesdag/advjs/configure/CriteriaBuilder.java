@@ -5,10 +5,11 @@ import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.RequirementsStrategy;
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -16,6 +17,8 @@ import java.util.UUID;
 public class CriteriaBuilder {
     private final Map<String, Criterion> criteria;
     private RequirementsStrategy strategy = RequirementsStrategy.AND;
+    @Nullable
+    private String[][] requirements = null;
 
     CriteriaBuilder() {
         this.criteria = Maps.newLinkedHashMap();
@@ -31,12 +34,12 @@ public class CriteriaBuilder {
             @Param(name = "name", value = "The name of this trigger."),
             @Param(name = "trigger", value = "The trigger itself.")
         })
-    public <Trigger extends AbstractCriterionTriggerInstance> void add(String name, Trigger trigger) {
+    public <Trigger extends CriterionTriggerInstance> void add(String name, Trigger trigger) {
         criteria.put(name, new Criterion(trigger));
     }
 
     @Info("Add a nameless trigger for this advancement.")
-    public <Trigger extends AbstractCriterionTriggerInstance> void add(Trigger trigger) {
+    public <Trigger extends CriterionTriggerInstance> void add(Trigger trigger) {
         criteria.put(UUID.randomUUID().toString(), new Criterion(trigger));
     }
 
@@ -59,11 +62,11 @@ public class CriteriaBuilder {
     }
 
     @Info("""
-        Set the condition that how does this advancement be triggered.
+        Defines how these criteria are completed to grant the advancement.
                 
-        If set to 'RequirementsStrategy.OR', the requirements will looks like '[[a], [b], [c]]'.
+        If set to 'RequirementsStrategy.OR', the requirements will looks like '[[a, b, c]]'.
                 
-        If set to 'RequirementsStrategy.AND', the requirements will looks like '[[a, b, c]]'.
+        If set to 'RequirementsStrategy.AND', the requirements will looks like '[[a], [b], [c]]'.
                 
         Defaults to 'RequirementsStrategy.AND'
         """)
@@ -71,8 +74,16 @@ public class CriteriaBuilder {
         this.strategy = strategy;
     }
 
-    @HideFromJS
+    @Info("""
+        Defines how these criteria are completed to grant the advancement.
+        
+        Directly configure requirements instead of strategy.
+        """)
+    public void setRequirements(String[][] requirements) {
+        this.requirements = requirements;
+    }
+
     public String[][] getRequirements() {
-        return strategy.createRequirements(getCriteria().keySet());
+        return requirements == null ? strategy.createRequirements(getCriteria().keySet()) : requirements;
     }
 }

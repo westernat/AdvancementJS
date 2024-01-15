@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 class SingleEntityBuilder extends AbstractTriggerBuilder implements EntitySetter {
     ContextAwarePredicate entity = ContextAwarePredicate.ANY;
 
-    public void setEntity(EntityPredicate entity) {
+    public void setEntityByPredicate(EntityPredicate entity) {
         this.entity = EntityPredicate.wrap(entity);
     }
 
@@ -21,7 +21,7 @@ class SingleEntityBuilder extends AbstractTriggerBuilder implements EntitySetter
         this.entity = EntityPredicate.wrap(builder.build());
     }
 
-    public void setEntity(EntityType<?> entity) {
+    public void setEntityByType(EntityType<?> entity) {
         this.entity = warpEntity(entity);
     }
 }

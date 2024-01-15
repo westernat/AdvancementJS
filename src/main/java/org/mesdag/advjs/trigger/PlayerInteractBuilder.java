@@ -31,11 +31,11 @@ class PlayerInteractBuilder extends AbstractTriggerBuilder implements ItemSetter
 
     @Info("The item which was in the player's hand during interaction.")
     public void setItem(Ingredient ingredient) {
-        this.item = warpItem(ingredient);
+        this.item = wrapItem(ingredient);
     }
 
     @Info("The entity which was interacted with.")
-    public void setEntity(EntityPredicate entity) {
+    public void setEntityByPredicate(EntityPredicate entity) {
         this.entity = EntityPredicate.wrap(entity);
     }
 
@@ -47,7 +47,7 @@ class PlayerInteractBuilder extends AbstractTriggerBuilder implements ItemSetter
     }
 
     @Info("The entity which was interacted with.")
-    public void setEntity(EntityType<?> entityType) {
+    public void setEntityByType(EntityType<?> entityType) {
         this.entity = warpEntity(entityType);
     }
 }

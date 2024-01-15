@@ -28,7 +28,7 @@ class PlayerHurtEntityBuilder extends AbstractTriggerBuilder implements EntitySe
     }
 
     @Info("The entity that was damaged.")
-    public void setEntity(EntityPredicate entity) {
+    public void setEntityByPredicate(EntityPredicate entity) {
         this.entity = EntityPredicate.wrap(entity);
     }
 
@@ -40,7 +40,7 @@ class PlayerHurtEntityBuilder extends AbstractTriggerBuilder implements EntitySe
     }
 
     @Info("The entity that was damaged.")
-    public void setEntity(EntityType<?> entityType) {
+    public void setEntityByType(EntityType<?> entityType) {
         this.entity = warpEntity(entityType);
     }
 }

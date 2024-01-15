@@ -2,13 +2,13 @@ package org.mesdag.advjs.configure;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import dev.latvian.mods.kubejs.util.ConsoleJS;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.Nullable;
-import org.mesdag.advjs.AdvJS;
 
 
 public class RemoveFilter {
@@ -28,7 +28,7 @@ public class RemoveFilter {
                 if (ModList.get().isLoaded(modid)) {
                     filter.modid = modid;
                 } else {
-                    AdvJS.LOGGER.warn("Mod '{}' not found", modid);
+                    ConsoleJS.SERVER.warn("Mod '" + modid + "' not found");
                 }
             }
 
@@ -38,7 +38,7 @@ public class RemoveFilter {
                 if (item != Items.AIR) {
                     filter.icon = item;
                 } else {
-                    AdvJS.LOGGER.warn("RemoveFilter: Icon '{}' not found", icon);
+                    ConsoleJS.SERVER.warn("RemoveFilter: Icon '" + icon + "' not found");
                 }
             }
 

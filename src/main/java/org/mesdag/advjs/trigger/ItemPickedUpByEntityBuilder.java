@@ -31,11 +31,11 @@ class ItemPickedUpByEntityBuilder extends AbstractTriggerBuilder implements Item
 
     @Info("The thrown item which was picked up.")
     public void setItem(Ingredient ingredient) {
-        this.item = warpItem(ingredient);
+        this.item = wrapItem(ingredient);
     }
 
     @Info("The entity which picked up the item.")
-    public void setEntity(EntityPredicate entity) {
+    public void setEntityByPredicate(EntityPredicate entity) {
         this.entity = EntityPredicate.wrap(entity);
     }
 
@@ -47,7 +47,7 @@ class ItemPickedUpByEntityBuilder extends AbstractTriggerBuilder implements Item
     }
 
     @Info("The entity which picked up the item.")
-    public void setEntity(EntityType<?> entityType) {
+    public void setEntityByType(EntityType<?> entityType) {
         this.entity = warpEntity(entityType);
     }
 }

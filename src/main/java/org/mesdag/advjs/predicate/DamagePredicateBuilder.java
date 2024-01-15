@@ -23,7 +23,7 @@ public class DamagePredicateBuilder {
     }
 
     @Info("Checks the entity that was the source of the damage (for example: The skeleton that shot the arrow).")
-    public void sourceEntity(EntityPredicate entityPredicate) {
+    public void sourceEntityByPredicate(EntityPredicate entityPredicate) {
         builder.sourceEntity(entityPredicate);
     }
 

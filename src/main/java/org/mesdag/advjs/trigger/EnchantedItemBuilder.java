@@ -5,6 +5,7 @@ import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.mesdag.advjs.predicate.ItemPredicateBuilder;
+import org.mesdag.advjs.util.Bounds;
 import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
@@ -27,11 +28,11 @@ class EnchantedItemBuilder extends AbstractTriggerBuilder implements ItemSetter 
 
     @Info("The item after it has been enchanted.")
     public void setItem(Ingredient ingredient){
-        this.item = warpItem(ingredient);
+        this.item = wrapItem(ingredient);
     }
 
     @Info("The levels spent by the player on the enchantment.")
-    public void setLevels(MinMaxBounds.Ints levels) {
-        this.levels = levels;
+    public void setLevels(Bounds levels) {
+        this.levels = levels.toIntegerBounds();
     }
 }

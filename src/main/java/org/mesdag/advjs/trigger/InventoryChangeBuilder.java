@@ -4,6 +4,7 @@ import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.world.item.crafting.Ingredient;
+import org.mesdag.advjs.util.Bounds;
 import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.stream.Stream;
@@ -15,18 +16,18 @@ class InventoryChangeBuilder extends AbstractTriggerBuilder implements ItemSette
     ItemPredicate[] items = new ItemPredicate[]{ItemPredicate.ANY};
 
     @Info("The amount of slots occupied in the inventory.")
-    public void setSlotsOccupied(MinMaxBounds.Ints slotsOccupied) {
-        this.slotsOccupied = slotsOccupied;
+    public void setSlotsOccupied(Bounds slotsOccupied) {
+        this.slotsOccupied = slotsOccupied.toIntegerBounds();
     }
 
     @Info("The amount of slots completely filled (stacksize) in the inventory.")
-    public void setSlotsFull(MinMaxBounds.Ints slotsFull) {
-        this.slotsFull = slotsFull;
+    public void setSlotsFull(Bounds slotsFull) {
+        this.slotsFull = slotsFull.toIntegerBounds();
     }
 
     @Info("The amount of slots empty in the inventory.")
-    public void setSlotsEmpty(MinMaxBounds.Ints slotsEmpty) {
-        this.slotsEmpty = slotsEmpty;
+    public void setSlotsEmpty(Bounds slotsEmpty) {
+        this.slotsEmpty = slotsEmpty.toIntegerBounds();
     }
 
     @Info("""
@@ -48,6 +49,6 @@ class InventoryChangeBuilder extends AbstractTriggerBuilder implements ItemSette
         but not all items in the player's inventory have to be in this list.
         """)
     public void setItems(Ingredient... ingredients) {
-        this.items = Stream.of(ingredients).map(this::warpItem).toArray(ItemPredicate[]::new);
+        this.items = Stream.of(ingredients).map(this::wrapItem).toArray(ItemPredicate[]::new);
     }
 }

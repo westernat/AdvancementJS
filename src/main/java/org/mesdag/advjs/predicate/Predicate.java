@@ -6,6 +6,8 @@ import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
+import org.mesdag.advjs.predicate.condition.*;
 import org.mesdag.advjs.util.Bounds;
 
 import java.util.function.Consumer;
@@ -183,19 +185,15 @@ public class Predicate {
         return ItemPredicate.ANY;
     }
 
-    public LighthingBoltPredicate lightningBolt(JsonObject o) {
-        return LighthingBoltPredicate.fromJson(o);
-    }
-
-    public LighthingBoltPredicate lightningBolt(Consumer<LightningBoltPredicateBuilder>consumer){
+    public LightningBoltPredicate lightningBolt(Consumer<LightningBoltPredicateBuilder> consumer) {
         LightningBoltPredicateBuilder builder = new LightningBoltPredicateBuilder();
         consumer.accept(builder);
-        return builder.build();
+        return builder.predicate();
     }
 
     @Info("Any LightningBoltPredicate")
-    public LighthingBoltPredicate lightningBolt() {
-        return LighthingBoltPredicate.blockSetOnFire(MinMaxBounds.Ints.ANY);
+    public LightningBoltPredicate lightningBolt() {
+        return LightningBoltPredicate.ANY;
     }
 
     public LightPredicate light(JsonObject o) {
@@ -203,7 +201,7 @@ public class Predicate {
     }
 
     public LightPredicate light(Bounds bounds) {
-        return LightPredicate.Builder.light().setComposite(bounds.toIntegerBounds()).build();
+        return new LightPredicate.Builder().setComposite(bounds.toIntegerBounds()).build();
     }
 
     @Info("Any LightPredicate")
@@ -298,5 +296,25 @@ public class Predicate {
     @Info("Any EntityTypePredicate")
     public EntityTypePredicate entityType() {
         return EntityTypePredicate.ANY;
+    }
+
+    public Condition anyOf(Check... checks) {
+        return Condition.any(checks);
+    }
+
+    public Condition allOf(Check... checks) {
+        return Condition.all(checks);
+    }
+
+    public LocationCheck locationCheck() {
+        return new LocationCheck();
+    }
+
+    public MatchTool matchTool(Consumer<ItemPredicateBuilder> consumer) {
+        return new MatchTool(consumer);
+    }
+
+    public BlockStatePropertyCheck blockStatePropertyCheck(Block block) {
+        return new BlockStatePropertyCheck(block);
     }
 }

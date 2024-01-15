@@ -3,7 +3,10 @@ package org.mesdag.advjs.predicate;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.critereon.*;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.function.Consumer;
@@ -11,8 +14,14 @@ import java.util.function.Consumer;
 public class EntityPredicateBuilder {
     final EntityPredicate.Builder builder = new EntityPredicate.Builder();
 
+    @Info("Accept entity's id.")
     public void of(EntityType<?> entityType) {
         builder.of(entityType);
+    }
+
+    @Info("Accept entity's tag.")
+    public void tag(ResourceLocation tag) {
+        builder.of(TagKey.create(Registries.ENTITY_TYPE, tag));
     }
 
     @Info("Test this entity's type.")
@@ -111,8 +120,6 @@ public class EntityPredicateBuilder {
         consumer.accept(builder1);
         builder.equipment(builder1.build());
     }
-
-    // TODO EntitySubPredicate
 
     @Info("Test properties of the vehicle entity that this entity is riding upon.")
     public void vehicle(EntityPredicate entityPredicate) {

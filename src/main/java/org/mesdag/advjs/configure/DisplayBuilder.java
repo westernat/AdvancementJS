@@ -46,7 +46,6 @@ public class DisplayBuilder {
 
     @Info("The ItemStack containing data for the advancement's icon.")
     public void setIcon(ItemStack icon) {
-        icon.setCount(1);
         this.icon = icon;
     }
 

@@ -6,6 +6,7 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.StatType;
@@ -41,8 +42,8 @@ public class PlayerPredicateBuilder {
             @Param(name = "statType", value = "The statistic type."),
             @Param(name = "value", value = "Test if the value of the statistic matches an exact number.")
         })
-    public void addStat(ResourceLocation statId, StatType<?> statType, MinMaxBounds.Ints value) {
-        playerBuilder.addStat(getStat(statType, statId), value);
+    public void addStat(ResourceLocation statId, StatType<?> statType, Bounds value) {
+        playerBuilder.addStat(getStat(statType, statId), value.toIntegerBounds());
     }
 
     private static <T> Stat<T> getStat(StatType<T> statType, ResourceLocation statId) {
@@ -158,8 +159,8 @@ public class PlayerPredicateBuilder {
     }
 
     @Info("Test NBT data of player.")
-    public void setNbt(NbtPredicate nbt) {
-        this.nbt = nbt;
+    public void setNbt(CompoundTag nbt) {
+        this.nbt = new NbtPredicate(nbt);
     }
 
     @Info("Test flags of player.")
