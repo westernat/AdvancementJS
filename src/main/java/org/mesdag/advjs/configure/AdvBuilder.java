@@ -12,7 +12,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static org.mesdag.advjs.configure.Data.*;
+import static org.mesdag.advjs.configure.Data.BUILDER_MAP;
+import static org.mesdag.advjs.configure.Data.REQUIRE_DONE;
 
 public class AdvBuilder {
     @Nullable
@@ -54,7 +55,7 @@ public class AdvBuilder {
         DisplayBuilder builder = new DisplayBuilder();
         displayBuilderConsumer.accept(builder);
         if (parent == null && builder.getBackground() == null) {
-            builder.setBackground(DEFAULT_BACKGROUND);
+            builder.setBackground(new ResourceLocation("textures/gui/advancements/backgrounds/stone.png"));
         }
         this.displayBuilder = builder;
         update();
@@ -99,6 +100,9 @@ public class AdvBuilder {
 
     @Info("Get the id of this advancement.")
     public ResourceLocation getSavePath() {
+        if (name.contains(":")) {
+            return new ResourceLocation(name);
+        }
         return new ResourceLocation(rootPath.getNamespace(), rootPath.getPath() + "/" + name);
     }
 

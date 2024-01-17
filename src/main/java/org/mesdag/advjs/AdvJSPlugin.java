@@ -127,7 +127,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
                     })
                     """
                 );
-                ConsoleJS.SERVER.info("Generated advancement.js");
+                ConsoleJS.SERVER.info("AdvJS: Generated advancement.js");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

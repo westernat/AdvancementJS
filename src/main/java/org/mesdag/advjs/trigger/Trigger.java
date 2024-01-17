@@ -310,17 +310,28 @@ public class Trigger implements ItemSetter {
         return new RecipeUnlockedTrigger.TriggerInstance(builder.player, builder.recipe);
     }
 
-    //TODO info
+    @Info("Triggers when the player crafts a recipe in a crafting table, stonecutter or smithing table.")
     public RecipeCraftedTrigger.TriggerInstance recipeCrafted(Consumer<RecipeCraftedBuilder> consumer) {
         RecipeCraftedBuilder builder = new RecipeCraftedBuilder();
         consumer.accept(builder);
         return new RecipeCraftedTrigger.TriggerInstance(builder.player, builder.recipe, builder.predicates);
     }
 
+    @Info(value = "Triggers when the player crafts a recipe in a crafting table, stonecutter or smithing table.",
+        params = {
+            @Param(name = "recipeId", value = "The recipe that was crafted."),
+            @Param(name = "itemPredicates", value = """
+                An array of item predicates for the recipe ingredients.
+
+                Each item can only match one predicate, and every predicate needs to pass for the criterion to be granted.
+                """)
+        })
     public static RecipeCraftedTrigger.TriggerInstance craftedItem(ResourceLocation recipe, List<ItemPredicate> itemPredicates) {
         return new RecipeCraftedTrigger.TriggerInstance(ContextAwarePredicate.ANY, recipe, itemPredicates);
     }
 
+    @Info(value = "Triggers when the player crafts a recipe in a crafting table, stonecutter or smithing table.",
+        params = @Param(name = "recipeId", value = "The recipe that was crafted."))
     public static RecipeCraftedTrigger.TriggerInstance craftedItem(ResourceLocation recipe) {
         return new RecipeCraftedTrigger.TriggerInstance(ContextAwarePredicate.ANY, recipe, List.of());
     }

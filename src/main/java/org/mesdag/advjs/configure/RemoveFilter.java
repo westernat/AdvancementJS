@@ -28,7 +28,7 @@ public class RemoveFilter {
                 if (ModList.get().isLoaded(modid)) {
                     filter.modid = modid;
                 } else {
-                    ConsoleJS.SERVER.warn("Mod '" + modid + "' not found");
+                    ConsoleJS.SERVER.warn("AdvJS/RemoveFilter: Mod '" + modid + "' not found");
                 }
             }
 
@@ -38,7 +38,7 @@ public class RemoveFilter {
                 if (item != Items.AIR) {
                     filter.icon = item;
                 } else {
-                    ConsoleJS.SERVER.warn("RemoveFilter: Icon '" + icon + "' not found");
+                    ConsoleJS.SERVER.warn("AdvJS/RemoveFilter: Icon '" + icon + "' not found");
                 }
             }
 

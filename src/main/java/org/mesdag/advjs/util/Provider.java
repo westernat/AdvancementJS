@@ -9,13 +9,20 @@ import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterList;
 import java.util.List;
 
 public class Provider {
-    private static final List<ResourceLocation> overworldBiomes = MultiNoiseBiomeSourceParameterList
+    private final List<ResourceLocation> overworldBiomes = MultiNoiseBiomeSourceParameterList
         .Preset.OVERWORLD.usedBiomes().map(ResourceKey::location).toList();
-    private static final List<ResourceLocation> smithingTrims = VanillaRecipeProvider.smithingTrims().values().stream().toList();
+    private final List<ResourceLocation> netherBiomes = MultiNoiseBiomeSourceParameterList
+        .Preset.NETHER.usedBiomes().map(ResourceKey::location).toList();
+    private final List<ResourceLocation> smithingTrims = VanillaRecipeProvider.smithingTrims().values().stream().toList();
 
     @Info("Get all biomes id of overworld.")
     public List<ResourceLocation> getOverworldBiomes() {
         return overworldBiomes;
+    }
+
+    @Info("Get all biomes id of nether.")
+    public List<ResourceLocation> getNetherBiomes() {
+        return netherBiomes;
     }
 
     @Info("Get all smithing trims id.")

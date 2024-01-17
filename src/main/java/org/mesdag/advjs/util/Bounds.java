@@ -1,5 +1,7 @@
 package org.mesdag.advjs.util;
 
+import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,6 +21,7 @@ public class Bounds {
         this.max = max;
     }
 
+    @HideFromJS
     public MinMaxBounds.Doubles toDoubleBounds() {
         if (min == null) {
             if (max == null) {
@@ -33,6 +36,7 @@ public class Bounds {
         return MinMaxBounds.Doubles.between(min.doubleValue(), max.doubleValue());
     }
 
+    @HideFromJS
     public MinMaxBounds.Ints toIntegerBounds() {
         if (min == null) {
             if (max == null) {
@@ -47,6 +51,15 @@ public class Bounds {
         return MinMaxBounds.Ints.between(min.intValue(), max.intValue());
     }
 
+    @Info("""
+    A number like A will wrap to an exactly bounds.
+    
+    A list like [A, B] will wrap to an between bounds.
+    
+    A map like {min: A} will wrap to an atLeast bounds.
+    
+    A map like {max: B} will wrap to an atMost bounds.
+    """)
     @SuppressWarnings("unchecked")
     public static Bounds of(Object o) {
         if (o instanceof Number n) {

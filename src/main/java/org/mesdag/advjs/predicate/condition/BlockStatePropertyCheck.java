@@ -1,5 +1,6 @@
 package org.mesdag.advjs.predicate.condition;
 
+import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
@@ -18,6 +19,7 @@ public class BlockStatePropertyCheck implements Check {
         this.block = block;
     }
 
+    @Info("The state property predicate of this check.")
     public BlockStatePropertyCheck stateProperties(Consumer<StatePropertiesPredicateBuilder> consumer) {
         consumer.accept(this.stateProperties);
         this.matchState = true;

@@ -32,7 +32,7 @@ public class StatePropertiesPredicateBuilder {
             if (pair.length == 2) {
                 match(pair[0].strip(), pair[1].strip());
             } else {
-                ConsoleJS.SERVER.warn("Find a worse pair '" + pairString + "'");
+                ConsoleJS.SERVER.warn("AdvJS/StatePropertiesPredicateBuilder: Find a worse pair '" + pairString + "'");
             }
         }
         return this;

@@ -1,5 +1,6 @@
 package org.mesdag.advjs.predicate.condition;
 
+import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -11,11 +12,13 @@ public class LocationCheck implements Check {
     LocationPredicateBuilder locationBuilder = new LocationPredicateBuilder();
     BlockPos offset = BlockPos.ZERO;
 
+    @Info("The location predicate of this check.")
     public LocationCheck location(Consumer<LocationPredicateBuilder> consumer) {
         consumer.accept(this.locationBuilder);
         return this;
     }
 
+    @Info("The offset block pos of this check.")
     public LocationCheck offset(BlockPos offset) {
         this.offset = offset;
         return this;

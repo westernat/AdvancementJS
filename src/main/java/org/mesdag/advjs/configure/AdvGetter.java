@@ -4,6 +4,7 @@ import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Arrays;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -50,16 +51,27 @@ public class AdvGetter {
 
     @Info("Add a nameless child to this advancement just for test. Returns child.")
     public AdvBuilder addChild(Consumer<AdvBuilder> advBuilderConsumer) {
-        AdvBuilder child = new AdvBuilder(savePath, UUID.randomUUID().toString(), savePath, true);
+        AdvBuilder child = new AdvBuilder(savePath, UUID.randomUUID().toString(), getRootPath(savePath), true);
         advBuilderConsumer.accept(child);
         return child;
     }
 
     @Info("Add a named child to this advancement. Returns child.")
     public AdvBuilder addChild(String name, Consumer<AdvBuilder> advBuilderConsumer) {
-        AdvBuilder child = new AdvBuilder(savePath, name, savePath, false);
+        AdvBuilder child = new AdvBuilder(savePath, name, getRootPath(savePath), false);
         advBuilderConsumer.accept(child);
         return child;
+    }
+
+    private static ResourceLocation getRootPath(ResourceLocation savePath) {
+        String[] paths = savePath.getPath().split("/");
+        String path;
+        if (paths.length == 1) {
+            path = paths[0];
+        } else {
+            path = String.join("/", Arrays.copyOfRange(paths, 0, paths.length - 1));
+        }
+        return new ResourceLocation(savePath.getNamespace(), path);
     }
 
     @Info("It will check if parent done. Defaults do not check.")

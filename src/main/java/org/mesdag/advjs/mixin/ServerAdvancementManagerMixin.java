@@ -4,11 +4,13 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
+import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -53,16 +55,19 @@ public abstract class ServerAdvancementManagerMixin {
 
             JsonObject advJson = entry.getValue().getAsJsonObject();
             for (RemoveFilter filter : FILTERS) {
-                if (filter.isResolved() || !advJson.has("display")) {
+                if (filter.isResolved()) {
                     continue;
                 }
 
-                JsonObject display = advJson.get("display").getAsJsonObject();
-                Item item = display.has("icon") ? GsonHelper.getAsItem(display.get("icon").getAsJsonObject(), "item", null) : null;
-                String frame = display.has("frame") ? display.get("frame").getAsString() : "task";
                 String parent = advJson.has("parent") ? advJson.get("parent").getAsString() : null;
-
-                if (filter.matches(key, item, frame, parent)) {
+                if (advJson.has("display")) {
+                    JsonObject display = advJson.get("display").getAsJsonObject();
+                    Item item = display.has("icon") ? GsonHelper.getAsItem(display.get("icon").getAsJsonObject(), "item", null) : null;
+                    String frame = display.has("frame") ? display.get("frame").getAsString() : null;
+                    if (filter.matches(key, item, frame, parent)) {
+                        builder.add(key);
+                    }
+                } else if (filter.matches(key, null, null, parent)) {
                     builder.add(key);
                 }
             }
@@ -73,23 +78,23 @@ public abstract class ServerAdvancementManagerMixin {
             counter++;
         }
 
-        ConsoleJS.SERVER.info("advJS$remove: removed " + counter + " advancements");
+        ConsoleJS.SERVER.info("AdvJS: Removed " + counter + " advancements");
     }
 
     @ModifyArg(
-        method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/AdvancementList;add(Ljava/util/Map;)V"))
+            method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/AdvancementList;add(Ljava/util/Map;)V"))
     private Map<ResourceLocation, Advancement.Builder> advjs$configure(Map<ResourceLocation, Advancement.Builder> map) {
         advJS$modify(map, lootData);
         advJS$add(map);
-        ConsoleJS.SERVER.info("AdvJS loaded!");
+        ConsoleJS.SERVER.info("AdvJS: Completely loaded!");
         return map;
     }
 
     @Unique
     private static void advJS$modify(Map<ResourceLocation, Advancement.Builder> map, LootDataManager lootData) {
         if (AdvJSPlugin.DEBUG) {
-            ConsoleJS.SERVER.debug("Modification details:");
+            ConsoleJS.SERVER.debug("AdvJS: Modification details:");
         }
 
         int counter = 0;
@@ -97,7 +102,7 @@ public abstract class ServerAdvancementManagerMixin {
             ResourceLocation path = entry.getKey();
             Advancement.Builder builder = map.get(path);
             if (builder == null) {
-                ConsoleJS.SERVER.error("Advancement '" + path + "' is not exist");
+                ConsoleJS.SERVER.error("AdvJS: Advancement '" + path + "' is not exist");
                 continue;
             }
             AdvGetter getter = entry.getValue();
@@ -125,10 +130,10 @@ public abstract class ServerAdvancementManagerMixin {
             String[][] neoRequirements = neoCriteriaBuilder.getRequirements();
 
             Advancement.Builder neo = Advancement.Builder.advancement()
-                .parent(parentId)
-                .display(neoDisplay)
-                .rewards(neoRewards)
-                .requirements(neoRequirements);
+                    .parent(parentId)
+                    .display(neoDisplay)
+                    .rewards(neoRewards)
+                    .requirements(neoRequirements);
             for (Map.Entry<String, Criterion> pair : neoCriteriaBuilder.getCriteria().entrySet()) {
                 neo.addCriterion(pair.getKey(), pair.getValue());
             }
@@ -137,40 +142,40 @@ public abstract class ServerAdvancementManagerMixin {
 
             if (AdvJSPlugin.DEBUG) {
                 ConsoleJS.SERVER.debug("""
-                    identifier: %s
-                        parent: %s
-                        display:
-                            icon: %s -> %s
-                            title: %s -> %s
-                            description: %s -> %s
-                            background: %s -> %s
-                            frame: %s -> %s
-                            showToast: %s -> %s
-                            announceToChat: %s -> %s
-                            hidden: %s -> %s
-                        rewards: %s
-                        requirements: %s
-                        criteria: %s
-                    """
-                    .formatted(
-                        path,
-                        parentId,
-                        oldDisplay.getIcon().getDescriptionId(), neoDisplay.getIcon().getDescriptionId(),
-                        oldDisplay.getTitle().getString(), neoDisplay.getTitle().getString(),
-                        oldDisplay.getDescription().getString(), neoDisplay.getDescription().getString(),
-                        oldDisplay.getBackground(), neoDisplay.getBackground(),
-                        oldDisplay.getFrame().getName(), neoDisplay.getFrame().getName(),
-                        oldDisplay.shouldShowToast(), neoDisplay.shouldShowToast(),
-                        oldDisplay.shouldAnnounceChat(), neoDisplay.shouldAnnounceChat(),
-                        oldDisplay.isHidden(), neoDisplay.isHidden(),
-                        neoRewards,
-                        neoRequirements,
-                        String.join(",", neo.getCriteria().keySet())
-                    )
+                        identifier: %s
+                            parent: %s
+                            display:
+                                icon: %s -> %s
+                                title: %s -> %s
+                                description: %s -> %s
+                                background: %s -> %s
+                                frame: %s -> %s
+                                showToast: %s -> %s
+                                announceToChat: %s -> %s
+                                hidden: %s -> %s
+                            rewards: %s
+                            requirements: %s
+                            criteria: %s
+                        """
+                        .formatted(
+                                path,
+                                parentId,
+                                oldDisplay.getIcon().getDescriptionId(), neoDisplay.getIcon().getDescriptionId(),
+                                oldDisplay.getTitle().getString(), neoDisplay.getTitle().getString(),
+                                oldDisplay.getDescription().getString(), neoDisplay.getDescription().getString(),
+                                oldDisplay.getBackground(), neoDisplay.getBackground(),
+                                oldDisplay.getFrame().getName(), neoDisplay.getFrame().getName(),
+                                oldDisplay.shouldShowToast(), neoDisplay.shouldShowToast(),
+                                oldDisplay.shouldAnnounceChat(), neoDisplay.shouldAnnounceChat(),
+                                oldDisplay.isHidden(), neoDisplay.isHidden(),
+                                neoRewards,
+                                neoRequirements,
+                                String.join(",", neo.getCriteria().keySet())
+                        )
                 );
             }
         }
-        ConsoleJS.SERVER.info("advJS$modify: modified " + counter + " advancements");
+        ConsoleJS.SERVER.info("AdvJS: Modified " + counter + " advancements");
     }
 
     @Unique
@@ -190,29 +195,29 @@ public abstract class ServerAdvancementManagerMixin {
                 map.put(advBuilder.getSavePath(), builder.parent(parentId));
                 counter++;
             } else {
-                ConsoleJS.SERVER.error("Advancement '" + parentId + "' is not exist");
+                ConsoleJS.SERVER.error("AdvJS: Advancement '" + parentId + "' is not exist");
             }
         }
-        ConsoleJS.SERVER.info("advJS$add: added " + counter + " advancements");
+        ConsoleJS.SERVER.info("AdvJS: Added " + counter + " advancements");
     }
 
     @Unique
     private static Advancement.Builder advJS$build(AdvBuilder advBuilder) {
         if (advBuilder.isWarn()) {
             advBuilder.display(builder -> {
-                builder.setTitle(ATTENTION);
-                builder.setDescription(ATTENTION_DESC);
+                builder.setTitle(Component.translatable("advjs.attention").withStyle(ChatFormatting.RED));
+                builder.setDescription(Component.translatable("advjs.attention.desc"));
             });
-            ConsoleJS.SERVER.warn("A warn advancement created, the parent is '" + advBuilder.getParent() + "'");
+            ConsoleJS.SERVER.warn("AdvJS: A warn advancement created, the parent is '" + advBuilder.getParent() + "'");
         }
         return new Advancement(
-            advBuilder.getSavePath(),
-            null,
-            advBuilder.getDisplayInfo(),
-            advBuilder.getRewards(),
-            advBuilder.getCriteria(),
-            advBuilder.getRequirements(),
-            advBuilder.isSendsTelemetryEvent()
+                advBuilder.getSavePath(),
+                null,
+                advBuilder.getDisplayInfo(),
+                advBuilder.getRewards(),
+                advBuilder.getCriteria(),
+                advBuilder.getRequirements(),
+                advBuilder.isSendsTelemetryEvent()
         ).deconstruct();
     }
 }
