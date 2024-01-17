@@ -92,7 +92,7 @@ Just use ```/reload```
   - addEffect: to give effect.
   - More idea...
 - Custom condition
-  - requireParentDone: locationCheck if parent done, else it will not be done
+  - requireParentDone: check if parent done, else it will not be done
   - More idea...
 
 # TODO
