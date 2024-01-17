@@ -26,7 +26,14 @@ public class LightningBoltPredicate {
         this.nbt = nbt;
     }
 
-    // TODO fromJson
+    static LightningBoltPredicate fromJson(JsonObject jsonObject) {
+        NumberRange.IntRange blockSetOnFire = jsonObject.has("blocks_set_on_fire") ? NumberRange.IntRange.fromJson(jsonObject.get("blocks_set_on_fire")) : NumberRange.IntRange.ANY;
+        EntityPredicate entityStruck = jsonObject.has("entity_struck") ? EntityPredicate.fromJson(jsonObject.get("entity_struck")) : EntityPredicate.ANY;
+        DistancePredicate distance = jsonObject.has("distance") ? DistancePredicate.fromJson(jsonObject.get("distance")) : DistancePredicate.ANY;
+        LocationPredicate location = jsonObject.has("location") ? LocationPredicate.fromJson(jsonObject.get("location")) : LocationPredicate.ANY;
+        NbtPredicate nbt = jsonObject.has("nbt") ? NbtPredicate.fromJson(jsonObject.get("nbt")) : NbtPredicate.ANY;
+        return new LightningBoltPredicate(blockSetOnFire, entityStruck, distance, location, nbt);
+    }
 
     @HideFromJS
     public LootContextPredicate build() {

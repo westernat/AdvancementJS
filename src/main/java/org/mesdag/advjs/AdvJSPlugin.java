@@ -55,7 +55,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
         if (generate && Files.notExists(AdvJS.EXAMPLE)) {
             try {
                 Files.writeString(AdvJS.EXAMPLE, """
-                    // You Can Turn Off Auto Generate This Example In common.properties
+                    // You Can Turn Off Auto Generate In common.properties
                     ServerEvents.advancement((event) => {
                         const { BOUNDS, PREDICATE, TRIGGER } = event;
 
@@ -128,7 +128,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
                     })
                     """
                 );
-                ConsoleJS.SERVER.info("Generated advancement.js");
+                ConsoleJS.SERVER.info("AdvJS: Generated advancement.js");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

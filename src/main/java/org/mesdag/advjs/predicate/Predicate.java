@@ -188,6 +188,10 @@ public class Predicate {
         return ItemPredicate.ANY;
     }
 
+    public LightningBoltPredicate lightningBolt(JsonObject o) {
+        return LightningBoltPredicate.fromJson(o);
+    }
+
     public LightningBoltPredicate lightningBolt(Consumer<LightningBoltPredicateBuilder> consumer){
         LightningBoltPredicateBuilder builder = new LightningBoltPredicateBuilder();
         consumer.accept(builder);
@@ -301,22 +305,27 @@ public class Predicate {
         return EntityTypePredicate.ANY;
     }
 
+    @Info("Collect any of checks.")
     public Condition anyOf(Check... checks) {
         return Condition.any(checks);
     }
 
+    @Info("Collect all of checks.")
     public Condition allOf(Check... checks) {
         return Condition.all(checks);
     }
 
+    @Info("New location check.")
     public LocationCheck locationCheck() {
         return new LocationCheck();
     }
 
+    @Info("New match tool check.")
     public MatchTool matchTool(Consumer<ItemPredicateBuilder> consumer) {
         return new MatchTool(consumer);
     }
 
+    @Info("New block state property check.")
     public BlockStatePropertyCheck blockStatePropertyCheck(Block block) {
         return new BlockStatePropertyCheck(block);
     }

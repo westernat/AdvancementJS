@@ -1,5 +1,6 @@
 package org.mesdag.advjs.trigger;
 
+import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.predicate.entity.LootContextPredicate;
 import org.mesdag.advjs.predicate.condition.Check;
@@ -11,6 +12,7 @@ import java.util.HashSet;
 class ItemUsedOnLocationBuilder extends AbstractTriggerBuilder implements ItemSetter {
     final ArrayList<Check> checks = new ArrayList<>();
 
+    @Info("Add a predicate checking.")
     public void addCheck(Check check) {
         this.checks.add(check);
     }

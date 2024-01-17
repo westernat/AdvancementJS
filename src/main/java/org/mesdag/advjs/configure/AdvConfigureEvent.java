@@ -23,6 +23,7 @@ public class AdvConfigureEvent extends EventJS {
     public final Trigger TRIGGER = new Trigger();
     @Info("Predicate required in trigger.")
     public final Predicate PREDICATE = new Predicate();
+    @Info("Provides several data in vanilla.")
     public final Provider PROVIDER = new Provider();
 
     @Info("Create a new advancement root")
@@ -48,7 +49,7 @@ public class AdvConfigureEvent extends EventJS {
     public void remove(JsonElement jsonElement) {
         RemoveFilter filter = RemoveFilter.of(jsonElement);
         if (filter.fail()) {
-            ConsoleJS.SERVER.warn("Failed create a filter");
+            ConsoleJS.SERVER.warn("AdvJS/AdvConfigureEvent: Failed create a filter");
         } else {
             FILTERS.add(filter);
         }
@@ -68,7 +69,7 @@ public class AdvConfigureEvent extends EventJS {
         LOCK_MAP.put(toLock.getItem(), lockBy);
     }
 
-    @Info(value = "Lock recipe by advancement.",
+    @Info(value = "Lock recipe by advancement. It will only deny player take the result from GUI.",
         params = {
             @Param(name = "toLock"),
             @Param(name = "lockBy")

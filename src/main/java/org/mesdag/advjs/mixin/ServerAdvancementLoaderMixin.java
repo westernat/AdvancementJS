@@ -13,6 +13,8 @@ import net.minecraft.loot.LootManager;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.ServerAdvancementLoader;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.profiler.Profiler;
@@ -53,16 +55,19 @@ public abstract class ServerAdvancementLoaderMixin {
 
             JsonObject advJson = entry.getValue().getAsJsonObject();
             for (RemoveFilter filter : FILTERS) {
-                if (filter.isResolved() || !advJson.has("display")) {
+                if (filter.isResolved()) {
                     continue;
                 }
 
-                JsonObject display = advJson.get("display").getAsJsonObject();
-                Item item = display.has("icon") ? JsonHelper.getItem(display.get("icon").getAsJsonObject(), "item", null) : null;
-                String frame = display.has("frame") ? display.get("frame").getAsString() : "task";
                 String parent = advJson.has("parent") ? advJson.get("parent").getAsString() : null;
-
-                if (filter.matches(key, item, frame, parent)) {
+                if (advJson.has("display")) {
+                    JsonObject display = advJson.get("display").getAsJsonObject();
+                    Item item = display.has("icon") ? JsonHelper.getItem(display.get("icon").getAsJsonObject(), "item", null) : null;
+                    String frame = display.has("frame") ? display.get("frame").getAsString() : null;
+                    if (filter.matches(key, item, frame, parent)) {
+                        builder.add(key);
+                    }
+                } else if (filter.matches(key, null, null, parent)) {
                     builder.add(key);
                 }
             }
@@ -73,7 +78,7 @@ public abstract class ServerAdvancementLoaderMixin {
             counter++;
         }
 
-        ConsoleJS.SERVER.info("advJS$remove: removed " + counter + " advancements");
+        ConsoleJS.SERVER.info("AdvJS: Removed " + counter + " advancements");
     }
 
     @ModifyArg(
@@ -82,14 +87,14 @@ public abstract class ServerAdvancementLoaderMixin {
     private Map<Identifier, Advancement.Builder> advjs$configure(Map<Identifier, Advancement.Builder> map) {
         advJS$modify(map, conditionManager);
         advJS$add(map);
-        ConsoleJS.SERVER.info("AdvJS Loaded!");
+        ConsoleJS.SERVER.info("AdvJS: Completely loaded!");
         return map;
     }
 
     @Unique
     private static void advJS$modify(Map<Identifier, Advancement.Builder> map, LootManager predicateManager) {
         if (AdvJSPlugin.DEBUG) {
-            ConsoleJS.SERVER.debug("Modification details:");
+            ConsoleJS.SERVER.debug("AdvJS: Modification details:");
         }
 
         int counter = 0;
@@ -97,7 +102,7 @@ public abstract class ServerAdvancementLoaderMixin {
             Identifier path = entry.getKey();
             Advancement.Builder builder = map.get(path);
             if (builder == null) {
-                ConsoleJS.SERVER.error("Advancement '" + path + "' is not exist");
+                ConsoleJS.SERVER.error("AdvJS: Advancement '" + path + "' is not exist");
                 continue;
             }
             AdvGetter getter = entry.getValue();
@@ -170,7 +175,7 @@ public abstract class ServerAdvancementLoaderMixin {
                 );
             }
         }
-        ConsoleJS.SERVER.info("advJS$modify: modified " + counter + " advancements");
+        ConsoleJS.SERVER.info("AdvJS: Modified " + counter + " advancements");
     }
 
     @Unique
@@ -190,18 +195,18 @@ public abstract class ServerAdvancementLoaderMixin {
                 map.put(advBuilder.getSavePath(), builder.parent(parentId));
                 counter++;
             } else {
-                ConsoleJS.SERVER.error("Advancement '" + parentId + "' is not exist");
+                ConsoleJS.SERVER.error("AdvJS: Advancement '" + parentId + "' is not exist");
             }
         }
-        ConsoleJS.SERVER.info("advJS$add: added " + counter + " advancements");
+        ConsoleJS.SERVER.info("AdvJS: Added " + counter + " advancements");
     }
 
     @Unique
     private static Advancement.Builder advJS$build(AdvBuilder advBuilder) {
         if (advBuilder.isWarn()) {
             advBuilder.display(builder -> {
-                builder.setTitle(ATTENTION);
-                builder.setDescription(ATTENTION_DESC);
+                builder.setTitle(Text.translatable("advjs.attention").formatted(Formatting.RED));
+                builder.setDescription(Text.translatable("advjs.attention.desc"));
             });
             ConsoleJS.SERVER.warn("A warn advancement created, the parent is '" + advBuilder.getParent() + "'");
         }

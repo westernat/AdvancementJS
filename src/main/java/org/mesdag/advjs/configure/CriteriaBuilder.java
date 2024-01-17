@@ -68,7 +68,7 @@ public class CriteriaBuilder {
                 
         If set to 'RequirementsStrategy.AND', the requirements will looks like '[[a], [b], [c]]'.
                 
-        Defaults to 'RequirementsStrategy.AND'
+        Defaults to 'RequirementsStrategy.AND'.
         """)
     public void setStrategy(CriterionMerger strategy) {
         this.strategy = strategy;
