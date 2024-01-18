@@ -4,9 +4,11 @@ import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.mesdag.advjs.predicate.EntityPredicateBuilder;
 import org.mesdag.advjs.predicate.ItemPredicateBuilder;
+import org.mesdag.advjs.predicate.condition.ICondition;
 import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
@@ -34,15 +36,25 @@ class FishingRodHookedBuilder extends AbstractTriggerBuilder implements ItemSett
     }
 
     @Info("The entity that was pulled, or the fishing bobber if no entity is pulled.")
-    public void setEntity(EntityPredicate entity) {
-        this.entity = EntityPredicate.wrap(entity);
+    public void setEntityByPredicate(EntityPredicate entity) {
+        this.entity = wrapEntity(entity);
+    }
+
+    @Info("The entity that was pulled, or the fishing bobber if no entity is pulled.")
+    public void setEntityByType(EntityType<?> entity) {
+        this.entity = wrapEntity(entity);
+    }
+
+    @Info("The entity that was pulled, or the fishing bobber if no entity is pulled.")
+    public void setEntity(ICondition... conditions) {
+        this.entity = wrapEntity(conditions);
     }
 
     @Info("The entity that was pulled, or the fishing bobber if no entity is pulled.")
     public void setEntity(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
-        this.entity = EntityPredicate.wrap(builder.build());
+        this.entity = wrapEntity(builder.build());
     }
 
     @Info("The item that was caught.")

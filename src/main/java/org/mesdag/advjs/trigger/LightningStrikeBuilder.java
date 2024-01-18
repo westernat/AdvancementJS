@@ -3,9 +3,11 @@ package org.mesdag.advjs.trigger;
 import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.world.entity.EntityType;
 import org.mesdag.advjs.predicate.EntityPredicateBuilder;
 import org.mesdag.advjs.predicate.LightningBoltPredicate;
 import org.mesdag.advjs.predicate.LightningBoltPredicateBuilder;
+import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
@@ -26,14 +28,24 @@ class LightningStrikeBuilder extends AbstractTriggerBuilder {
     }
 
     @Info("An entity not hurt by the lightning strike but in a certain area around it.")
-    public void setBystander(EntityPredicate bystander) {
-        this.bystander = EntityPredicate.wrap(bystander);
+    public void setBystanderByPredicate(EntityPredicate bystander) {
+        this.bystander = wrapEntity(bystander);
     }
 
     @Info("An entity not hurt by the lightning strike but in a certain area around it.")
     public void setBystander(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
-        this.bystander = EntityPredicate.wrap(builder.build());
+        this.bystander = wrapEntity(builder.build());
+    }
+
+    @Info("An entity not hurt by the lightning strike but in a certain area around it.")
+    public void setBystanderByType(EntityType<?> bystander) {
+        this.bystander = wrapEntity(bystander);
+    }
+
+    @Info("An entity not hurt by the lightning strike but in a certain area around it.")
+    public void setBystander(ICondition... conditions) {
+        this.bystander = wrapEntity(conditions);
     }
 }

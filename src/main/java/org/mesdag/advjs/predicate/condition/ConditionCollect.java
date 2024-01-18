@@ -8,23 +8,24 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.Arrays;
 
-public class Condition implements Check {
+public class ConditionCollect implements ICondition {
     final LootItemCondition.Builder condition;
 
-    Condition(LootItemCondition.Builder condition) {
+    ConditionCollect(LootItemCondition.Builder condition) {
         this.condition = condition;
     }
 
     @HideFromJS
-    public static Condition any(Check... checks) {
-        return new Condition(AnyOfCondition.anyOf(Arrays.stream(checks).map(Check::builder).toArray(LootItemCondition.Builder[]::new)));
+    public static ConditionCollect any(ICondition... conditions) {
+        return new ConditionCollect(AnyOfCondition.anyOf(Arrays.stream(conditions).map(ICondition::builder).toArray(LootItemCondition.Builder[]::new)));
     }
 
     @HideFromJS
-    public static Condition all(Check... checks) {
-        return new Condition(AllOfCondition.allOf(Arrays.stream(checks).map(Check::builder).toArray(LootItemCondition.Builder[]::new)));
+    public static ConditionCollect all(ICondition... conditions) {
+        return new ConditionCollect(AllOfCondition.allOf(Arrays.stream(conditions).map(ICondition::builder).toArray(LootItemCondition.Builder[]::new)));
     }
 
+    @HideFromJS
     @Override
     public LootItemCondition.Builder builder() {
         return condition;

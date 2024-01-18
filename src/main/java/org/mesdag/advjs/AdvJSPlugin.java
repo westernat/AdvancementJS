@@ -56,13 +56,13 @@ public class AdvJSPlugin extends KubeJSPlugin {
                 Files.writeString(AdvJS.EXAMPLE, """
                     // You Can Turn Off Auto Generate In common.properties
                     ServerEvents.advancement((event) => {
-                        const { BOUNDS, PREDICATE, TRIGGER } = event;
+                        const { PREDICATE, TRIGGER } = event;
 
                         // Define trigger
                         const jump5times = TRIGGER.tick((triggerBuilder) =>
-                            triggerBuilder.addStat(Stats.JUMP, Stats.CUSTOM, BOUNDS.min$Integer(5)));
+                            triggerBuilder.addStat(Stats.JUMP, Stats.CUSTOM, {min: 5}));
                         const bred_in_nether = TRIGGER.bredAnimals((triggerBuilder) => {
-                            triggerBuilder.setChild(PREDICATE.entity({
+                            triggerBuilder.setChildByPredicate(PREDICATE.entity({
                                 stepping_on: {
                                     dimension: "the_nether"
                                 }

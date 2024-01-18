@@ -7,11 +7,11 @@ import net.minecraft.advancements.critereon.MobEffectsPredicate;
 import net.minecraft.world.entity.EntityType;
 import org.mesdag.advjs.predicate.EntityPredicateBuilder;
 import org.mesdag.advjs.predicate.MobEffectsPredicateBuilder;
-import org.mesdag.advjs.util.EntitySetter;
+import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
-class EffectsChangedBuilder extends AbstractTriggerBuilder implements EntitySetter {
+class EffectsChangedBuilder extends AbstractTriggerBuilder {
     MobEffectsPredicate effects = MobEffectsPredicate.ANY;
     ContextAwarePredicate source = ContextAwarePredicate.ANY;
 
@@ -59,6 +59,17 @@ class EffectsChangedBuilder extends AbstractTriggerBuilder implements EntitySett
         the test passes only if the source is not specified.
         """)
     public void setSourceByType(EntityType<?> entityType) {
-        this.source = warpEntity(entityType);
+        this.source = wrapEntity(entityType);
+    }
+
+    @Info("""
+        The entity that was the source of the status effect.
+                
+        When there is no entity or when the effect was self-applied or removed,
+                
+        the test passes only if the source is not specified.
+        """)
+    public void setSource(ICondition... conditions) {
+        this.source = wrapEntity(conditions);
     }
 }

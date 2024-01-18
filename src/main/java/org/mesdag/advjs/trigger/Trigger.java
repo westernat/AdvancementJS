@@ -70,7 +70,7 @@ public class Trigger implements ItemSetter {
     public ChanneledLightningTrigger.TriggerInstance channeledLightning(Consumer<ChanneledLightningBuilder> consumer) {
         ChanneledLightningBuilder builder = new ChanneledLightningBuilder();
         consumer.accept(builder);
-        return new ChanneledLightningTrigger.TriggerInstance(builder.player, builder.victims);
+        return new ChanneledLightningTrigger.TriggerInstance(builder.player, builder.victims.toArray(ContextAwarePredicate[]::new));
     }
 
     @Info("Triggers after the player changes the structure of a beacon. (When the beacon updates itself).")
@@ -239,7 +239,7 @@ public class Trigger implements ItemSetter {
     public KilledByCrossbowTrigger.TriggerInstance killedByCrossbow(Consumer<KilledByCrossbowBuilder> consumer) {
         KilledByCrossbowBuilder builder = new KilledByCrossbowBuilder();
         consumer.accept(builder);
-        return new KilledByCrossbowTrigger.TriggerInstance(builder.player, builder.victims, builder.uniqueEntityTypes);
+        return new KilledByCrossbowTrigger.TriggerInstance(builder.player, builder.victims.toArray(ContextAwarePredicate[]::new), builder.uniqueEntityTypes);
     }
 
     @Info("Triggers after a player is the source of a mob or player being killed.")

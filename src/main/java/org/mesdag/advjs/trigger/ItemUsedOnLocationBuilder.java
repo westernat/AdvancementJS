@@ -2,26 +2,26 @@ package org.mesdag.advjs.trigger;
 
 import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import org.mesdag.advjs.predicate.condition.Check;
+import org.mesdag.advjs.predicate.condition.ICondition;
 import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.List;
 
 class ItemUsedOnLocationBuilder extends AbstractTriggerBuilder implements ItemSetter {
-    final ArrayList<Check> checks = new ArrayList<>();
+    final ArrayList<ICondition> conditions = new ArrayList<>();
 
-    @Info("Add a predicate checking.")
-    public void addCheck(Check check) {
-        this.checks.add(check);
+    @Info("Add a predicate condition.")
+    public void addCondition(ICondition condition) {
+        this.conditions.add(condition);
+    }
+
+    @Info("Add predicate conditions.")
+    public void addConditions(ICondition... conditions) {
+        this.conditions.addAll(List.of(conditions));
     }
 
     ContextAwarePredicate createContext() {
-        HashSet<LootItemCondition> conditions = new HashSet<>();
-        for (Check check : checks) {
-            conditions.add(check.builder().build());
-        }
-        return ContextAwarePredicate.create(conditions.toArray(LootItemCondition[]::new));
+        return wrapEntity(conditions.toArray(ICondition[]::new));
     }
 }

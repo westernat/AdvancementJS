@@ -7,11 +7,11 @@ import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.world.entity.EntityType;
 import org.mesdag.advjs.predicate.DamagePredicateBuilder;
 import org.mesdag.advjs.predicate.EntityPredicateBuilder;
-import org.mesdag.advjs.util.EntitySetter;
+import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
-class PlayerHurtEntityBuilder extends AbstractTriggerBuilder implements EntitySetter {
+class PlayerHurtEntityBuilder extends AbstractTriggerBuilder {
     DamagePredicate damage = DamagePredicate.ANY;
     ContextAwarePredicate entity = ContextAwarePredicate.ANY;
 
@@ -29,18 +29,23 @@ class PlayerHurtEntityBuilder extends AbstractTriggerBuilder implements EntitySe
 
     @Info("The entity that was damaged.")
     public void setEntityByPredicate(EntityPredicate entity) {
-        this.entity = EntityPredicate.wrap(entity);
+        this.entity = wrapEntity(entity);
+    }
+
+    @Info("The entity that was damaged.")
+    public void setEntity(ICondition... conditions) {
+        this.entity = wrapEntity(conditions);
     }
 
     @Info("The entity that was damaged.")
     public void setEntity(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
-        this.entity = EntityPredicate.wrap(builder.build());
+        this.entity = wrapEntity(builder.build());
     }
 
     @Info("The entity that was damaged.")
     public void setEntityByType(EntityType<?> entityType) {
-        this.entity = warpEntity(entityType);
+        this.entity = wrapEntity(entityType);
     }
 }

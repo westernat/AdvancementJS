@@ -9,18 +9,18 @@ import org.mesdag.advjs.predicate.StatePropertiesPredicateBuilder;
 
 import java.util.function.Consumer;
 
-public class BlockStatePropertyCheck implements Check {
+public class StatePropertyCondition implements ICondition {
     final Block block;
     private boolean matchState = false;
     StatePropertiesPredicateBuilder stateProperties = new StatePropertiesPredicateBuilder();
 
     @HideFromJS
-    public BlockStatePropertyCheck(Block block) {
+    public StatePropertyCondition(Block block) {
         this.block = block;
     }
 
     @Info("The state property predicate of this check.")
-    public BlockStatePropertyCheck stateProperties(Consumer<StatePropertiesPredicateBuilder> consumer) {
+    public StatePropertyCondition stateProperties(Consumer<StatePropertiesPredicateBuilder> consumer) {
         consumer.accept(this.stateProperties);
         this.matchState = true;
         return this;

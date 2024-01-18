@@ -4,15 +4,15 @@ import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.world.entity.EntityType;
 import org.mesdag.advjs.predicate.EntityPredicateBuilder;
-import org.mesdag.advjs.util.EntitySetter;
+import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
-class SingleEntityBuilder extends AbstractTriggerBuilder implements EntitySetter {
+class SingleEntityBuilder extends AbstractTriggerBuilder {
     ContextAwarePredicate entity = ContextAwarePredicate.ANY;
 
     public void setEntityByPredicate(EntityPredicate entity) {
-        this.entity = EntityPredicate.wrap(entity);
+        this.entity = wrapEntity(entity);
     }
 
     public void setEntity(Consumer<EntityPredicateBuilder> consumer) {
@@ -22,6 +22,10 @@ class SingleEntityBuilder extends AbstractTriggerBuilder implements EntitySetter
     }
 
     public void setEntityByType(EntityType<?> entity) {
-        this.entity = warpEntity(entity);
+        this.entity = wrapEntity(entity);
+    }
+
+    public void setEntity(ICondition... conditions) {
+        this.entity = wrapEntity(conditions);
     }
 }

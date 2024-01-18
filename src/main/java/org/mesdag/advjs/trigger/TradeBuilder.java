@@ -7,6 +7,7 @@ import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.mesdag.advjs.predicate.EntityPredicateBuilder;
 import org.mesdag.advjs.predicate.ItemPredicateBuilder;
+import org.mesdag.advjs.predicate.condition.ICondition;
 import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
@@ -17,14 +18,19 @@ class TradeBuilder extends AbstractTriggerBuilder implements ItemSetter {
 
     @Info("The villager the item was purchased from.")
     public void setVillager(EntityPredicate villager) {
-        this.villager = EntityPredicate.wrap(villager);
+        this.villager = wrapEntity(villager);
     }
 
     @Info("The villager the item was purchased from.")
     public void setVillager(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
-        this.villager = EntityPredicate.wrap(builder.build());
+        this.villager = wrapEntity(builder.build());
+    }
+
+    @Info("The villager the item was purchased from.")
+    public void setVillager(ICondition... conditions) {
+        this.villager = wrapEntity(conditions);
     }
 
     @Info("""
