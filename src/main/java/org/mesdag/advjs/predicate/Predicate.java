@@ -258,6 +258,7 @@ public class Predicate {
         return builder.build();
     }
 
+    @Info("Any MobEffectInstancePredicate")
     public EntityEffectPredicate.EffectData mobEffectInstance() {
         return new EntityEffectPredicate.EffectData();
     }
@@ -305,28 +306,40 @@ public class Predicate {
         return EntityTypePredicate.ANY;
     }
 
-    @Info("Collect any of checks.")
-    public Condition anyOf(Check... checks) {
-        return Condition.any(checks);
+    @Info("Evaluates a list of predicates and passes if any one of them passes.")
+    public ConditionCollect anyOf(ICondition... conditions) {
+        return ConditionCollect.any(conditions);
     }
 
-    @Info("Collect all of checks.")
-    public Condition allOf(Check... checks) {
-        return Condition.all(checks);
+    @Info("Evaluates a list of predicates and passes if all of them pass.")
+    public ConditionCollect allOf(ICondition... conditions) {
+        return ConditionCollect.all(conditions);
     }
 
-    @Info("New location check.")
-    public LocationCheck locationCheck() {
-        return new LocationCheck();
+    @Info("Checks the current location against location criteria.")
+    public LocationCheckCondition locationCheck() {
+        return new LocationCheckCondition();
     }
 
-    @Info("New match tool check.")
-    public MatchTool matchTool(Consumer<ItemPredicateBuilder> consumer) {
-        return new MatchTool(consumer);
+    @Info("Checks tool used to mine the block.")
+    public MatchToolCondition matchTool(Consumer<ItemPredicateBuilder> consumer) {
+        return new MatchToolCondition(consumer);
     }
 
-    @Info("New block state property check.")
-    public BlockStatePropertyCheck blockStatePropertyCheck(Block block) {
-        return new BlockStatePropertyCheck(block);
+    @Info("Checks the block and its block states.")
+    public StatePropertyCondition blockStateProperty(Block block) {
+        return new StatePropertyCondition(block);
+    }
+
+    @Info("Checks properties of an entity.")
+    public EntityPropertyCondition entityProperty(EntityPredicate entityPredicate) {
+        return new EntityPropertyCondition(entityPredicate);
+    }
+
+    @Info("Checks properties of an entity.")
+    public EntityPropertyCondition entityProperty(Consumer<EntityPredicateBuilder> consumer) {
+        EntityPredicateBuilder builder = new EntityPredicateBuilder();
+        consumer.accept(builder);
+        return new EntityPropertyCondition(builder.build());
     }
 }

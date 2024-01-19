@@ -9,18 +9,18 @@ import org.mesdag.advjs.predicate.LocationPredicateBuilder;
 
 import java.util.function.Consumer;
 
-public class LocationCheck implements Check {
+public class LocationCheckCondition implements ICondition {
     LocationPredicateBuilder locationBuilder = new LocationPredicateBuilder();
     BlockPos offset = BlockPos.ORIGIN;
 
     @Info("The location predicate of this check.")
-    public LocationCheck location(Consumer<LocationPredicateBuilder> consumer) {
+    public LocationCheckCondition location(Consumer<LocationPredicateBuilder> consumer) {
         consumer.accept(this.locationBuilder);
         return this;
     }
 
     @Info("The offset block pos of this check.")
-    public LocationCheck offset(BlockPos offset) {
+    public LocationCheckCondition offset(BlockPos offset) {
         this.offset = offset;
         return this;
     }

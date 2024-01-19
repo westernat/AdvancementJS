@@ -4,6 +4,7 @@ import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.LootContextPredicate;
 import org.mesdag.advjs.predicate.EntityPredicateBuilder;
+import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
@@ -16,7 +17,7 @@ class CuredZombieVillagerBuilder extends AbstractTriggerBuilder {
         The 'type' tag is redundant since it will always be 'zombie_villager'.
         """)
     public void setZombie(EntityPredicate zombie) {
-        this.zombie = EntityPredicate.asLootContextPredicate(zombie);
+        this.zombie = wrapEntity(zombie);
     }
 
     @Info("""
@@ -27,7 +28,16 @@ class CuredZombieVillagerBuilder extends AbstractTriggerBuilder {
     public void setZombie(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
-        this.zombie = EntityPredicate.asLootContextPredicate(builder.build());
+        this.zombie = wrapEntity(builder.build());
+    }
+
+    @Info("""
+        The zombie villager right before the conversion is complete (not when it is initiated).
+                
+        The 'type' tag is redundant since it will always be 'zombie_villager'.
+        """)
+    public void setZombie(ICondition... conditions) {
+        this.zombie = wrapEntity(conditions);
     }
 
     @Info("""
@@ -36,7 +46,7 @@ class CuredZombieVillagerBuilder extends AbstractTriggerBuilder {
         The 'type' tag is redundant since it will always be 'villager'.
         """)
     public void setVillager(EntityPredicate villager) {
-        this.villager = EntityPredicate.asLootContextPredicate(villager);
+        this.villager = wrapEntity(villager);
     }
 
     @Info("""
@@ -47,6 +57,15 @@ class CuredZombieVillagerBuilder extends AbstractTriggerBuilder {
     public void setVillager(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
-        this.villager = EntityPredicate.asLootContextPredicate(builder.build());
+        this.villager = wrapEntity(builder.build());
+    }
+
+    @Info("""
+        The villager that is the result of the conversion.
+        
+        The 'type' tag is redundant since it will always be 'villager'.
+        """)
+    public void setVillager(ICondition... conditions) {
+        this.villager = wrapEntity(conditions);
     }
 }

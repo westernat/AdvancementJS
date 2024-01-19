@@ -7,11 +7,11 @@ import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.LootContextPredicate;
 import org.mesdag.advjs.predicate.EntityPredicateBuilder;
 import org.mesdag.advjs.predicate.MobEffectsPredicateBuilder;
-import org.mesdag.advjs.util.EntitySetter;
+import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
-class EffectsChangedBuilder extends AbstractTriggerBuilder implements EntitySetter {
+class EffectsChangedBuilder extends AbstractTriggerBuilder {
     EntityEffectPredicate effects = EntityEffectPredicate.EMPTY;
     LootContextPredicate source = LootContextPredicate.EMPTY;
 
@@ -35,7 +35,7 @@ class EffectsChangedBuilder extends AbstractTriggerBuilder implements EntitySett
         the test passes only if the source is not specified.
         """)
     public void setSourceByPredicate(EntityPredicate source) {
-        this.source = EntityPredicate.asLootContextPredicate(source);
+        this.source = wrapEntity(source);
     }
 
     @Info("""
@@ -48,7 +48,7 @@ class EffectsChangedBuilder extends AbstractTriggerBuilder implements EntitySett
     public void setSource(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
-        this.source = EntityPredicate.asLootContextPredicate(builder.build());
+        this.source = wrapEntity(builder.build());
     }
 
     @Info("""
@@ -59,6 +59,17 @@ class EffectsChangedBuilder extends AbstractTriggerBuilder implements EntitySett
         the test passes only if the source is not specified.
         """)
     public void setSourceByType(EntityType<?> entityType) {
-        this.source = warpEntity(entityType);
+        this.source = wrapEntity(entityType);
+    }
+
+    @Info("""
+        The entity that was the source of the status effect.
+                
+        When there is no entity or when the effect was self-applied or removed,
+                
+        the test passes only if the source is not specified.
+        """)
+    public void setSource(ICondition... conditions) {
+        this.source = wrapEntity(conditions);
     }
 }

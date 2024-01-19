@@ -4,20 +4,22 @@ import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.entity.EntityType;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.LootContextPredicate;
-import org.mesdag.advjs.util.EntitySetter;
+import org.mesdag.advjs.predicate.EntityPredicateBuilder;
+import org.mesdag.advjs.predicate.condition.ICondition;
 
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.function.Consumer;
 
-public class ChanneledLightningBuilder extends AbstractTriggerBuilder implements EntitySetter {
-    LootContextPredicate[] victims = new LootContextPredicate[]{LootContextPredicate.EMPTY};
+public class ChanneledLightningBuilder extends AbstractTriggerBuilder {
+    final ArrayList<LootContextPredicate> victims = new ArrayList<>();
 
     @Info("""
         The victims hit by the lightning summoned by the Channeling enchantment.
                 
         All entities in this list must be hit.
         """)
-    public void setVictimsByPredicate(EntityPredicate... entities) {
-        this.victims = Stream.of(entities).map(EntityPredicate::asLootContextPredicate).toArray(LootContextPredicate[]::new);
+    public void addVictimByPredicate(EntityPredicate entityPredicate) {
+        this.victims.add(wrapEntity(entityPredicate));
     }
 
     @Info("""
@@ -25,7 +27,27 @@ public class ChanneledLightningBuilder extends AbstractTriggerBuilder implements
                 
         All entities in this list must be hit.
         """)
-    public void setVictimsByType(EntityType<?>... entityTypes) {
-        this.victims = Stream.of(entityTypes).map(this::warpEntity).toArray(LootContextPredicate[]::new);
+    public void addVictimByType(EntityType<?> entityTypes) {
+        this.victims.add(wrapEntity(entityTypes));
+    }
+
+    @Info("""
+        The victims hit by the lightning summoned by the Channeling enchantment.
+                
+        All entities in this list must be hit.
+        """)
+    public void addVictimByType(Consumer<EntityPredicateBuilder> consumer) {
+        EntityPredicateBuilder builder = new EntityPredicateBuilder();
+        consumer.accept(builder);
+        this.victims.add(wrapEntity(builder.build()));
+    }
+
+    @Info("""
+        The victims hit by the lightning summoned by the Channeling enchantment.
+                
+        All entities in this list must be hit.
+        """)
+    public void addVictim(ICondition... conditions) {
+        this.victims.add(wrapEntity(conditions));
     }
 }

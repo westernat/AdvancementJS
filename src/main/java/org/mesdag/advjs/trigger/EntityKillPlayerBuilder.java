@@ -7,11 +7,11 @@ import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.LootContextPredicate;
 import org.mesdag.advjs.predicate.DamageSourcePredicateBuilder;
 import org.mesdag.advjs.predicate.EntityPredicateBuilder;
-import org.mesdag.advjs.util.EntitySetter;
+import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
-public class EntityKillPlayerBuilder extends AbstractTriggerBuilder implements EntitySetter {
+public class EntityKillPlayerBuilder extends AbstractTriggerBuilder {
     LootContextPredicate killer = LootContextPredicate.EMPTY;
     DamageSourcePredicate killingBlow = DamageSourcePredicate.EMPTY;
 
@@ -21,7 +21,7 @@ public class EntityKillPlayerBuilder extends AbstractTriggerBuilder implements E
         (for example: The skeleton that shot the arrow)
         """)
     public void setKillerByPredicate(EntityPredicate killer) {
-        this.killer = EntityPredicate.asLootContextPredicate(killer);
+        this.killer = wrapEntity(killer);
     }
 
     @Info("""
@@ -32,7 +32,7 @@ public class EntityKillPlayerBuilder extends AbstractTriggerBuilder implements E
     public void setKiller(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
-        this.killer = EntityPredicate.asLootContextPredicate(builder.build());
+        this.killer = wrapEntity(builder.build());
     }
 
     @Info("""
@@ -41,7 +41,16 @@ public class EntityKillPlayerBuilder extends AbstractTriggerBuilder implements E
         (for example: The skeleton that shot the arrow)
         """)
     public void setKillerByType(EntityType<?> killer) {
-        this.killer = warpEntity(killer);
+        this.killer = wrapEntity(killer);
+    }
+
+    @Info("""
+        Checks the entity that was the source of the damage that killed the player.
+                
+        (for example: The skeleton that shot the arrow)
+        """)
+    public void setKillerByType(ICondition... conditions) {
+        this.killer = wrapEntity(conditions);
     }
 
     @Info("Checks the type of damage that killed the player.")

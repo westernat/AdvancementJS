@@ -6,12 +6,12 @@ import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.LootContextPredicate;
 import org.mesdag.advjs.predicate.EntityPredicateBuilder;
+import org.mesdag.advjs.predicate.condition.ICondition;
 import org.mesdag.advjs.util.Bounds;
-import org.mesdag.advjs.util.EntitySetter;
 
 import java.util.function.Consumer;
 
-class TargetHitBuilder extends AbstractTriggerBuilder implements EntitySetter {
+class TargetHitBuilder extends AbstractTriggerBuilder {
     NumberRange.IntRange signalStrength = NumberRange.IntRange.ANY;
     LootContextPredicate projectile = LootContextPredicate.EMPTY;
 
@@ -22,18 +22,23 @@ class TargetHitBuilder extends AbstractTriggerBuilder implements EntitySetter {
 
     @Info("The projectile hit the target block.")
     public void setProjectileByPredicate(EntityPredicate projectile) {
-        this.projectile = EntityPredicate.asLootContextPredicate(projectile);
+        this.projectile = wrapEntity(projectile);
     }
 
     @Info("The projectile hit the target block.")
     public void setProjectile(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
-        this.projectile = EntityPredicate.asLootContextPredicate(builder.build());
+        this.projectile = wrapEntity(builder.build());
     }
 
     @Info("The projectile hit the target block.")
     public void setProjectileByType(EntityType<?> entityType) {
-        this.projectile = warpEntity(entityType);
+        this.projectile = wrapEntity(entityType);
+    }
+
+    @Info("The projectile hit the target block.")
+    public void setProjectile(ICondition... conditions) {
+        this.projectile = wrapEntity(conditions);
     }
 }

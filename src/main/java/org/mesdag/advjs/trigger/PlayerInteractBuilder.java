@@ -8,12 +8,12 @@ import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.recipe.Ingredient;
 import org.mesdag.advjs.predicate.EntityPredicateBuilder;
 import org.mesdag.advjs.predicate.ItemPredicateBuilder;
-import org.mesdag.advjs.util.EntitySetter;
+import org.mesdag.advjs.predicate.condition.ICondition;
 import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
 
-class PlayerInteractBuilder extends AbstractTriggerBuilder implements ItemSetter, EntitySetter {
+class PlayerInteractBuilder extends AbstractTriggerBuilder implements ItemSetter {
     ItemPredicate item = ItemPredicate.ANY;
     LootContextPredicate entity = LootContextPredicate.EMPTY;
 
@@ -36,18 +36,23 @@ class PlayerInteractBuilder extends AbstractTriggerBuilder implements ItemSetter
 
     @Info("The entity which was interacted with.")
     public void setEntityByPredicate(EntityPredicate entity) {
-        this.entity = EntityPredicate.asLootContextPredicate(entity);
+        this.entity = wrapEntity(entity);
     }
 
     @Info("The entity which was interacted with.")
     public void setEntity(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
-        this.entity = EntityPredicate.asLootContextPredicate(builder.build());
+        this.entity = wrapEntity(builder.build());
     }
 
     @Info("The entity which was interacted with.")
     public void setEntityByType(EntityType<?> entityType) {
-        this.entity = warpEntity(entityType);
+        this.entity = wrapEntity(entityType);
+    }
+
+    @Info("The entity which was interacted with.")
+    public void setEntity(ICondition... conditions) {
+        this.entity = wrapEntity(conditions);
     }
 }

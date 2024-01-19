@@ -71,7 +71,7 @@ public class Trigger implements ItemSetter {
     public ChanneledLightningCriterion.Conditions channeledLightning(Consumer<ChanneledLightningBuilder> consumer) {
         ChanneledLightningBuilder builder = new ChanneledLightningBuilder();
         consumer.accept(builder);
-        return new ChanneledLightningCriterion.Conditions(builder.player, builder.victims);
+        return new ChanneledLightningCriterion.Conditions(builder.player, builder.victims.toArray(LootContextPredicate[]::new));
     }
 
     @Info("Triggers after the player changes the structure of a beacon. (When the beacon updates itself).")
@@ -240,7 +240,7 @@ public class Trigger implements ItemSetter {
     public KilledByCrossbowCriterion.Conditions killedByCrossbow(Consumer<KilledByCrossbowBuilder> consumer) {
         KilledByCrossbowBuilder builder = new KilledByCrossbowBuilder();
         consumer.accept(builder);
-        return new KilledByCrossbowCriterion.Conditions(builder.player, builder.victims, builder.uniqueEntityTypes);
+        return new KilledByCrossbowCriterion.Conditions(builder.player, builder.victims.toArray(LootContextPredicate[]::new), builder.uniqueEntityTypes);
     }
 
     @Info("Triggers after a player is the source of a mob or player being killed.")

@@ -1,6 +1,7 @@
 package org.mesdag.advjs.util;
 
 import com.google.common.collect.ImmutableSet;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.predicate.NbtPredicate;
@@ -10,6 +11,7 @@ import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.recipe.Ingredient;
 
 public interface ItemSetter {
+    @HideFromJS
     default ItemPredicate wrapItem(Ingredient ingredient) {
         ImmutableSet.Builder<Item> builder = ImmutableSet.builder();
         for (ItemStack itemStack : ingredient.getMatchingStacks()) {

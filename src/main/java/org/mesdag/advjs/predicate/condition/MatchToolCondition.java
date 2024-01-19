@@ -7,11 +7,10 @@ import org.mesdag.advjs.predicate.ItemPredicateBuilder;
 
 import java.util.function.Consumer;
 
-public class MatchTool implements Check {
+public class MatchToolCondition implements ICondition {
     final LootCondition.Builder tool;
 
-    @HideFromJS
-    public MatchTool(Consumer<ItemPredicateBuilder> consumer) {
+    public MatchToolCondition(Consumer<ItemPredicateBuilder> consumer) {
         ItemPredicateBuilder builder = new ItemPredicateBuilder();
         consumer.accept(builder);
         this.tool = MatchToolLootCondition.builder(builder.getBuilder());
