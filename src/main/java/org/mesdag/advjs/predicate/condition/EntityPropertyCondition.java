@@ -10,7 +10,6 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyC
 public class EntityPropertyCondition implements ICondition {
     final LootItemCondition.Builder condition;
 
-    @HideFromJS
     public EntityPropertyCondition(EntityPredicate entityPredicate) {
         this.condition = LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, entityPredicate);
     }

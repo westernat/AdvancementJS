@@ -1,4 +1,6 @@
 {
     "advjs.attention": "警告",
-    "advjs.attention.desc": "你的自定义进度没有名字"
+    "advjs.attention.desc": "你的自定义进度没有名字",
+    "advjs.command.success": "成功生成了：%s",
+    "advjs.command.failed": "生成失败了：%s"
 }

@@ -255,6 +255,7 @@ public class Predicate {
         return builder.build();
     }
 
+    @Info("Any MobEffectInstancePredicate")
     public MobEffectsPredicate.MobEffectInstancePredicate mobEffectInstance() {
         return new MobEffectsPredicate.MobEffectInstancePredicate();
     }

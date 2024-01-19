@@ -40,7 +40,7 @@ public class PlayerPredicateBuilder {
         params = {
             @Param(name = "statId", value = "The statistic ID to test."),
             @Param(name = "statType", value = "The statistic type."),
-            @Param(name = "value", value = "Test if the value of the statistic matches an exact number.")
+            @Param(name = "value", value = "Test if the value of the statistic matches a bounds.")
         })
     public void addStat(ResourceLocation statId, StatType<?> statType, Bounds value) {
         playerBuilder.addStat(getStat(statType, statId), value.toIntegerBounds());

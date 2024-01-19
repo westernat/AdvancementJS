@@ -77,8 +77,8 @@ public class AdvBuilder {
     }
 
     @Info("Determines whether telemetry data should be collected when this advancement is achieved or not. Defaults to false.")
-    public AdvBuilder sendsTelemetryEvent(boolean sendsTelemetryEvent) {
-        this.sendsTelemetryEvent = sendsTelemetryEvent;
+    public AdvBuilder sendsTelemetryEvent() {
+        this.sendsTelemetryEvent = true;
         update();
         return this;
     }

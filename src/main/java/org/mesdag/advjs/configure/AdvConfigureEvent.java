@@ -39,11 +39,8 @@ public class AdvConfigureEvent extends EventJS {
         Else if you put in a json object, it will remove advancement by filter:
 
             modid: the mod id of advancement.
-
             icon: the id of icon item/block.
-
             frame: type of frame for the icon. Available value is 'challenge', 'goal' or 'task'.
-
             parent: the parent advancement path of this advancement.
         """)
     public void remove(JsonElement jsonElement) {

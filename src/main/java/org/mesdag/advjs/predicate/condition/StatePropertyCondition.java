@@ -14,7 +14,6 @@ public class StatePropertyCondition implements ICondition {
     private boolean matchState = false;
     StatePropertiesPredicateBuilder stateProperties = new StatePropertiesPredicateBuilder();
 
-    @HideFromJS
     public StatePropertyCondition(Block block) {
         this.block = block;
     }

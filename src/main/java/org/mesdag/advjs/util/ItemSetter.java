@@ -1,6 +1,7 @@
 package org.mesdag.advjs.util;
 
 import com.google.common.collect.ImmutableSet;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
@@ -10,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 public interface ItemSetter {
+    @HideFromJS
     default ItemPredicate wrapItem(Ingredient ingredient) {
         ImmutableSet.Builder<Item> builder = ImmutableSet.builder();
         for (ItemStack itemStack : ingredient.getItems()) {

@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 public class MatchToolCondition implements ICondition {
     final LootItemCondition.Builder tool;
 
-    @HideFromJS
     public MatchToolCondition(Consumer<ItemPredicateBuilder> consumer) {
         ItemPredicateBuilder builder = new ItemPredicateBuilder();
         consumer.accept(builder);
