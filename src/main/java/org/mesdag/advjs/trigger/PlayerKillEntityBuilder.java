@@ -33,7 +33,7 @@ class PlayerKillEntityBuilder extends AbstractTriggerBuilder {
     }
 
     @Info("The entity that was killed.")
-    public void setKilled(ICondition... conditions) {
+    public void setKilledByCondition(ICondition... conditions) {
         this.killed = wrapEntity(conditions);
     }
 

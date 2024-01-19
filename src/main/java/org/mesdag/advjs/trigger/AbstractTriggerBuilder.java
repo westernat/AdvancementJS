@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 public abstract class AbstractTriggerBuilder implements EntitySetter {
     public ContextAwarePredicate player = ContextAwarePredicate.ANY;
 
-    public void setPlayer(PlayerPredicate player) {
+    public void setPlayerByPredicate(PlayerPredicate player) {
         this.player = wrapEntity(EntityPredicate.Builder.entity().subPredicate(player).build());
     }
 
@@ -22,7 +22,7 @@ public abstract class AbstractTriggerBuilder implements EntitySetter {
         this.player = builder.build();
     }
 
-    public void setPlayer(ICondition... conditions) {
+    public void setPlayerByCondition(ICondition... conditions) {
         this.player = wrapEntity(conditions);
     }
 }

@@ -36,7 +36,7 @@ public class ChanneledLightningBuilder extends AbstractTriggerBuilder {
                 
         All entities in this list must be hit.
         """)
-    public void addVictimByType(Consumer<EntityPredicateBuilder> consumer) {
+    public void addVictim(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
         this.victims.add(wrapEntity(builder.build()));
@@ -47,7 +47,7 @@ public class ChanneledLightningBuilder extends AbstractTriggerBuilder {
                 
         All entities in this list must be hit.
         """)
-    public void addVictim(ICondition... conditions) {
+    public void addVictimByCondition(ICondition... conditions) {
         this.victims.add(wrapEntity(conditions));
     }
 }

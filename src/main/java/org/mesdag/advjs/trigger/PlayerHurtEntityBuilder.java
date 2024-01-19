@@ -33,7 +33,7 @@ class PlayerHurtEntityBuilder extends AbstractTriggerBuilder {
     }
 
     @Info("The entity that was damaged.")
-    public void setEntity(ICondition... conditions) {
+    public void setEntityByCondition(ICondition... conditions) {
         this.entity = wrapEntity(conditions);
     }
 

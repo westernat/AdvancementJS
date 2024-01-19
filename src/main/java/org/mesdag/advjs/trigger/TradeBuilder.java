@@ -17,7 +17,7 @@ class TradeBuilder extends AbstractTriggerBuilder implements ItemSetter {
     ItemPredicate item = ItemPredicate.ANY;
 
     @Info("The villager the item was purchased from.")
-    public void setVillager(EntityPredicate villager) {
+    public void setVillagerByPredicate(EntityPredicate villager) {
         this.villager = wrapEntity(villager);
     }
 
@@ -29,7 +29,7 @@ class TradeBuilder extends AbstractTriggerBuilder implements ItemSetter {
     }
 
     @Info("The villager the item was purchased from.")
-    public void setVillager(ICondition... conditions) {
+    public void setVillagerByCondition(ICondition... conditions) {
         this.villager = wrapEntity(conditions);
     }
 

@@ -52,7 +52,7 @@ class PlayerInteractBuilder extends AbstractTriggerBuilder implements ItemSetter
     }
 
     @Info("The entity which was interacted with.")
-    public void setEntity(ICondition... conditions) {
+    public void setEntityByCondition(ICondition... conditions) {
         this.entity = wrapEntity(conditions);
     }
 }

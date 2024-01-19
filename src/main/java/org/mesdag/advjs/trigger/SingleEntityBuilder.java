@@ -25,7 +25,7 @@ class SingleEntityBuilder extends AbstractTriggerBuilder {
         this.entity = wrapEntity(entity);
     }
 
-    public void setEntity(ICondition... conditions) {
+    public void setEntityByCondition(ICondition... conditions) {
         this.entity = wrapEntity(conditions);
     }
 }

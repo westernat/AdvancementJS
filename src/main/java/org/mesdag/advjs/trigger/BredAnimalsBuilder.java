@@ -32,7 +32,7 @@ class BredAnimalsBuilder extends AbstractTriggerBuilder {
     }
 
     @Info("The parent.")
-    public void setParent(ICondition... conditions) {
+    public void setParentByCondition(ICondition... conditions) {
         this.parent = wrapEntity(conditions);
     }
 
@@ -54,7 +54,7 @@ class BredAnimalsBuilder extends AbstractTriggerBuilder {
     }
 
     @Info("The partner (The entity the parent was bred with).")
-    public void setPartner(ICondition... conditions) {
+    public void setPartnerByCondition(ICondition... conditions) {
         this.partner = wrapEntity(conditions);
     }
 
@@ -76,7 +76,7 @@ class BredAnimalsBuilder extends AbstractTriggerBuilder {
     }
 
     @Info("Checks properties of the child that results from the breeding.")
-    public void setChild(ICondition... conditions) {
+    public void setChildByCondition(ICondition... conditions) {
         this.child = wrapEntity(conditions);
     }
 }
