@@ -46,7 +46,7 @@ class FishingRodHookedBuilder extends AbstractTriggerBuilder implements ItemSett
     }
 
     @Info("The entity that was pulled, or the fishing bobber if no entity is pulled.")
-    public void setEntity(ICondition... conditions) {
+    public void setEntityByCondition(ICondition... conditions) {
         this.entity = wrapEntity(conditions);
     }
 

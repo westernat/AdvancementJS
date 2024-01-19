@@ -47,7 +47,7 @@ public class ChanneledLightningBuilder extends AbstractTriggerBuilder {
                 
         All entities in this list must be hit.
         """)
-    public void addVictim(ICondition... conditions) {
+    public void addVictimByCondition(ICondition... conditions) {
         this.victims.add(wrapEntity(conditions));
     }
 }

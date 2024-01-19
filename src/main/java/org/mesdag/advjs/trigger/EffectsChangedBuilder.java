@@ -69,7 +69,7 @@ class EffectsChangedBuilder extends AbstractTriggerBuilder {
                 
         the test passes only if the source is not specified.
         """)
-    public void setSource(ICondition... conditions) {
+    public void setSourceByCondition(ICondition... conditions) {
         this.source = wrapEntity(conditions);
     }
 }

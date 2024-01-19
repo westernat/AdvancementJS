@@ -36,7 +36,7 @@ class CuredZombieVillagerBuilder extends AbstractTriggerBuilder {
                 
         The 'type' tag is redundant since it will always be 'zombie_villager'.
         """)
-    public void setZombie(ICondition... conditions) {
+    public void setZombieByCondition(ICondition... conditions) {
         this.zombie = wrapEntity(conditions);
     }
 
@@ -65,7 +65,7 @@ class CuredZombieVillagerBuilder extends AbstractTriggerBuilder {
         
         The 'type' tag is redundant since it will always be 'villager'.
         """)
-    public void setVillager(ICondition... conditions) {
+    public void setVillagerByCondition(ICondition... conditions) {
         this.villager = wrapEntity(conditions);
     }
 }

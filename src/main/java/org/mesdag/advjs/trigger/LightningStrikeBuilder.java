@@ -45,7 +45,7 @@ class LightningStrikeBuilder extends AbstractTriggerBuilder {
     }
 
     @Info("An entity not hurt by the lightning strike but in a certain area around it.")
-    public void setBystander(ICondition... conditions) {
+    public void setBystanderByCondition(ICondition... conditions) {
         this.bystander = wrapEntity(conditions);
     }
 }

@@ -52,7 +52,7 @@ public class ItemPickedUpByPlayerBuilder extends AbstractTriggerBuilder implemen
     }
 
     @Info("The entity that threw the item.")
-    public void setEntity(ICondition... conditions) {
+    public void setEntityByCondition(ICondition... conditions) {
         this.entity = wrapEntity(conditions);
     }
 }

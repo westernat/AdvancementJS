@@ -49,7 +49,7 @@ public class EntityKillPlayerBuilder extends AbstractTriggerBuilder {
                 
         (for example: The skeleton that shot the arrow)
         """)
-    public void setKillerByType(ICondition... conditions) {
+    public void setKillerByCondition(ICondition... conditions) {
         this.killer = wrapEntity(conditions);
     }
 

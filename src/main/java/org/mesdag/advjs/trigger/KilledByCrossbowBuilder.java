@@ -34,7 +34,7 @@ class KilledByCrossbowBuilder extends AbstractTriggerBuilder {
     }
 
     @Info("A list of victims. All of the entries must be matched, and one killed entity may match only one entry.")
-    public void addVictim(ICondition... conditions) {
+    public void addVictimByCondition(ICondition... conditions) {
         this.victims.add(wrapEntity(conditions));
     }
 

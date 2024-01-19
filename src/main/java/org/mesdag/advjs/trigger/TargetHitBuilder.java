@@ -38,7 +38,7 @@ class TargetHitBuilder extends AbstractTriggerBuilder {
     }
 
     @Info("The projectile hit the target block.")
-    public void setProjectile(ICondition... conditions) {
+    public void setProjectileByCondition(ICondition... conditions) {
         this.projectile = wrapEntity(conditions);
     }
 }

@@ -52,7 +52,7 @@ public class ItemPickedUpByEntityBuilder extends AbstractTriggerBuilder implemen
     }
 
     @Info("The entity which picked up the item.")
-    public void setEntity(ICondition... conditions) {
+    public void setEntityByCondition(ICondition... conditions) {
         this.entity = wrapEntity(conditions);
     }
 }

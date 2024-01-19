@@ -483,12 +483,12 @@ public class AdvCommand {
                                     })
                                 });
                                 criteriaBuilder.add("distract_piglin", TRIGGER.itemPickedUpByEntity(triggerBuilder => {
-                                    triggerBuilder.setPlayer(DISTRACT_PIGLIN_PLAYER_ARMOR_PREDICATE)
+                                    triggerBuilder.setPlayerByCondition(DISTRACT_PIGLIN_PLAYER_ARMOR_PREDICATE)
                                     triggerBuilder.setItem("#minecraft:piglin_loved")
                                     triggerBuilder.setEntityByPredicate(PIGLIN)
                                 }))
                                 criteriaBuilder.add("distract_piglin_directly", TRIGGER.playerInteract(triggerBuilder => {
-                                    triggerBuilder.setPlayer(DISTRACT_PIGLIN_PLAYER_ARMOR_PREDICATE)
+                                    triggerBuilder.setPlayerByCondition(DISTRACT_PIGLIN_PLAYER_ARMOR_PREDICATE)
                                     triggerBuilder.setItem("gold_ingot")
                                     triggerBuilder.setEntityByPredicate(PIGLIN)
                                 }))
