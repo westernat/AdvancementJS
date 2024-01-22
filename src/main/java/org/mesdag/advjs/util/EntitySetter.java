@@ -10,23 +10,20 @@ import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.Arrays;
 
+@HideFromJS
 public interface EntitySetter {
-    @HideFromJS
     default LootContextPredicate wrapEntity(EntityType<?> entityType) {
         return EntityPredicate.asLootContextPredicate(EntityPredicate.Builder.create().type(entityType).build());
     }
 
-    @HideFromJS
     default LootContextPredicate wrapEntity(EntityPredicate entityPredicate) {
         return EntityPredicate.asLootContextPredicate(entityPredicate);
     }
 
-    @HideFromJS
     default LootContextPredicate wrapEntity(ICondition... conditions) {
         return LootContextPredicate.create(Arrays.stream(conditions).map(condition -> condition.builder().build()).toArray(LootCondition[]::new));
     }
 
-    @HideFromJS
     default EntityPredicate toEntity(EntityType<?> entityType) {
         return EntityPredicate.Builder.create().type(entityType).build();
     }

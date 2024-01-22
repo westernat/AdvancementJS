@@ -25,7 +25,7 @@ public class BlockPredicateBuilder {
     }
 
     @Info("Match block state.")
-    public void setProperties(StatePredicate statePropertiesPredicate) {
+    public void setPropertiesByPredicate(StatePredicate statePropertiesPredicate) {
         builder.state(statePropertiesPredicate);
     }
 
@@ -37,7 +37,7 @@ public class BlockPredicateBuilder {
     }
 
     @Info("Match nbt.")
-    public void hasNbt(NbtCompound nbt) {
+    public void setNbt(NbtCompound nbt) {
         builder.nbt(nbt);
     }
 

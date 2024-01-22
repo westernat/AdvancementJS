@@ -2,6 +2,8 @@ package org.mesdag.advjs.predicate;
 
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import net.minecraft.block.Block;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.predicate.BlockPredicate;
 import net.minecraft.predicate.FluidPredicate;
 import net.minecraft.predicate.LightPredicate;
@@ -48,7 +50,7 @@ public class LocationPredicateBuilder {
     }
 
     @Info("The light at the location. Test fails if the location is unloaded.")
-    public void setLight(LightPredicate light) {
+    public void setLightByPredicate(LightPredicate light) {
         builder.light(light);
     }
 
@@ -58,7 +60,12 @@ public class LocationPredicateBuilder {
     }
 
     @Info("The block at the location. Test fails if the location is unloaded.")
-    public void setBlock(BlockPredicate block) {
+    public void setBlockByType(Block... blocks){
+        builder.block(BlockPredicate.Builder.create().blocks(blocks).build());
+    }
+
+    @Info("The block at the location. Test fails if the location is unloaded.")
+    public void setBlockByPredicate(BlockPredicate block) {
         builder.block(block);
     }
 
@@ -70,7 +77,12 @@ public class LocationPredicateBuilder {
     }
 
     @Info("The fluid at the location. Test fails if the location is unloaded.")
-    public void setFluid(FluidPredicate fluid) {
+    public void setFluidByType(Fluid fluid){
+        builder.fluid(FluidPredicate.Builder.create().fluid(fluid).build());
+    }
+
+    @Info("The fluid at the location. Test fails if the location is unloaded.")
+    public void setFluidByPredicate(FluidPredicate fluid) {
         builder.fluid(fluid);
     }
 

@@ -24,15 +24,15 @@ class FishingRodHookedBuilder extends AbstractTriggerBuilder implements ItemSett
     }
 
     @Info("The fishing rod used.")
-    public void setRod(Ingredient ingredient) {
-        this.rod = wrapItem(ingredient);
-    }
-
-    @Info("The fishing rod used.")
     public void setRod(Consumer<ItemPredicateBuilder> consumer) {
         ItemPredicateBuilder builder = new ItemPredicateBuilder();
         consumer.accept(builder);
         this.rod = builder.build();
+    }
+
+    @Info("The fishing rod used.")
+    public void setRod(Ingredient ingredient) {
+        this.rod = wrapItem(ingredient);
     }
 
     @Info("The entity that was pulled, or the fishing bobber if no entity is pulled.")

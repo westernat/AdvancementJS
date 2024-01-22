@@ -1,18 +1,19 @@
 package org.mesdag.advjs.predicate;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.typings.Info;
-import dev.latvian.mods.rhino.util.HideFromJS;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.entity.EntityType;
 import net.minecraft.predicate.NbtPredicate;
 import net.minecraft.predicate.NumberRange;
-import net.minecraft.predicate.entity.DistancePredicate;
-import net.minecraft.predicate.entity.EntityPredicate;
-import net.minecraft.predicate.entity.LocationPredicate;
+import net.minecraft.predicate.entity.LightningBoltPredicate;
+import net.minecraft.predicate.entity.*;
 import org.mesdag.advjs.util.Bounds;
+import org.mesdag.advjs.util.EntitySetter;
 
 import java.util.function.Consumer;
 
-public class LightningBoltPredicateBuilder {
+public class LightningBoltPredicateBuilder implements EntitySetter {
     NumberRange.IntRange blocksSetOnFire = NumberRange.IntRange.ANY;
     EntityPredicate entityStruck = EntityPredicate.ANY;
     DistancePredicate distance = DistancePredicate.ANY;
@@ -25,43 +26,34 @@ public class LightningBoltPredicateBuilder {
     }
 
     @Info("Test the properties of entities struck by this lightning bolt.")
-    public void entityStruck(EntityPredicate entityPredicate) {
+    public void setEntityStruckByType(EntityType<?> entityType) {
+        this.entityStruck = toEntity(entityType);
+    }
+
+    @Info("Test the properties of entities struck by this lightning bolt.")
+    public void setEntityStruckByPredicate(EntityPredicate entityPredicate) {
         this.entityStruck = entityPredicate;
     }
 
     @Info("Test the properties of entities struck by this lightning bolt.")
-    public void entityStruck(Consumer<EntityPredicateBuilder> consumer) {
+    public void setEntityStruck(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
         this.entityStruck = builder.build();
     }
 
-    public void distance(DistancePredicate distance) {
-        this.distance = distance;
-    }
-
-    public void distance(Consumer<DistancePredicateBuilder> consumer) {
-        DistancePredicateBuilder builder = new DistancePredicateBuilder();
-        consumer.accept(builder);
-        this.distance = builder.build();
-    }
-
-    public void location(LocationPredicate location) {
-        this.location = location;
-    }
-
-    public void location(Consumer<LocationPredicateBuilder> consumer) {
-        LocationPredicateBuilder builder1 = new LocationPredicateBuilder();
-        consumer.accept(builder1);
-        this.location = builder1.build();
-    }
-
-    public void nbt(NbtCompound nbt) {
-        this.nbt = new NbtPredicate(nbt);
-    }
-
-    @HideFromJS
-    public org.mesdag.advjs.predicate.LightningBoltPredicate predicate() {
-        return new LightningBoltPredicate(blocksSetOnFire, entityStruck, distance, location, nbt);
+    TypeSpecificPredicate predicate() {
+        JsonObject jsonObject = new JsonObject();
+        JsonElement blocksSetOnFire = this.blocksSetOnFire.toJson();
+        JsonElement entityStruck = this.entityStruck.toJson();
+        if (!entityStruck.isJsonNull()) {
+            JsonObject entity = entityStruck.getAsJsonObject();
+            if (entity.get("team").isJsonNull()) {
+                entity.remove("team");
+            }
+            jsonObject.add("entity_struck", entity);
+        }
+        jsonObject.add("blocks_set_on_fire", blocksSetOnFire);
+        return LightningBoltPredicate.fromJson(jsonObject);
     }
 }

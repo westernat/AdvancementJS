@@ -10,8 +10,8 @@ import net.minecraft.predicate.item.EnchantmentPredicate;
 import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.recipe.Ingredient;
 
+@HideFromJS
 public interface ItemSetter {
-    @HideFromJS
     default ItemPredicate wrapItem(Ingredient ingredient) {
         ImmutableSet.Builder<Item> builder = ImmutableSet.builder();
         for (ItemStack itemStack : ingredient.getMatchingStacks()) {

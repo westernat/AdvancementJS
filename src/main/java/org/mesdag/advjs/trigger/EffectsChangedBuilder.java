@@ -16,7 +16,7 @@ class EffectsChangedBuilder extends AbstractTriggerBuilder {
     LootContextPredicate source = LootContextPredicate.EMPTY;
 
     @Info("A list of active status effects the player currently has.")
-    public void setEffects(EntityEffectPredicate effects) {
+    public void setEffectsByPredicate(EntityEffectPredicate effects) {
         this.effects = effects;
     }
 

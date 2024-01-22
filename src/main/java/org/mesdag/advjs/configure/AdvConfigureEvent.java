@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import org.mesdag.advjs.predicate.Predicate;
 import org.mesdag.advjs.trigger.Trigger;
+import org.mesdag.advjs.util.Condition;
 import org.mesdag.advjs.util.Provider;
 
 import static org.mesdag.advjs.configure.Data.FILTERS;
@@ -23,7 +24,9 @@ public class AdvConfigureEvent extends EventJS {
     public final Trigger TRIGGER = new Trigger();
     @Info("Predicate required in trigger.")
     public final Predicate PREDICATE = new Predicate();
-    @Info("Provides several data in vanilla.")
+    @Info("Conditions used in trigger or predicate.")
+    public final Condition CONDITION = new Condition();
+    @Info("Provides several data of vanilla.")
     public final Provider PROVIDER = new Provider();
 
     @Info("Create a new advancement root")

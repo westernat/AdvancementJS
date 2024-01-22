@@ -13,39 +13,39 @@ public class DamagePredicateBuilder {
     final DamagePredicate.Builder builder = new DamagePredicate.Builder();
 
     @Info("Checks the amount of incoming damage before damage reduction.")
-    public void dealtDamage(Bounds bounds) {
+    public void setDealtDamage(Bounds bounds) {
         builder.dealt(bounds.toFloatBounds());
     }
 
     @Info("Checks the amount of incoming damage after damage reduction.")
-    public void takenDamage(Bounds bounds) {
+    public void setTakenDamage(Bounds bounds) {
         builder.taken(bounds.toFloatBounds());
     }
 
     @Info("Checks the entity that was the source of the damage (for example: The skeleton that shot the arrow).")
-    public void sourceEntity(EntityPredicate entityPredicate) {
+    public void SetSourceByPredicate(EntityPredicate entityPredicate) {
         builder.sourceEntity(entityPredicate);
     }
 
     @Info("Checks the entity that was the source of the damage (for example: The skeleton that shot the arrow).")
-    public void sourceEntity(Consumer<EntityPredicateBuilder> consumer) {
+    public void setSource(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder1 = new EntityPredicateBuilder();
         consumer.accept(builder1);
         builder.sourceEntity(builder1.build());
     }
 
     @Info("Checks if the damage was successfully blocked.")
-    public void blocked(boolean bool) {
+    public void isBlocked(boolean bool) {
         builder.blocked(bool);
     }
 
     @Info("Checks the type of damage done.")
-    public void type(DamageSourcePredicate damageSourcePredicate) {
+    public void setType(DamageSourcePredicate damageSourcePredicate) {
         builder.type(damageSourcePredicate);
     }
 
     @Info("Checks the type of damage done.")
-    public void type(Consumer<DamageSourcePredicateBuilder> consumer) {
+    public void setType(Consumer<DamageSourcePredicateBuilder> consumer) {
         DamageSourcePredicateBuilder builder1 = new DamageSourcePredicateBuilder();
         consumer.accept(builder1);
         builder.type(builder1.build());

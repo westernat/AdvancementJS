@@ -26,7 +26,7 @@ public class ItemPredicateBuilder {
     }
 
     @Info("Check tag.")
-    public void tag(Identifier tag) {
+    public void setTag(Identifier tag) {
         builder.tag(TagKey.of(RegistryKeys.ITEM, tag));
     }
 
@@ -54,7 +54,7 @@ public class ItemPredicateBuilder {
     }
 
     @Info("Test for any other NBT tags that may be present on the item.")
-    public void hasNbt(NbtCompound nbt) {
+    public void setNbt(NbtCompound nbt) {
         builder.nbt(nbt);
     }
 

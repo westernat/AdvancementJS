@@ -3,20 +3,17 @@ package org.mesdag.advjs.predicate;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.typings.Info;
-import dev.latvian.mods.kubejs.typings.Param;
-import net.minecraft.block.Block;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.*;
 import net.minecraft.predicate.entity.*;
 import net.minecraft.predicate.item.EnchantmentPredicate;
 import net.minecraft.predicate.item.ItemPredicate;
-import org.mesdag.advjs.predicate.condition.*;
 import org.mesdag.advjs.util.Bounds;
 
 import java.util.function.Consumer;
 
 public class Predicate {
-    public BlockPredicate block(JsonObject o) {
+    public BlockPredicate blockFromJson(JsonObject o) {
         return BlockPredicate.fromJson(o);
     }
 
@@ -27,11 +24,11 @@ public class Predicate {
     }
 
     @Info("Any BlockPredicate")
-    public BlockPredicate block() {
+    public BlockPredicate anyBlock() {
         return BlockPredicate.ANY;
     }
 
-    public DamagePredicate damage(JsonObject o) {
+    public DamagePredicate damageFromJson(JsonObject o) {
         return DamagePredicate.fromJson(o);
     }
 
@@ -42,7 +39,7 @@ public class Predicate {
     }
 
     @Info("Any DamagePredicate")
-    public DamagePredicate damage() {
+    public DamagePredicate anyDamage() {
         return DamagePredicate.ANY;
     }
 
@@ -57,11 +54,11 @@ public class Predicate {
     }
 
     @Info("Any DamageSourcePredicate")
-    public DamageSourcePredicate damageSource() {
+    public DamageSourcePredicate anyDamageSource() {
         return DamageSourcePredicate.EMPTY;
     }
 
-    public DistancePredicate distance(JsonObject o) {
+    public DistancePredicate distanceFromJson(JsonObject o) {
         return DistancePredicate.fromJson(o);
     }
 
@@ -77,11 +74,11 @@ public class Predicate {
     }
 
     @Info("Any DistancePredicate")
-    public DistancePredicate distance() {
+    public DistancePredicate anyDistance() {
         return DistancePredicate.ANY;
     }
 
-    public EnchantmentPredicate enchantment(JsonObject o) {
+    public EnchantmentPredicate enchantmentFromJson(JsonObject o) {
         return EnchantmentPredicate.deserialize(o);
     }
 
@@ -92,7 +89,7 @@ public class Predicate {
     }
 
     @Info("Any EnchantmentPredicate")
-    public EnchantmentPredicate enchantment() {
+    public EnchantmentPredicate anyEnchantment() {
         return EnchantmentPredicate.ANY;
     }
 
@@ -101,7 +98,7 @@ public class Predicate {
     }
 
     @Info("For testing the items that this entity holds in its equipment slots.")
-    public EntityEquipmentPredicate entityEquipment(JsonObject o) {
+    public EntityEquipmentPredicate entityEquipmentFromJson(JsonObject o) {
         return EntityEquipmentPredicate.fromJson(o);
     }
 
@@ -113,11 +110,11 @@ public class Predicate {
     }
 
     @Info("Any EntityEquipmentPredicate")
-    public EntityEquipmentPredicate entityEquipment() {
+    public EntityEquipmentPredicate anyEntityEquipment() {
         return EntityEquipmentPredicate.ANY;
     }
 
-    public EntityFlagsPredicate entityFlags(JsonObject o) {
+    public EntityFlagsPredicate entityFlagsFromJson(JsonObject o) {
         return EntityFlagsPredicate.fromJson(o);
     }
 
@@ -128,11 +125,11 @@ public class Predicate {
     }
 
     @Info("Any EntityFlagsPredicate")
-    public EntityFlagsPredicate entityFlags() {
+    public EntityFlagsPredicate anyEntityFlags() {
         return EntityFlagsPredicate.ANY;
     }
 
-    public EntityPredicate entity(JsonObject o) {
+    public EntityPredicate entityFromJson(JsonObject o) {
         return EntityPredicate.fromJson(o);
     }
 
@@ -143,22 +140,11 @@ public class Predicate {
     }
 
     @Info("Any EntityPredicate")
-    public EntityPredicate entity() {
+    public EntityPredicate anyEntity() {
         return EntityPredicate.ANY;
     }
 
-    @Info(value = "Check if fishing hook is in open water.",
-        params = @Param(name = "isOpenWater"))
-    public FishingHookPredicate fishingHook(boolean isOpenWater) {
-        return FishingHookPredicate.of(isOpenWater);
-    }
-
-    @Info("Any EntityPredicate")
-    public FishingHookPredicate fishingHook() {
-        return FishingHookPredicate.ALL;
-    }
-
-    public FluidPredicate fluid(JsonObject o) {
+    public FluidPredicate fluidFromJson(JsonObject o) {
         return FluidPredicate.fromJson(o);
     }
 
@@ -169,11 +155,11 @@ public class Predicate {
     }
 
     @Info("Any FluidPredicate")
-    public FluidPredicate fluid() {
+    public FluidPredicate anyFluid() {
         return FluidPredicate.ANY;
     }
 
-    public ItemPredicate item(JsonObject o) {
+    public ItemPredicate itemFromJson(JsonObject o) {
         return ItemPredicate.fromJson(o);
     }
 
@@ -184,26 +170,11 @@ public class Predicate {
     }
 
     @Info("Any ItemPredicate")
-    public ItemPredicate item() {
+    public ItemPredicate anyItem() {
         return ItemPredicate.ANY;
     }
 
-    public LightningBoltPredicate lightningBolt(JsonObject o) {
-        return LightningBoltPredicate.fromJson(o);
-    }
-
-    public LightningBoltPredicate lightningBolt(Consumer<LightningBoltPredicateBuilder> consumer){
-        LightningBoltPredicateBuilder builder = new LightningBoltPredicateBuilder();
-        consumer.accept(builder);
-        return builder.predicate();
-    }
-
-    @Info("Any LightningBoltPredicate")
-    public LightningBoltPredicate lightningBolt() {
-        return LightningBoltPredicate.ANY;
-    }
-
-    public LightPredicate light(JsonObject o) {
+    public LightPredicate lightFromJson(JsonObject o) {
         return LightPredicate.fromJson(o);
     }
 
@@ -212,11 +183,11 @@ public class Predicate {
     }
 
     @Info("Any LightPredicate")
-    public LightPredicate light() {
+    public LightPredicate anyLight() {
         return LightPredicate.ANY;
     }
 
-    public LocationPredicate location(JsonObject o) {
+    public LocationPredicate locationFromJson(JsonObject o) {
         return LocationPredicate.fromJson(o);
     }
 
@@ -227,12 +198,12 @@ public class Predicate {
     }
 
     @Info("Any LocationPredicate")
-    public LocationPredicate location() {
+    public LocationPredicate anyLocation() {
         return LocationPredicate.ANY;
     }
 
     @Info("For testing the active status effects on the entity.")
-    public EntityEffectPredicate mobEffects(JsonObject o) {
+    public EntityEffectPredicate mobEffectsFromJson(JsonObject o) {
         return EntityEffectPredicate.fromJson(o);
     }
 
@@ -244,11 +215,11 @@ public class Predicate {
     }
 
     @Info("Any MobEffectsPredicate")
-    public EntityEffectPredicate mobEffects() {
+    public EntityEffectPredicate anyMobEffects() {
         return EntityEffectPredicate.EMPTY;
     }
 
-    public EntityEffectPredicate.EffectData mobEffectInstance(JsonObject o) {
+    public EntityEffectPredicate.EffectData mobEffectInstanceFromJson(JsonObject o) {
         return EntityEffectPredicate.EffectData.fromJson(o);
     }
 
@@ -259,7 +230,7 @@ public class Predicate {
     }
 
     @Info("Any MobEffectInstancePredicate")
-    public EntityEffectPredicate.EffectData mobEffectInstance() {
+    public EntityEffectPredicate.EffectData anyMobEffectInstance() {
         return new EntityEffectPredicate.EffectData();
     }
 
@@ -268,7 +239,7 @@ public class Predicate {
     }
 
     @Info("Any NbtPredicate")
-    public NbtPredicate nbt() {
+    public NbtPredicate anyNbt() {
         return NbtPredicate.ANY;
     }
 
@@ -276,7 +247,7 @@ public class Predicate {
         return PlayerPredicate.fromJson(o);
     }
 
-    public StatePredicate stateProperties(JsonObject o) {
+    public StatePredicate statePropertiesFromJson(JsonObject o) {
         return StatePredicate.fromJson(o);
     }
 
@@ -287,11 +258,11 @@ public class Predicate {
     }
 
     @Info("Any StatePropertiesPredicate")
-    public StatePredicate stateProperties() {
+    public StatePredicate anyStateProperties() {
         return StatePredicate.ANY;
     }
 
-    public EntityTypePredicate entityType(JsonObject o) {
+    public EntityTypePredicate entityTypeFromJson(JsonObject o) {
         return EntityTypePredicate.fromJson(o);
     }
 
@@ -302,44 +273,7 @@ public class Predicate {
     }
 
     @Info("Any EntityTypePredicate")
-    public EntityTypePredicate entityType() {
+    public EntityTypePredicate anyEntityType() {
         return EntityTypePredicate.ANY;
-    }
-
-    @Info("Evaluates a list of predicates and passes if any one of them passes.")
-    public ConditionCollect anyOf(ICondition... conditions) {
-        return ConditionCollect.any(conditions);
-    }
-
-    @Info("Evaluates a list of predicates and passes if all of them pass.")
-    public ConditionCollect allOf(ICondition... conditions) {
-        return ConditionCollect.all(conditions);
-    }
-
-    @Info("Checks the current location against location criteria.")
-    public LocationCheckCondition locationCheck() {
-        return new LocationCheckCondition();
-    }
-
-    @Info("Checks tool used to mine the block.")
-    public MatchToolCondition matchTool(Consumer<ItemPredicateBuilder> consumer) {
-        return new MatchToolCondition(consumer);
-    }
-
-    @Info("Checks the block and its block states.")
-    public StatePropertyCondition blockStateProperty(Block block) {
-        return new StatePropertyCondition(block);
-    }
-
-    @Info("Checks properties of an entity.")
-    public EntityPropertyCondition entityProperty(EntityPredicate entityPredicate) {
-        return new EntityPropertyCondition(entityPredicate);
-    }
-
-    @Info("Checks properties of an entity.")
-    public EntityPropertyCondition entityProperty(Consumer<EntityPredicateBuilder> consumer) {
-        EntityPredicateBuilder builder = new EntityPredicateBuilder();
-        consumer.accept(builder);
-        return new EntityPropertyCondition(builder.build());
     }
 }

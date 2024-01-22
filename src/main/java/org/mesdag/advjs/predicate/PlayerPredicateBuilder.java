@@ -77,7 +77,7 @@ public class PlayerPredicateBuilder {
 
         Visibility is defined through the line from the player's eyes to the entity's eyes, rather than the direction that the player is looking in.
         """)
-    public void setLookingAt(EntityPredicate entityPredicate) {
+    public void setLookingAtByPredicate(EntityPredicate entityPredicate) {
         playerBuilder.lookingAt(entityPredicate);
     }
 
@@ -108,7 +108,7 @@ public class PlayerPredicateBuilder {
                 
         Passes if the calculated distance is between the entered min and max, inclusive.
         """)
-    public void setDistance(DistancePredicate distance) {
+    public void setDistanceByPredicate(DistancePredicate distance) {
         this.distance = distance;
     }
 
@@ -124,7 +124,7 @@ public class PlayerPredicateBuilder {
     }
 
     @Info("Test properties of player's location.")
-    public void setLocation(LocationPredicate location) {
+    public void setLocationByPredicate(LocationPredicate location) {
         this.location = location;
     }
 
@@ -136,7 +136,7 @@ public class PlayerPredicateBuilder {
     }
 
     @Info("Test properties of the block player is standing on, using a location predicate.")
-    public void setSteppingOn(LocationPredicate steppingOn) {
+    public void setSteppingOnByPredicate(LocationPredicate steppingOn) {
         this.steppingOn = steppingOn;
     }
 
@@ -148,7 +148,7 @@ public class PlayerPredicateBuilder {
     }
 
     @Info("Test the active status effects on player.")
-    public void setEffects(EntityEffectPredicate effects) {
+    public void setEffectsByPredicate(EntityEffectPredicate effects) {
         this.effects = effects;
     }
 
@@ -165,7 +165,7 @@ public class PlayerPredicateBuilder {
     }
 
     @Info("Test flags of player.")
-    public void setFlags(EntityFlagsPredicate flags) {
+    public void setFlagsByPredicate(EntityFlagsPredicate flags) {
         this.flags = flags;
     }
 
@@ -177,7 +177,7 @@ public class PlayerPredicateBuilder {
     }
 
     @Info("Test the items that player holds in its equipment slots.")
-    public void setEquipment(EntityEquipmentPredicate equipment) {
+    public void setEquipmentByPredicate(EntityEquipmentPredicate equipment) {
         this.equipment = equipment;
     }
 
@@ -189,7 +189,7 @@ public class PlayerPredicateBuilder {
     }
 
     @Info("Test properties of the vehicle entity that player is riding upon.")
-    public void setVehicle(EntityPredicate vehicle) {
+    public void setVehicleByPredicate(EntityPredicate vehicle) {
         this.vehicle = vehicle;
     }
 
@@ -201,7 +201,7 @@ public class PlayerPredicateBuilder {
     }
 
     @Info("Test the entity directly riding player.")
-    public void setPassenger(EntityPredicate passenger) {
+    public void setPassengerByPredicate(EntityPredicate passenger) {
         this.passenger = passenger;
     }
 
@@ -213,7 +213,7 @@ public class PlayerPredicateBuilder {
     }
 
     @Info("Test properties of the entity which player is targeting for attacks.")
-    public void setTargetedEntity(EntityPredicate targetedEntity) {
+    public void setTargetedEntityByPredicate(EntityPredicate targetedEntity) {
         this.targetedEntity = targetedEntity;
     }
 

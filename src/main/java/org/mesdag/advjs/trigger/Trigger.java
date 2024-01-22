@@ -3,6 +3,7 @@ package org.mesdag.advjs.trigger;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.advancement.criterion.*;
+import net.minecraft.item.ItemStack;
 import net.minecraft.predicate.entity.LootContextPredicate;
 import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.recipe.Ingredient;
@@ -96,6 +97,11 @@ public class Trigger implements ItemSetter {
         return new ConsumeItemCriterion.Conditions(builder.player, builder.item);
     }
 
+    @Info("Triggers when the player consumes an item.")
+    public ConsumeItemCriterion.Conditions usedItem(ItemStack itemStack) {
+        return ConsumeItemCriterion.Conditions.item(itemStack.getItem());
+    }
+
     @Info("Triggers when a player lands after falling.")
     public TravelCriterion.Conditions fallFromHeight(Consumer<FallFromHeightBuilder> consumer) {
         FallFromHeightBuilder builder = new FallFromHeightBuilder();
@@ -168,6 +174,15 @@ public class Trigger implements ItemSetter {
         SingleItemBuilder builder = new SingleItemBuilder();
         consumer.accept(builder);
         return new FilledBucketCriterion.Conditions(builder.player, builder.item);
+    }
+
+    @Info("""
+        Triggers after the player fills a bucket.
+                
+        @param item The item resulting from filling the bucket.
+        """)
+    public FilledBucketCriterion.Conditions filledBucket(Ingredient item) {
+        return FilledBucketCriterion.Conditions.create(wrapItem(item));
     }
 
     @Info("Triggers after the player successfully catches an item with a fishing rod or pulls an entity with a fishing rod.")
