@@ -21,6 +21,7 @@ public class AdvJS {
     public static final Path STORY = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_story.js");
     public static final Path ADVENTURE = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_adventure.js");
     public static final Path NETHER = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_nether.js");
+    public static final Path HUSBANDRY = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_husbandry.js");
 
     public AdvJS() {
         CommonProperties.reload();

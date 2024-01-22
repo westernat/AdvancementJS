@@ -9,6 +9,8 @@ import net.minecraft.advancements.critereon.LocationPredicate;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import org.mesdag.advjs.util.Bounds;
 
 import java.util.function.Consumer;
@@ -47,7 +49,7 @@ public class LocationPredicateBuilder {
     }
 
     @Info("The light at the location. Test fails if the location is unloaded.")
-    public void setLight(LightPredicate light) {
+    public void setLightByPredicate(LightPredicate light) {
         builder.setLight(light);
     }
 
@@ -57,7 +59,12 @@ public class LocationPredicateBuilder {
     }
 
     @Info("The block at the location. Test fails if the location is unloaded.")
-    public void setBlock(BlockPredicate block) {
+    public void setBlockByType(Block... blocks){
+        builder.setBlock(BlockPredicate.Builder.block().of(blocks).build());
+    }
+
+    @Info("The block at the location. Test fails if the location is unloaded.")
+    public void setBlockByPredicate(BlockPredicate block) {
         builder.setBlock(block);
     }
 
@@ -69,7 +76,12 @@ public class LocationPredicateBuilder {
     }
 
     @Info("The fluid at the location. Test fails if the location is unloaded.")
-    public void setFluid(FluidPredicate fluid) {
+    public void setFluidByType(Fluid fluid){
+        builder.setFluid(FluidPredicate.Builder.fluid().of(fluid).build());
+    }
+
+    @Info("The fluid at the location. Test fails if the location is unloaded.")
+    public void setFluidByPredicate(FluidPredicate fluid) {
         builder.setFluid(fluid);
     }
 

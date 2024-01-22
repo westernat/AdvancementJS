@@ -83,6 +83,7 @@ public class CriteriaBuilder {
         this.requirements = requirements;
     }
 
+    @HideFromJS
     public String[][] getRequirements() {
         return requirements == null ? strategy.createRequirements(getCriteria().keySet()) : requirements;
     }

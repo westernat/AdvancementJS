@@ -22,45 +22,45 @@ public class DamageSourcePredicateBuilder implements EntitySetter {
             @Param(name = "tagName"),
             @Param(name = "expected")
         })
-    public void tag(ResourceLocation tagName, boolean expected) {
+    public void setTag(ResourceLocation tagName, boolean expected) {
         builder.tag(new TagPredicate<>(TagKey.create(Registries.DAMAGE_TYPE, tagName), expected));
     }
 
     @Info(value = "Damage type tag that the type of the damage should be included in. Excepted is true.",
         params = @Param(name = "tagName"))
-    public void tag(ResourceLocation tagName) {
+    public void setTag(ResourceLocation tagName) {
         builder.tag(new TagPredicate<>(TagKey.create(Registries.DAMAGE_TYPE, tagName), true));
     }
 
     @Info("The entity that was the direct cause of the damage.")
-    public void directByPredicate(EntityPredicate direct) {
+    public void setDirectByPredicate(EntityPredicate direct) {
         builder.direct(direct);
     }
 
     @Info("The entity that was the direct cause of the damage.")
-    public void directByType(EntityType<?> direct) {
+    public void setDirectByType(EntityType<?> direct) {
         builder.direct(toEntity(direct));
     }
 
     @Info("The entity that was the direct cause of the damage.")
-    public void direct(Consumer<EntityPredicateBuilder> consumer) {
+    public void setDirect(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder1 = new EntityPredicateBuilder();
         consumer.accept(builder1);
         builder.direct(builder1.build());
     }
 
     @Info("Checks the entity that was the source of the damage (for example: The skeleton that shot the arrow).")
-    public void sourceByPredicate(EntityPredicate source) {
+    public void setSourceByPredicate(EntityPredicate source) {
         builder.source(source);
     }
 
     @Info("Checks the entity that was the source of the damage (for example: The skeleton that shot the arrow).")
-    public void sourceByType(EntityType<?> source) {
+    public void setSourceByType(EntityType<?> source) {
         builder.source(toEntity(source));
     }
 
     @Info("Checks the entity that was the source of the damage (for example: The skeleton that shot the arrow).")
-    public void source(Consumer<EntityPredicateBuilder> consumer) {
+    public void setSource(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder1 = new EntityPredicateBuilder();
         consumer.accept(builder1);
         builder.source(builder1.build());

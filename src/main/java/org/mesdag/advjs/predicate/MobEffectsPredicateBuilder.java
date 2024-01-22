@@ -17,7 +17,7 @@ public class MobEffectsPredicateBuilder {
         @Param(name = "mobEffect", value = "A status effect that must be present."),
         @Param(name = "mobEffectInstancePredicate", value = "Properties of the status")
     })
-    public void add(MobEffect mobEffect, MobEffectsPredicate.MobEffectInstancePredicate mobEffectInstancePredicate) {
+    public void addEffectByPredicate(MobEffect mobEffect, MobEffectsPredicate.MobEffectInstancePredicate mobEffectInstancePredicate) {
         effects.put(mobEffect, mobEffectInstancePredicate);
     }
 
@@ -25,7 +25,7 @@ public class MobEffectsPredicateBuilder {
         @Param(name = "mobEffect", value = "A status effect that must be present."),
         @Param(name = "consumer", value = "Properties of the status")
     })
-    public void add(MobEffect mobEffect, Consumer<MobEffectInstancePredicateBuilder> consumer) {
+    public void addEffect(MobEffect mobEffect, Consumer<MobEffectInstancePredicateBuilder> consumer) {
         MobEffectInstancePredicateBuilder builder = new MobEffectInstancePredicateBuilder();
         consumer.accept(builder);
         effects.put(mobEffect, builder.build());

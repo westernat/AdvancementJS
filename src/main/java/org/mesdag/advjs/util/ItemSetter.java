@@ -10,8 +10,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
+@HideFromJS
 public interface ItemSetter {
-    @HideFromJS
     default ItemPredicate wrapItem(Ingredient ingredient) {
         ImmutableSet.Builder<Item> builder = ImmutableSet.builder();
         for (ItemStack itemStack : ingredient.getItems()) {

@@ -11,12 +11,12 @@ public class EntityTypePredicateBuilder {
     EntityTypePredicate predicate = EntityTypePredicate.ANY;
 
     @Info("Accepts an entity ID.")
-    public void type(EntityType<?> entityType) {
+    public void setType(EntityType<?> entityType) {
         this.predicate = EntityTypePredicate.of(entityType);
     }
 
     @Info("Accepts an entity tag.")
-    public void tag(ResourceLocation tag) {
+    public void setTag(ResourceLocation tag) {
         this.predicate = EntityTypePredicate.of(TagKey.create(Registries.ENTITY_TYPE, tag));
     }
 }

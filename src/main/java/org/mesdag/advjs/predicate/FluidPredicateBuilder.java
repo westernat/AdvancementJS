@@ -16,7 +16,7 @@ public class FluidPredicateBuilder {
     }
 
     @Info("Check states of fluid.")
-    public void setProperties(StatePropertiesPredicate statePropertiesPredicate) {
+    public void setPropertiesByPredicate(StatePropertiesPredicate statePropertiesPredicate) {
         builder.setProperties(statePropertiesPredicate);
     }
 

@@ -26,7 +26,7 @@ public class ItemPredicateBuilder {
     }
 
     @Info("Check tag.")
-    public void tag(ResourceLocation tag) {
+    public void setTag(ResourceLocation tag) {
         builder.of(TagKey.create(Registries.ITEM, tag));
     }
 
@@ -54,7 +54,7 @@ public class ItemPredicateBuilder {
     }
 
     @Info("Test for any other NBT tags that may be present on the item.")
-    public void hasNbt(CompoundTag nbt) {
+    public void setNbt(CompoundTag nbt) {
         builder.hasNbt(nbt);
     }
 

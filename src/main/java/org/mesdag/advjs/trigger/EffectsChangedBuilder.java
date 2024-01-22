@@ -16,7 +16,7 @@ class EffectsChangedBuilder extends AbstractTriggerBuilder {
     ContextAwarePredicate source = ContextAwarePredicate.ANY;
 
     @Info("A list of active status effects the player currently has.")
-    public void setEffects(MobEffectsPredicate effects) {
+    public void setEffectsByPredicate(MobEffectsPredicate effects) {
         this.effects = effects;
     }
 

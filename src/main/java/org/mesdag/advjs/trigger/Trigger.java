@@ -5,6 +5,7 @@ import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.mesdag.advjs.predicate.PlayerPredicateBuilder;
 import org.mesdag.advjs.trigger.custom.BlockDestroyedTrigger;
@@ -95,6 +96,11 @@ public class Trigger implements ItemSetter {
         return new ConsumeItemTrigger.TriggerInstance(builder.player, builder.item);
     }
 
+    @Info("Triggers when the player consumes an item.")
+    public ConsumeItemTrigger.TriggerInstance usedItem(ItemStack itemStack) {
+        return ConsumeItemTrigger.TriggerInstance.usedItem(itemStack.getItem());
+    }
+
     @Info("Triggers when a player lands after falling.")
     public DistanceTrigger.TriggerInstance fallFromHeight(Consumer<FallFromHeightBuilder> consumer) {
         FallFromHeightBuilder builder = new FallFromHeightBuilder();
@@ -167,6 +173,15 @@ public class Trigger implements ItemSetter {
         SingleItemBuilder builder = new SingleItemBuilder();
         consumer.accept(builder);
         return new FilledBucketTrigger.TriggerInstance(builder.player, builder.item);
+    }
+
+    @Info("""
+        Triggers after the player fills a bucket.
+                
+        @param item The item resulting from filling the bucket.
+        """)
+    public FilledBucketTrigger.TriggerInstance filledBucket(Ingredient item) {
+        return FilledBucketTrigger.TriggerInstance.filledBucket(wrapItem(item));
     }
 
     @Info("Triggers after the player successfully catches an item with a fishing rod or pulls an entity with a fishing rod.")
@@ -360,11 +375,6 @@ public class Trigger implements ItemSetter {
         PlayerPredicateBuilder builder = new PlayerPredicateBuilder();
         consumer.accept(builder);
         return new StartRidingTrigger.TriggerInstance(builder.build());
-    }
-
-    @Info("Triggers when the player starts riding a vehicle or an entity starts riding a vehicle currently ridden by the player.")
-    public StartRidingTrigger.TriggerInstance startRiding() {
-        return new StartRidingTrigger.TriggerInstance(ContextAwarePredicate.ANY);
     }
 
     @Info("""

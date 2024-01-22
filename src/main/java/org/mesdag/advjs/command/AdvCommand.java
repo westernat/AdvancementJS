@@ -17,6 +17,15 @@ public class AdvCommand {
             .then(Commands.literal("story").executes(context -> run(context.getSource(), AdvJS.STORY, STORY)))
             .then(Commands.literal("adventure").executes(context -> run(context.getSource(), AdvJS.ADVENTURE, ADVENTURE)))
             .then(Commands.literal("nether").executes(context -> run(context.getSource(), AdvJS.NETHER, NETHER)))
+            .then(Commands.literal("husbandry").executes(context -> run(context.getSource(), AdvJS.HUSBANDRY, HUSBANDRY)))
+            .then(Commands.literal("all").executes(context -> {
+                run(context.getSource(), AdvJS.EXAMPLE, EXAMPLE);
+                run(context.getSource(), AdvJS.STORY, STORY);
+                run(context.getSource(), AdvJS.ADVENTURE, ADVENTURE);
+                run(context.getSource(), AdvJS.NETHER, NETHER);
+                run(context.getSource(), AdvJS.HUSBANDRY, HUSBANDRY);
+                return 5;
+            }))
         );
     }
 
@@ -30,15 +39,501 @@ public class AdvCommand {
         }
     }
 
+    public static final String HUSBANDRY;
     public static final String NETHER;
     public static final String ADVENTURE;
     public static final String STORY;
     public static final String EXAMPLE;
 
     static {
+        HUSBANDRY = """
+            ServerEvents.advancement(event => {
+                const { CONDITION, PROVIDER, TRIGGER } = event;
+                        
+                const husbandry = event
+                    .create("advjs:husbandry")
+                    .display(displayBuilder => {
+                        displayBuilder.setIcon("hay_block")
+                        displayBuilder.setTitle(Text.translate("advancements.husbandry.root.title"))
+                        displayBuilder.setDescription(Text.translate("advancements.husbandry.root.description"))
+                        displayBuilder.setBackground("textures/gui/advancements/backgrounds/husbandry.png")
+                        displayBuilder.setShowToast(false)
+                        displayBuilder.setAnnounceToChat(false)
+                    })
+                    .criteria(criteriaBuilder => {
+                        criteriaBuilder.add("consumed_item", TRIGGER.consumeItem(triggerBuilder => { }))
+                    });
+                        
+                const plant_seed = husbandry
+                    .addChild("plant_seed", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("wheat")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.plant_seed.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.plant_seed.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.setStrategy(RequirementsStrategy.OR)
+                                const plants = [
+                                    "wheat", "pumpkin_stem", "melon_stem", "beetroots",
+                                    "nether_wart", "torchflower", "pitcher_pod"
+                                ];
+                                plants.forEach(plant => {
+                                    criteriaBuilder.add(plant, TRIGGER.placedBlock(triggerBuilder => {
+                                        triggerBuilder.addCondition(CONDITION.blockStateProperty(plant))
+                                    }))
+                                })
+                            })
+                    });
+                        
+                const breed_an_animal = husbandry
+                    .addChild("breed_an_animal", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("wheat")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.breed_an_animal.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.breed_an_animal.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("bred", TRIGGER.bredAnimals(triggerBuilder => { }))
+                            })
+                    });
+                        
+                breed_an_animal
+                    .addChild("breed_all_animals", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("golden_carrot")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.breed_all_animals.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.breed_all_animals.description"))
+                                displayBuilder.setFrameType(FrameType.CHALLENGE)
+                            })
+                            .criteria(criteriaBuilder => {
+                                PROVIDER.getBreedableAnimals().forEach(entity => {
+                                    criteriaBuilder.add(entity.toString(), TRIGGER.bredAnimals(triggerBuilder => {
+                                        triggerBuilder.setChildByType(entity)
+                                    }))
+                                })
+                                PROVIDER.getIndirectlyBreedableAnimals().forEach(entity => {
+                                    criteriaBuilder.add(entity.toString(), TRIGGER.bredAnimals(triggerBuilder => {
+                                        triggerBuilder.setParentByType(entity)
+                                        triggerBuilder.setPartnerByType(entity)
+                                    }))
+                                })
+                            })
+                            .rewards(rewardsBuilder => rewardsBuilder.setExperience(100))
+                    });
+                        
+                plant_seed
+                    .addChild("balanced_diet", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("apple")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.balanced_diet.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.balanced_diet.description"))
+                                displayBuilder.setFrameType(FrameType.CHALLENGE)
+                            })
+                            .criteria(criteriaBuilder => {
+                                PROVIDER.getEdibleItems().forEach(item => {
+                                    criteriaBuilder.add(item.toString(), TRIGGER.usedItem(item))
+                                })
+                            })
+                            .rewards(rewardsBuilder => rewardsBuilder.setExperience(100))
+                    });
+                        
+                plant_seed
+                    .addChild("obtain_netherite_hoe", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("netherite_hoe")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.netherite_hoe.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.netherite_hoe.description"))
+                                displayBuilder.setFrameType(FrameType.CHALLENGE)
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("netherite_hoe", TRIGGER.hasItems("netherite_hoe"))
+                            })
+                            .rewards(rewardsBuilder => rewardsBuilder.setExperience(100))
+                    });
+                        
+                const tame_an_animal = husbandry
+                    .addChild("tame_an_animal", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("lead")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.tame_an_animal.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.tame_an_animal.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("tamed_animal", TRIGGER.tameAnimal(triggerBuilder => { }))
+                            })
+                    });
+                        
+                const fishy_business = husbandry
+                    .addChild("fishy_business", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("fishing_rod")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.fishy_business.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.fishy_business.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.setStrategy(RequirementsStrategy.OR)
+                                PROVIDER.getFish().forEach(item => {
+                                    criteriaBuilder.add(item.toString(), TRIGGER.fishingRodHooked(triggerBuilder => {
+                                        triggerBuilder.setRod(item)
+                                    }))
+                                })
+                            })
+                    });
+                        
+                const tactical_fishing = fishy_business
+                    .addChild("tactical_fishing", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("pufferfish_bucket")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.tactical_fishing.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.tactical_fishing.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.setStrategy(RequirementsStrategy.OR)
+                                PROVIDER.getFish().forEach(item => {
+                                    criteriaBuilder.add(item.toString(), TRIGGER.filledBucket(item))
+                                })
+                            })
+                    });
+                        
+                const axolotl_in_a_bucket = tactical_fishing
+                    .addChild("axolotl_in_a_bucket", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("axolotl_bucket")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.axolotl_in_a_bucket.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.axolotl_in_a_bucket.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("axolotl_bucket", TRIGGER.filledBucket("axolotl_bucket"))
+                            })
+                    });
+                        
+                axolotl_in_a_bucket
+                    .addChild("kill_axolotl_target", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("tropical_fish_bucket")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.kill_axolotl_target.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.kill_axolotl_target.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("kill_axolotl_target", TRIGGER.effectChanged(triggerBuilder => {
+                                    triggerBuilder.setSourceByType("axolotl")
+                                }))
+                            })
+                    });
+                        
+                tame_an_animal
+                    .addChild("complete_catalogue", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("cod")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.complete_catalogue.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.complete_catalogue.description"))
+                                displayBuilder.setFrameType(FrameType.CHALLENGE)
+                            })
+                            .criteria(criteriaBuilder => {
+                                PROVIDER.getCatVariants().forEach(variant => {
+                                    criteriaBuilder.add(variant.toString(), TRIGGER.tameAnimal(triggerBuilder => {
+                                        triggerBuilder.setEntity(entityPredicateBuilder => {
+                                            entityPredicateBuilder.setTypeSpecific(entityPredicateBuilder.SPECIFIC.cat(variant.path))
+                                        })
+                                    }))
+                                })
+                            })
+                            .rewards(rewardsBuilder => rewardsBuilder.setExperience(50))
+                    });
+                        
+                const safely_harvest_honey = husbandry
+                    .addChild("safely_harvest_honey", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("honey_bottle")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.safely_harvest_honey.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.safely_harvest_honey.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("safely_harvest_honey", TRIGGER.itemUsedOnBlock(triggerBuilder => {
+                                    const location = CONDITION
+                                        .locationCheck()
+                                        .location(locationPredicateBuilder => {
+                                            locationPredicateBuilder.setBlockByType("beehives")
+                                            locationPredicateBuilder.setSmokey(true)
+                                        });
+                                    const item = CONDITION.matchTool(itemPredicateBuilder => itemPredicateBuilder.of("glass_bottle"))
+                                    triggerBuilder.addConditions(location, item)
+                                }))
+                            })
+                    });
+                        
+                const waxables = [
+                    "copper_block", "exposed_copper", "weathered_copper", "oxidized_copper",
+                    "cut_copper", "exposed_cut_copper", "weathered_cut_copper", "oxidized_cut_copper",
+                    "cut_copper_slab", "exposed_cut_copper_slab", "weathered_cut_copper_slab",
+                    "oxidized_cut_copper_slab", "cut_copper_stairs", "exposed_cut_copper_stairs",
+                    "weathered_cut_copper_stairs", "oxidized_cut_copper_stairs"
+                ];
+                        
+                const wax_on = safely_harvest_honey
+                    .addChild("wax_on", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("honey_bottle")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.wax_on.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.wax_on.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("wax_on", TRIGGER.itemUsedOnBlock(triggerBuilder => {
+                                    const location = CONDITION
+                                        .locationCheck()
+                                        .location(locationPredicateBuilder => {
+                                            locationPredicateBuilder.setBlockByType(waxables)
+                                        });
+                                    const item = CONDITION.matchTool(itemPredicateBuilder => itemPredicateBuilder.of("honeycomb"));
+                                    triggerBuilder.addConditions(location, item)
+                                }))
+                            })
+                    });
+                        
+                wax_on
+                    .addChild("wax_off", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("stone_axe")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.wax_off.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.wax_off.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("wax_off", TRIGGER.itemUsedOnBlock(triggerBuilder => {
+                                    const location = CONDITION
+                                        .locationCheck()
+                                        .location(locationPredicateBuilder => {
+                                            locationPredicateBuilder.setBlockByType(waxables.map(block => "waxed_" + block))
+                                        });
+                                    const item = CONDITION.matchTool(itemPredicateBuilder => itemPredicateBuilder.of("honeycomb"));
+                                    triggerBuilder.addConditions(location, item)
+                                }))
+                            })
+                    });
+                        
+                const tadpole_in_a_bucket = husbandry
+                    .addChild("tadpole_in_a_bucket", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("tadpole_bucket")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.tadpole_in_a_bucket.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.tadpole_in_a_bucket.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("tadpole_bucket", TRIGGER.filledBucket("tadpole_bucket"))
+                            })
+                    });
+                        
+                const leash_all_frog_variants = tadpole_in_a_bucket
+                    .addChild("leash_all_frog_variants", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("lead")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.leash_all_frog_variants.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.leash_all_frog_variants.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                const frogVariants = ["temperate", "warm", "cold"];
+                                frogVariants.forEach(variant => {
+                                    criteriaBuilder.add(variant, TRIGGER.playerInteract(triggerBuilder => {
+                                        triggerBuilder.setItem("lead")
+                                        triggerBuilder.setEntity(entityPredicateBuilder => {
+                                            entityPredicateBuilder.of("frog")
+                                            entityPredicateBuilder.setTypeSpecific(entityPredicateBuilder.SPECIFIC.frog(variant))
+                                        })
+                                    }))
+                                })
+                            })
+                    });
+                        
+                leash_all_frog_variants
+                    .addChild("froglights", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("verdant_froglight")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.froglights.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.froglights.description"))
+                                displayBuilder.setFrameType(FrameType.CHALLENGE)
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("froglights", TRIGGER.hasItems(["ochre_froglight", "pearlescent_froglight", "verdant_froglight"]))
+                            })
+                    });
+                        
+                husbandry
+                    .addChild("silk_touch_nest", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("bee_nest")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.silk_touch_nest.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.silk_touch_nest.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("silk_touch_nest", TRIGGER.beeNestDestroyed(triggerBuilder => {
+                                    triggerBuilder.setBlock("bee_nest")
+                                    triggerBuilder.setItem(itemPredicateBuilder => {
+                                        itemPredicateBuilder.hasEnchantment(enchantmentPredicateBuilder => {
+                                            enchantmentPredicateBuilder.setEnchantment("silk_touch")
+                                            enchantmentPredicateBuilder.setLevel({ min: 1 })
+                                        })
+                                    })
+                                    triggerBuilder.setBounds(3)
+                                }))
+                            })
+                    });
+                        
+                husbandry
+                    .addChild("ride_a_boat_with_a_goat", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("oak_boat")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.ride_a_boat_with_a_goat.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.ride_a_boat_with_a_goat.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("ride_a_boat_with_a_goat", TRIGGER.startRiding(triggerBuilder => {
+                                    triggerBuilder.setVehicle(entityPredicateBuilder => {
+                                        entityPredicateBuilder.of("boat")
+                                        entityPredicateBuilder.setPassengerByType("goat")
+                                    })
+                                }))
+                            })
+                    });
+                        
+                husbandry
+                    .addChild("make_a_sign_glow", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("glow_ink_sac")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.make_a_sign_glow.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.make_a_sign_glow.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("make_a_sign_glow", TRIGGER.itemUsedOnBlock(triggerBuilder => {
+                                    const location = CONDITION
+                                        .locationCheck()
+                                        .location(locationPredicateBuilder => {
+                                            locationPredicateBuilder.setBlock(blockPredicateBuilder => {
+                                                blockPredicateBuilder.ofTag("all_signs")
+                                            })
+                                        });
+                                    const item = CONDITION.matchTool(itemPredicateBuilder => itemPredicateBuilder.of("glow_ink_sac"));
+                                    triggerBuilder.addConditions(location, item)
+                                }))
+                            })
+                    });
+                        
+                const allay_deliver_item_to_player = husbandry
+                    .addChild("allay_deliver_item_to_player", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("cookie")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.allay_deliver_item_to_player.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.allay_deliver_item_to_player.description"))
+                                displayBuilder.setHidden(true)
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("allay_deliver_item_to_player", TRIGGER.itemPickedUpByPlayer(triggerBuilder => {
+                                    triggerBuilder.setEntityByType("allay")
+                                }))
+                            })
+                    });
+                        
+                allay_deliver_item_to_player
+                    .addChild("allay_deliver_cake_to_note_block", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("note_block")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.allay_deliver_cake_to_note_block.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.allay_deliver_cake_to_note_block.description"))
+                                displayBuilder.setHidden(true)
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("allay_deliver_cake_to_note_block", TRIGGER.allayDropItemOnBlock(triggerBuilder => {
+                                    const location = CONDITION
+                                        .locationCheck()
+                                        .location(locationPredicateBuilder => {
+                                            locationPredicateBuilder.setBlockByType("note_block")
+                                        });
+                                    const item = CONDITION.matchTool(itemPickedUpByPlayer => itemPickedUpByPlayer.of("cake"));
+                                    triggerBuilder.addConditions(location, item)
+                                }))
+                            })
+                    });
+                        
+                const obtain_sniffer_egg = husbandry
+                    .addChild("obtain_sniffer_egg", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("sniffer_egg")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.obtain_sniffer_egg.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.obtain_sniffer_egg.description"))
+                                displayBuilder.setHidden(true)
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("obtain_sniffer_egg", TRIGGER.hasItems("sniffer_egg"))
+                            })
+                    });
+                        
+                const feed_snifflet = obtain_sniffer_egg
+                    .addChild("feed_snifflet", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("torchflower_seeds")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.feed_snifflet.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.feed_snifflet.description"))
+                                displayBuilder.setHidden(true)
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("feed_snifflet", TRIGGER.playerInteract(triggerBuilder => {
+                                    triggerBuilder.setItem("#minecraft:sniffer_food")
+                                    triggerBuilder.setEntity(entityPredicateBuilder => {
+                                        entityPredicateBuilder.of("sniffer")
+                                        entityPredicateBuilder.setFlags(flagsPredicateBuilder => {
+                                            flagsPredicateBuilder.isBaby(true)
+                                        })
+                                    })
+                                }))
+                            })
+                    });
+                        
+                feed_snifflet
+                    .addChild("plant_any_sniffer_seed", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("pitcher_pod")
+                                displayBuilder.setTitle(Text.translate("advancements.husbandry.plant_any_sniffer_seed.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.husbandry.plant_any_sniffer_seed.description"))
+                                displayBuilder.setHidden(true)
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.setStrategy(RequirementsStrategy.OR)
+                                criteriaBuilder.add("torchflower", TRIGGER.placedBlock(triggerBuilder => {
+                                    triggerBuilder.addCondition(CONDITION.blockStateProperty("torchflower_crop"))
+                                }))
+                                criteriaBuilder.add("pitcher_pod", TRIGGER.placedBlock(triggerBuilder => {
+                                    triggerBuilder.addCondition(CONDITION.blockStateProperty("pitcher_crop"))
+                                }))
+                            })
+                    })
+            })
+            """;
         NETHER = """
             ServerEvents.advancement(event => {
-                const { PREDICATE, PROVIDER, TRIGGER } = event;
+                const { CONDITION, PREDICATE, PROVIDER, TRIGGER } = event;
                         
                 const nether = event
                     .create("advjs:nether")
@@ -69,8 +564,8 @@ public class AdvCommand {
                                 criteriaBuilder.add("killed_ghast", TRIGGER.playerKilledEntity(triggerBuilder => {
                                     triggerBuilder.setKilledByType("ghast")
                                     triggerBuilder.setKillingBlow(entityPredicateBuilder => {
-                                        entityPredicateBuilder.tag("is_projectile")
-                                        entityPredicateBuilder.directByType("fireball")
+                                        entityPredicateBuilder.setTag("is_projectile")
+                                        entityPredicateBuilder.setDirectByType("fireball")
                                     })
                                 }))
                             })
@@ -126,7 +621,7 @@ public class AdvCommand {
                                 criteriaBuilder.add("killed_ghast", TRIGGER.playerKilledEntity(triggerBuilder => {
                                     triggerBuilder.setKilled(entityPredicateBuilder => {
                                         entityPredicateBuilder.of("ghast")
-                                        entityPredicateBuilder.located(locationPredicateBuilder => {
+                                        entityPredicateBuilder.setLocation(locationPredicateBuilder => {
                                             locationPredicateBuilder.setDimension("overworld")
                                         })
                                     })
@@ -239,7 +734,7 @@ public class AdvCommand {
                             .criteria(criteriaBuilder => {
                                 criteriaBuilder.add("all_effects", TRIGGER.effectChanged(triggerBuilder => {
                                     triggerBuilder.setEffects(mobEffectsBuilder => {
-                                        potions.forEach(potion => mobEffectsBuilder.add(potion, PREDICATE.mobEffectInstance()))
+                                        potions.forEach(potion => mobEffectsBuilder.addEffectByPredicate(potion, PREDICATE.anyMobEffectInstance()))
                                     })
                                 }))
                             })
@@ -265,8 +760,8 @@ public class AdvCommand {
                                             "conduit_power", "dolphins_grace", "blindness",
                                             "bad_omen", "hero_of_the_village", "darkness"
                                         ];
-                                        potions.forEach(potion => mobEffectsBuilder.add(potion, PREDICATE.mobEffectInstance()))
-                                        effects.forEach(effect => mobEffectsBuilder.add(effect, PREDICATE.mobEffectInstance()))
+                                        potions.forEach(potion => mobEffectsBuilder.addEffectByPredicate(potion, PREDICATE.anyMobEffectInstance()))
+                                        effects.forEach(effect => mobEffectsBuilder.addEffectByPredicate(effect, PREDICATE.anyMobEffectInstance()))
                                     })
                                 }))
                             })
@@ -316,8 +811,8 @@ public class AdvCommand {
                             })
                             .criteria(criteriaBuilder => {
                                 criteriaBuilder.add("use_lodestone", TRIGGER.itemUsedOnBlock(triggerBuilder => {
-                                    const block = PREDICATE.blockStateProperty("lodestone");
-                                    const item = PREDICATE.matchTool(itemPredicateBuilder => itemPredicateBuilder.of("compass"));
+                                    const block = CONDITION.blockStateProperty("lodestone");
+                                    const item = CONDITION.matchTool(itemPredicateBuilder => itemPredicateBuilder.of("compass"));
                                     triggerBuilder.addConditions(block, item)
                                 }))
                             })
@@ -346,12 +841,12 @@ public class AdvCommand {
                             })
                             .criteria(criteriaBuilder => {
                                 criteriaBuilder.add("charge_respawn_anchor", TRIGGER.itemUsedOnBlock(triggerBuilder => {
-                                    const block = PREDICATE
+                                    const block = CONDITION
                                         .blockStateProperty("respawn_anchor")
                                         .stateProperties(statePropertiesBuilder => {
                                             statePropertiesBuilder.match("charge", "4")
                                         });
-                                    const item = PREDICATE.matchTool(itemPredicateBuilder => itemPredicateBuilder.of("glowstone"));
+                                    const item = CONDITION.matchTool(itemPredicateBuilder => itemPredicateBuilder.of("glowstone"));
                                     triggerBuilder.addConditions(block, item)
                                 }))
                             })
@@ -469,15 +964,15 @@ public class AdvCommand {
                                 const DISTRACT_PIGLIN_PLAYER_ARMOR_PREDICATE = [];
                                 const armor = ["golden_helmet", "golden_chestplate", "golden_leggings", "golden_boots"];
                                 armor.forEach(item => DISTRACT_PIGLIN_PLAYER_ARMOR_PREDICATE.push(
-                                    PREDICATE.entityProperty(entityPredicateBuilder => {
-                                        entityPredicateBuilder.equipment(equipmentPredicateBuilder => {
-                                            equipmentPredicateBuilder.head(itemPredicateBuilder => itemPredicateBuilder.of(item))
+                                    CONDITION.entityProperty(entityPredicateBuilder => {
+                                        entityPredicateBuilder.setEquipment(equipmentPredicateBuilder => {
+                                            equipmentPredicateBuilder.setHead(itemPredicateBuilder => itemPredicateBuilder.of(item))
                                         })
                                     }).invert()
                                 ))
                                 const PIGLIN = PREDICATE.entity(entityPredicateBuilder => {
                                     entityPredicateBuilder.of("piglin")
-                                    entityPredicateBuilder.flags(entityflagsPredicateBuilder => {
+                                    entityPredicateBuilder.setFlags(entityflagsPredicateBuilder => {
                                         entityflagsPredicateBuilder.isBaby(false)
                                     })
                                 });
@@ -497,7 +992,7 @@ public class AdvCommand {
             """;
         ADVENTURE = """
             ServerEvents.advancement(event => {
-                const { PREDICATE, PROVIDER, TRIGGER } = event;
+                const { CONDITION, PREDICATE, PROVIDER, TRIGGER } = event;
                         
                 const adventure = event
                     .create("advjs:adventure")
@@ -528,7 +1023,7 @@ public class AdvCommand {
                             })
                     });
                         
-                const adventuring_time = sleep_in_bed
+                sleep_in_bed
                     .addChild("adventuring_time", advBuilder => {
                         advBuilder
                             .display(displayBuilder => {
@@ -606,7 +1101,7 @@ public class AdvCommand {
                             })
                     });
                         
-                const kill_all_mobs = kill_a_mob
+                kill_a_mob
                     .addChild("kill_all_mobs", advBuilder => {
                         advBuilder
                             .display(displayBuilder => {
@@ -636,9 +1131,9 @@ public class AdvCommand {
                             .criteria(criteriaBuilder => {
                                 criteriaBuilder.add("shot_arrow", TRIGGER.playerHurtEntity(triggerBuilder => {
                                     triggerBuilder.setDamage(damagePredicateBuilder => {
-                                        damagePredicateBuilder.type(damageSourcePredicateBuilder => {
-                                            damageSourcePredicateBuilder.tag("is_projectile")
-                                            damageSourcePredicateBuilder.directByType("arrows")
+                                        damagePredicateBuilder.setType(damageSourcePredicateBuilder => {
+                                            damageSourcePredicateBuilder.setTag("is_projectile")
+                                            damageSourcePredicateBuilder.setDirectByType("arrows")
                                         })
                                     })
                                 }))
@@ -656,9 +1151,9 @@ public class AdvCommand {
                             .criteria(criteriaBuilder => {
                                 criteriaBuilder.add("shot_trident", TRIGGER.playerHurtEntity(triggerBuilder => {
                                     triggerBuilder.setDamage(damagePredicateBuilder => {
-                                        damagePredicateBuilder.type(damageSourcePredicateBuilder => {
-                                            damageSourcePredicateBuilder.tag("is_projectile")
-                                            damageSourcePredicateBuilder.directByType("trident")
+                                        damagePredicateBuilder.setType(damageSourcePredicateBuilder => {
+                                            damageSourcePredicateBuilder.setTag("is_projectile")
+                                            damageSourcePredicateBuilder.setDirectByType("trident")
                                         })
                                     })
                                 }))
@@ -709,12 +1204,12 @@ public class AdvCommand {
                                 criteriaBuilder.add("killed_skeleton", TRIGGER.playerKilledEntity(triggerBuilder => {
                                     triggerBuilder.setKilled(entityPredicateBuilder => {
                                         entityPredicateBuilder.of("skeleton")
-                                        entityPredicateBuilder.distance(distancePredicateBuilder => {
+                                        entityPredicateBuilder.setDistance(distancePredicateBuilder => {
                                             distancePredicateBuilder.setHorizontal({ min: 50 })
                                         })
                                     })
                                     triggerBuilder.setKillingBlow(damageSourcePredicateBuilder => {
-                                        damageSourcePredicateBuilder.tag("is_projectile")
+                                        damageSourcePredicateBuilder.setTag("is_projectile")
                                     })
                                 }))
                             })
@@ -830,13 +1325,13 @@ public class AdvCommand {
                             .criteria(criteriaBuilder => {
                                 criteriaBuilder.add("voluntary_exile", TRIGGER.playerKilledEntity(triggerBuilder =>
                                     triggerBuilder.setKilled(entityPredicateBuilder => {
-                                        entityPredicateBuilder.tag("raiders")
-                                        entityPredicateBuilder.equipment(equipmentPredicateBuilder => {
+                                        entityPredicateBuilder.setTag("raiders")
+                                        entityPredicateBuilder.setEquipment(equipmentPredicateBuilder => {
                                             const leaderBannerPredicate = PREDICATE.item(predicateBuilder => {
                                                 predicateBuilder.of("white_banner")
-                                                predicateBuilder.hasNbt(leaderNbt)
+                                                predicateBuilder.setNbt(leaderNbt)
                                             })
-                                            equipmentPredicateBuilder.head(leaderBannerPredicate)
+                                            equipmentPredicateBuilder.setHeadByPredicate(leaderBannerPredicate)
                                         })
                                     })
                                 ))
@@ -887,7 +1382,7 @@ public class AdvCommand {
                                 criteriaBuilder.add("bullseye", TRIGGER.targetHit(triggerBuilder => {
                                     triggerBuilder.setSignalStrength(15)
                                     triggerBuilder.setProjectile(entityPredicateBuilder => {
-                                        entityPredicateBuilder.distance(distancePredicateBuilder => {
+                                        entityPredicateBuilder.setDistance(distancePredicateBuilder => {
                                             distancePredicateBuilder.setHorizontal({ min: 30 })
                                         })
                                     })
@@ -895,7 +1390,7 @@ public class AdvCommand {
                             })
                     });
                         
-                const walk_on_powder_snow_with_leather_boots = sleep_in_bed
+                sleep_in_bed
                     .addChild("walk_on_powder_snow_with_leather_boots", advBuilder => {
                         advBuilder
                             .display(displayBuilder => {
@@ -906,14 +1401,12 @@ public class AdvCommand {
                             .criteria(criteriaBuilder => {
                                 criteriaBuilder.add("walk_on_powder_snow_with_leather_boots", TRIGGER.location(triggerBuilder => {
                                     triggerBuilder.setEquipment(equipmentPredicateBuilder => {
-                                        equipmentPredicateBuilder.feet(itemPredicateBuilder => {
+                                        equipmentPredicateBuilder.setFeet(itemPredicateBuilder => {
                                             itemPredicateBuilder.of("leather_boots")
                                         })
                                     })
                                     triggerBuilder.setSteppingOn(locationPredicateBuilder => {
-                                        locationPredicateBuilder.setBlock(blockPredicateBuilder => {
-                                            blockPredicateBuilder.ofBlocks("powder_snow")
-                                        })
+                                        locationPredicateBuilder.setBlockByType("powder_snow")
                                     })
                                 }))
                             })
@@ -929,13 +1422,13 @@ public class AdvCommand {
                             })
                             .criteria(criteriaBuilder => {
                                 criteriaBuilder.add("lightning_rod_with_villager_no_fire", TRIGGER.lightningStrike(triggerBuilder => {
-                                    triggerBuilder.setLightning(lightningBoltPredicateBuilder => {
-                                        lightningBoltPredicateBuilder.blocksSetOnFire(0)
-                                        lightningBoltPredicateBuilder.distance(distancePredicateBuilder => {
+                                    triggerBuilder.setLightning(entityPredicateBuilder => {
+                                        entityPredicateBuilder.setTypeSpecific(entityPredicateBuilder.SPECIFIC.lightningBolt(lightningBoltPredicateBuilder => {
+                                            lightningBoltPredicateBuilder.blocksSetOnFire(0)
+                                            lightningBoltPredicateBuilder.setEntityStruckByType("villager")
+                                        }))
+                                        entityPredicateBuilder.setDistance(distancePredicateBuilder => {
                                             distancePredicateBuilder.setAbsolute({ max: 30 })
-                                        })
-                                        lightningBoltPredicateBuilder.entityStruck(entityPredicateBuilder => {
-                                            entityPredicateBuilder.of("villager")
                                         })
                                     })
                                 }))
@@ -989,16 +1482,14 @@ public class AdvCommand {
                             })
                             .criteria(criteriaBuilder => {
                                 criteriaBuilder.add("play_jukebox_in_meadows", TRIGGER.itemUsedOnBlock(triggerBuilder => {
-                                    const jukebox = PREDICATE
+                                    const jukebox = CONDITION
                                         .locationCheck()
                                         .location(locationPredicateBuilder => {
                                             locationPredicateBuilder.setBiome("meadow")
-                                            locationPredicateBuilder.setBlock(blockPredicateBuilder => {
-                                                blockPredicateBuilder.ofBlocks("jukebox")
-                                            })
+                                            locationPredicateBuilder.setBlockByType("jukebox")
                                         });
-                                    const tool = PREDICATE.matchTool(itemPredicateBuilder => {
-                                        itemPredicateBuilder.tag("music_discs")
+                                    const tool = CONDITION.matchTool(itemPredicateBuilder => {
+                                        itemPredicateBuilder.setTag("music_discs")
                                     });
                                     triggerBuilder.addCondition(jukebox)
                                     triggerBuilder.addCondition(tool)
@@ -1006,7 +1497,7 @@ public class AdvCommand {
                             })
                     });
                         
-                const spyglass_at_dragon = spyglass_at_ghast
+                spyglass_at_ghast
                     .addChild("spyglass_at_dragon", advBuilder => {
                         advBuilder
                             .display(displayBuilder => {
@@ -1044,7 +1535,7 @@ public class AdvCommand {
                             })
                     });
                         
-                const kill_mob_near_sculk_catalyst = kill_a_mob
+                kill_a_mob
                     .addChild("kill_mob_near_sculk_catalyst", advBuilder => {
                         advBuilder
                             .display(displayBuilder => {
@@ -1086,7 +1577,7 @@ public class AdvCommand {
                                 ];
                                 sherds.forEach(sherd => criteriaBuilder.add(sherd, TRIGGER.lootTableUsed("archaeology/" + sherd)))
                                 let item = PREDICATE.item(itemPredicateBuilder => {
-                                    itemPredicateBuilder.tag("decorated_pot_sherds")
+                                    itemPredicateBuilder.setTag("decorated_pot_sherds")
                                 });
                                 criteriaBuilder.add("has_sherd", TRIGGER.hasItems(item))
                                 criteriaBuilder.setRequirements([sherds, ["has_sherd"]])
@@ -1112,7 +1603,7 @@ public class AdvCommand {
                                 displayBuilder.setDescription(Text.translate("advancements.adventure.craft_decorated_pot_using_only_sherds.description"))
                             })
                             .criteria(criteriaBuilder => {
-                                const item = PREDICATE.item(itemPredicateBuilder => itemPredicateBuilder.tag("decorated_pot_sherds"))
+                                const item = PREDICATE.item(itemPredicateBuilder => itemPredicateBuilder.setTag("decorated_pot_sherds"))
                                 criteriaBuilder.add("pot_crafted_using_only_sherds", TRIGGER.craftedItem("decorated_pot", [item, item, item, item]))
                             })
                     })
@@ -1172,9 +1663,9 @@ public class AdvCommand {
                                     { vec: [0, 1], id: "north" }
                                 ];
                                 criteriaBuilder.add("chiseled_bookshelf", TRIGGER.placedBlock(triggerBuilder => {
-                                    let checks = [];
+                                    let conditions = [];
                                     horizontal.forEach(facing => {
-                                        let check = PREDICATE
+                                        let check = CONDITION
                                             .locationCheck()
                                             .location(locationPredicateBuilder => {
                                                 let state = PREDICATE.stateProperties(predicateBuilder => {
@@ -1182,34 +1673,32 @@ public class AdvCommand {
                                                 });
                                                 locationPredicateBuilder.setBlock(blockPredicateBuilder => {
                                                     blockPredicateBuilder.ofBlocks("comparator")
-                                                    blockPredicateBuilder.setProperties(state)
+                                                    blockPredicateBuilder.setPropertiesByPredicate(state)
                                                 })
                                             })
                                             .offset([-facing.vec[0], 0, -facing.vec[1]]);
-                                        checks.push(check)
+                                        conditions.push(check)
                                     })
-                                    triggerBuilder.addCondition(PREDICATE.blockStateProperty("chiseled_bookshelf"))
-                                    triggerBuilder.addCondition(PREDICATE.anyOf(checks))
+                                    triggerBuilder.addCondition(CONDITION.blockStateProperty("chiseled_bookshelf"))
+                                    triggerBuilder.addCondition(CONDITION.anyOf(conditions))
                                 }))
                                 criteriaBuilder.add("chiseled_bookshelf", TRIGGER.placedBlock(triggerBuilder => {
-                                    let checks = [];
+                                    let conditions = [];
                                     horizontal.forEach(facing => {
-                                        let state = PREDICATE
+                                        let state = CONDITION
                                             .blockStateProperty("comparator")
                                             .stateProperties(statePropertiesPredicateBuilder => {
                                                 statePropertiesPredicateBuilder.match("facing", facing.id)
                                             });
-                                        let location = PREDICATE
+                                        let location = CONDITION
                                             .locationCheck()
                                             .location(locationPredicateBuilder => {
-                                                locationPredicateBuilder.setBlock(blockPredicateBuilder => {
-                                                    blockPredicateBuilder.ofBlocks("chiseled_bookshelf")
-                                                })
+                                                locationPredicateBuilder.setBlockByType("chiseled_bookshelf")
                                             })
                                             .offset([facing.vec[0], 0, facing.vec[1]]);
-                                        checks.push(PREDICATE.allOf(state, location))
+                                        conditions.push(CONDITION.allOf(state, location))
                                     })
-                                    triggerBuilder.addCondition(PREDICATE.anyOf(checks))
+                                    triggerBuilder.addCondition(CONDITION.anyOf(conditions))
                                 }))
                             })
                     });
@@ -1328,7 +1817,7 @@ public class AdvCommand {
                             })
                     });
                         
-                const enchant_item = mine_diamond
+                mine_diamond
                     .addChild("enchant_item", advBuilder => {
                         advBuilder
                             .display(displayBuilder => {
@@ -1354,7 +1843,7 @@ public class AdvCommand {
                             })
                     })
                         
-                const deflect_arrow = obtain_armor
+                obtain_armor
                     .addChild("deflect_arrow", advBuilder => {
                         advBuilder
                             .display(displayBuilder => {
@@ -1365,16 +1854,16 @@ public class AdvCommand {
                             .criteria(criteriaBuilder => {
                                 criteriaBuilder.add("deflected_projectile", TRIGGER.entityHurtPlayer(triggerBuilder => {
                                     triggerBuilder.setDamage(damagePredicateBuilder => {
-                                        damagePredicateBuilder.type(damageSourcePredicateBuilder => {
-                                            damageSourcePredicateBuilder.tag("is_projectile")
+                                        damagePredicateBuilder.setType(damageSourcePredicateBuilder => {
+                                            damageSourcePredicateBuilder.setTag("is_projectile")
                                         })
-                                        damagePredicateBuilder.blocked(true)
+                                        damagePredicateBuilder.isBlocked(true)
                                     })
                                 }))
                             })
                     });
                         
-                const shiny_gear = mine_diamond
+                mine_diamond
                     .addChild("shiny_gear", advBuilder => {
                         advBuilder
                             .display(displayBuilder => {
@@ -1406,7 +1895,7 @@ public class AdvCommand {
                             })
                     });
                         
-                const cure_zombie_villager = enter_the_nether
+                enter_the_nether
                     .addChild("cure_zombie_villager", advBuilder => {
                         advBuilder
                             .display(displayBuilder => {
