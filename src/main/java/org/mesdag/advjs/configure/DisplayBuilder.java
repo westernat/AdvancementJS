@@ -1,6 +1,7 @@
 package org.mesdag.advjs.configure;
 
 import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.kubejs.typings.Param;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancement.AdvancementDisplay;
 import net.minecraft.advancement.AdvancementFrame;
@@ -9,6 +10,9 @@ import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
+import org.mesdag.advjs.util.DisplayOffset;
+
+import static org.mesdag.advjs.configure.Data.DISPLAY_OFFSET;
 
 public class DisplayBuilder {
     private ItemStack icon;
@@ -20,8 +24,9 @@ public class DisplayBuilder {
     private boolean showToast;
     private boolean announceToChat;
     private boolean hidden;
+    private final Identifier source;
 
-    DisplayBuilder() {
+    DisplayBuilder(Identifier source) {
         this.icon = new ItemStack(Items.APPLE);
         this.title = Text.literal("title");
         this.description = Text.literal("description");
@@ -30,10 +35,11 @@ public class DisplayBuilder {
         this.showToast = true;
         this.announceToChat = true;
         this.hidden = false;
+        this.source = source;
     }
 
     @HideFromJS
-    public DisplayBuilder(AdvancementDisplay displayInfo) {
+    public DisplayBuilder(Identifier source, AdvancementDisplay displayInfo) {
         this.icon = displayInfo.getIcon();
         this.title = displayInfo.getTitle();
         this.description = displayInfo.getDescription();
@@ -42,6 +48,7 @@ public class DisplayBuilder {
         this.showToast = displayInfo.shouldShowToast();
         this.announceToChat = displayInfo.shouldAnnounceToChat();
         this.hidden = displayInfo.isHidden();
+        this.source = source;
     }
 
     @Info("The ItemStack containing data for the advancement's icon.")
@@ -90,6 +97,25 @@ public class DisplayBuilder {
         """)
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
+    }
+
+    @Info(value = "Configure this advancement's display location.",
+        params = {
+            @Param(name = "offsetX", value = "The offset x of display."),
+            @Param(name = "offsetY", value = "The offset y of display.")
+        })
+    public void displayOffset(float x, float y) {
+        DISPLAY_OFFSET.put(source, new DisplayOffset(x, y, false));
+    }
+
+    @Info(value = "Configure this advancement's display location.",
+        params = {
+            @Param(name = "offsetX", value = "The offset x of display."),
+            @Param(name = "offsetY", value = "The offset y of display."),
+            @Param(name = "modifyChildren", value = "Determine should its children apply the same offset.")
+        })
+    public void displayOffset(float x, float y, boolean modifyChildren) {
+        DISPLAY_OFFSET.put(source, new DisplayOffset(x, y, modifyChildren));
     }
 
     @HideFromJS

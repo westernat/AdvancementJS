@@ -1,19 +1,21 @@
 package org.mesdag.advjs.configure;
 
 import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.kubejs.typings.Param;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancement.AdvancementCriterion;
 import net.minecraft.advancement.AdvancementDisplay;
 import net.minecraft.advancement.AdvancementRewards;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
+import org.mesdag.advjs.util.DisplayOffset;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static org.mesdag.advjs.configure.Data.BUILDER_MAP;
-import static org.mesdag.advjs.configure.Data.REQUIRE_DONE;
+import static org.mesdag.advjs.configure.Data.*;
 
 public class AdvBuilder {
     @Nullable
@@ -26,33 +28,35 @@ public class AdvBuilder {
     private final CriteriaBuilder criteriaBuilder = new CriteriaBuilder();
     private boolean sendsTelemetryEvent = false;
 
-    private final boolean warn;
+    private WarnType warn;
+    private final Identifier id;
 
     @HideFromJS
-    public AdvBuilder(@Nullable Identifier parent, String name, Identifier rootPath, boolean warn) {
+    public AdvBuilder(@Nullable Identifier parent, String name, Identifier rootPath, WarnType warn) {
         this.parent = parent;
         this.name = name;
         this.rootPath = rootPath;
         this.warn = warn;
+        this.id = getSavePath();
     }
 
     @Info("Add a nameless child to this advancement, just for test. Returns child.")
     public AdvBuilder addChild(Consumer<AdvBuilder> advBuilderConsumer) {
-        AdvBuilder child = new AdvBuilder(getSavePath(), UUID.randomUUID().toString(), rootPath, true);
+        AdvBuilder child = new AdvBuilder(id, UUID.randomUUID().toString(), rootPath, WarnType.NAMELESS);
         advBuilderConsumer.accept(child);
         return child;
     }
 
     @Info("Add a named child to this advancement. Returns child.")
     public AdvBuilder addChild(String name, Consumer<AdvBuilder> advBuilderConsumer) {
-        AdvBuilder child = new AdvBuilder(getSavePath(), name, rootPath, false);
+        AdvBuilder child = new AdvBuilder(id, name, rootPath, WarnType.NONE);
         advBuilderConsumer.accept(child);
         return child;
     }
 
     @Info("Data related to the advancement's display.")
     public AdvBuilder display(Consumer<DisplayBuilder> displayBuilderConsumer) {
-        DisplayBuilder builder = new DisplayBuilder();
+        DisplayBuilder builder = new DisplayBuilder(id);
         displayBuilderConsumer.accept(builder);
         if (parent == null && builder.getBackground() == null) {
             builder.setBackground(new Identifier("textures/gui/advancements/backgrounds/stone.png"));
@@ -85,12 +89,33 @@ public class AdvBuilder {
 
     @Info("It will check if parent done. Defaults do not check.")
     public AdvBuilder requireParentDone() {
-        REQUIRE_DONE.add(getSavePath());
+        REQUIRE_DONE.add(id);
+        return this;
+    }
+
+    @Info(value = "Configure this advancement's position",
+            params = {
+                    @Param(name = "offsetX", value = "The offset x of display."),
+                    @Param(name = "offsetY", value = "The offset y of display.")
+            })
+    public AdvBuilder displayOffset(float x, float y) {
+        DISPLAY_OFFSET.put(id, new DisplayOffset(x, y, false));
+        return this;
+    }
+
+    @Info(value = "Configure this advancement's position",
+            params = {
+                    @Param(name = "offsetX", value = "The offset x of display."),
+                    @Param(name = "offsetY", value = "The offset y of display."),
+                    @Param(name = "modifyChildren", value = "Determine should its children apply the same offset.")
+            })
+    public AdvBuilder displayOffset(float x, float y, boolean modifyChildren) {
+        DISPLAY_OFFSET.put(id, new DisplayOffset(x, y, modifyChildren));
         return this;
     }
 
     private void update() {
-        BUILDER_MAP.put(getSavePath(), this);
+        BUILDER_MAP.put(id, this);
     }
 
     @Info("Get parent of this advancement.")
@@ -98,12 +123,16 @@ public class AdvBuilder {
         return parent;
     }
 
-    @Info("Get the id of this advancement.")
-    public Identifier getSavePath() {
+    private Identifier getSavePath() {
         if (name.contains(":")) {
             return new Identifier(name);
         }
         return new Identifier(rootPath.getNamespace(), rootPath.getPath() + "/" + name);
+    }
+
+    @Info("Get the id of this advancement.")
+    public Identifier getId() {
+        return id;
     }
 
     @HideFromJS
@@ -131,8 +160,24 @@ public class AdvBuilder {
         return sendsTelemetryEvent;
     }
 
-    @Info("If it is a warn advancement.")
-    public boolean isWarn() {
+    @HideFromJS
+    public WarnType getWarn() {
         return warn;
+    }
+
+    @HideFromJS
+    public void setWarn(WarnType warn) {
+        this.warn = warn;
+    }
+
+    public enum WarnType {
+        NONE(Text.empty()),
+        NAMELESS(Text.translatable("advjs.attention.nameless"));
+
+        public final Text msg;
+
+        WarnType(Text msg) {
+            this.msg = msg;
+        }
     }
 }

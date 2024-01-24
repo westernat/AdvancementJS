@@ -31,7 +31,7 @@ public class AdvConfigureEvent extends EventJS {
 
     @Info("Create a new advancement root")
     public AdvBuilder create(Identifier rootPath) {
-        return new AdvBuilder(null, "root", rootPath, false);
+        return new AdvBuilder(null, "root", rootPath, AdvBuilder.WarnType.NONE);
     }
 
     @Info("""
@@ -75,6 +75,6 @@ public class AdvConfigureEvent extends EventJS {
             @Param(name = "lockBy")
         })
     public void lock(ItemStack toLock, AdvBuilder lockBy) {
-        LOCK_MAP.put(toLock.getItem(), lockBy.getSavePath());
+        LOCK_MAP.put(toLock.getItem(), lockBy.getId());
     }
 }

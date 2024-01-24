@@ -38,6 +38,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
         BUILDER_MAP.clear();
         LOCK_MAP.clear();
         REQUIRE_DONE.clear();
+        DISPLAY_OFFSET.clear();
     }
 
     @Override
@@ -50,7 +51,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
         if (generate && Files.notExists(AdvJS.EXAMPLE)) {
             try {
                 Files.writeString(AdvJS.EXAMPLE, AdvCommand.EXAMPLE);
-                ConsoleJS.SERVER.info("AdvJS: Generated advancement.js");
+                ConsoleJS.SERVER.info("AdvJS: Generated advjs_example.js");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

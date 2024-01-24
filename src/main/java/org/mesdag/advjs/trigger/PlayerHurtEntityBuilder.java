@@ -16,7 +16,7 @@ class PlayerHurtEntityBuilder extends AbstractTriggerBuilder {
     LootContextPredicate entity;
 
     @Info("The damage that was dealt.")
-    public void setDamage(DamagePredicate damage) {
+    public void setDamageByPredicate(DamagePredicate damage) {
         this.damage = damage;
     }
 

@@ -13,7 +13,7 @@ public class RideEntityInLavaBuilder extends AbstractTriggerBuilder {
     DistancePredicate distance = DistancePredicate.ANY;
 
     @Info("A location predicate for the last position before the player mounted the entity.")
-    public void setStartPosition(LocationPredicate startPosition) {
+    public void setStartPositionByPredicate(LocationPredicate startPosition) {
         this.startPosition = startPosition;
     }
 
@@ -25,7 +25,7 @@ public class RideEntityInLavaBuilder extends AbstractTriggerBuilder {
     }
 
     @Info("The distance between the start position and the player's position.")
-    public void setDistance(DistancePredicate distance) {
+    public void setDistanceByPredicate(DistancePredicate distance) {
         this.distance = distance;
     }
 

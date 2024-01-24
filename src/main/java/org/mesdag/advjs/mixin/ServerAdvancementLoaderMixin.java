@@ -4,10 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
-import net.minecraft.advancement.Advancement;
-import net.minecraft.advancement.AdvancementCriterion;
-import net.minecraft.advancement.AdvancementDisplay;
-import net.minecraft.advancement.AdvancementRewards;
+import net.minecraft.advancement.*;
 import net.minecraft.item.Item;
 import net.minecraft.loot.LootManager;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
@@ -21,6 +18,7 @@ import net.minecraft.util.profiler.Profiler;
 import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.AdvJSPlugin;
 import org.mesdag.advjs.configure.*;
+import org.mesdag.advjs.util.DisplayOffset;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -39,6 +37,48 @@ public abstract class ServerAdvancementLoaderMixin {
     @Shadow
     @Final
     private LootManager conditionManager;
+
+    @Shadow
+    private AdvancementManager manager;
+
+    @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("TAIL"))
+    private void advJS$setLocation(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
+        for (Map.Entry<Identifier, DisplayOffset> entry : DISPLAY_OFFSET.entrySet()) {
+            Identifier id = entry.getKey();
+            Advancement advancement = manager.get(id);
+            if (advancement == null) {
+                ConsoleJS.SERVER.warn("AdvJS: Advancement '%s' is not exist".formatted(id));
+                continue;
+            }
+
+            DisplayOffset offset = entry.getValue();
+            advJS$applyOffset(advancement, offset.x, offset.y, offset.modifyChildren);
+        }
+    }
+
+    @Unique
+    private static void advJS$applyOffset(Advancement advancement, float x, float y, boolean modifyChildren) {
+        AdvancementDisplay displayInfo = advancement.getDisplay();
+        if (displayInfo == null) {
+            ConsoleJS.SERVER.warn("AdvJS: Advancement '%s' dose not have display".formatted(advancement.getId()));
+        } else {
+            float rawX = displayInfo.getX();
+            float neoX = rawX + x;
+            float rawY = displayInfo.getY();
+            float neoY = rawY + y;
+            displayInfo.setPos(neoX, neoY);
+            if (modifyChildren) {
+                for (Advancement child : advancement.getChildren()) {
+                    advJS$applyOffset(child, x, y, true);
+                }
+            }
+
+            if (AdvJSPlugin.DEBUG) {
+                ConsoleJS.SERVER.debug("AdvJS: The display location of advancement '%s' has set from (%s, %s) to (%s, %s)"
+                    .formatted(advancement.getId(), rawX, rawY, neoX, neoY));
+            }
+        }
+    }
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("HEAD"))
     private void advJS$remove(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
@@ -99,10 +139,10 @@ public abstract class ServerAdvancementLoaderMixin {
 
         int counter = 0;
         for (Map.Entry<Identifier, AdvGetter> entry : GETTER_MAP.entrySet()) {
-            Identifier path = entry.getKey();
-            Advancement.Builder builder = map.get(path);
+            Identifier id = entry.getKey();
+            Advancement.Builder builder = map.get(id);
             if (builder == null) {
-                ConsoleJS.SERVER.error("AdvJS: Advancement '" + path + "' is not exist");
+                ConsoleJS.SERVER.error("AdvJS: Advancement '" + id + "' is not exist");
                 continue;
             }
             AdvGetter getter = entry.getValue();
@@ -110,7 +150,7 @@ public abstract class ServerAdvancementLoaderMixin {
             Identifier parentId = oldJson.has("parent") ? new Identifier(oldJson.get("parent").getAsString()) : null;
 
             AdvancementDisplay oldDisplay = AdvancementDisplay.fromJson(oldJson.get("display").getAsJsonObject());
-            DisplayBuilder neoDisplayBuilder = new DisplayBuilder(oldDisplay);
+            DisplayBuilder neoDisplayBuilder = new DisplayBuilder(id, oldDisplay);
             getter.getDisplayConsumer().accept(neoDisplayBuilder);
             AdvancementDisplay neoDisplay = neoDisplayBuilder.build();
 
@@ -124,7 +164,7 @@ public abstract class ServerAdvancementLoaderMixin {
                 neoRewards = neoRewardsBuilder.build();
             }
 
-            Map<String, AdvancementCriterion> oldCriteria = AdvancementCriterion.criteriaFromJson(oldJson.get("criteria").getAsJsonObject(), new AdvancementEntityPredicateDeserializer(path, predicateManager));
+            Map<String, AdvancementCriterion> oldCriteria = AdvancementCriterion.criteriaFromJson(oldJson.get("criteria").getAsJsonObject(), new AdvancementEntityPredicateDeserializer(id, predicateManager));
             CriteriaBuilder neoCriteriaBuilder = new CriteriaBuilder(oldCriteria);
             getter.getCriteriaConsumer().accept(neoCriteriaBuilder);
             String[][] neoRequirements = neoCriteriaBuilder.getRequirements();
@@ -137,7 +177,7 @@ public abstract class ServerAdvancementLoaderMixin {
             for (Map.Entry<String, AdvancementCriterion> pair : neoCriteriaBuilder.getCriteria().entrySet()) {
                 neo.criterion(pair.getKey(), pair.getValue());
             }
-            map.put(path, neo);
+            map.put(id, neo);
             counter++;
 
             if (AdvJSPlugin.DEBUG) {
@@ -158,7 +198,7 @@ public abstract class ServerAdvancementLoaderMixin {
                         criteria: %s
                     """
                     .formatted(
-                        path,
+                        id,
                         parentId,
                         oldDisplay.getIcon().getTranslationKey(), neoDisplay.getIcon().getTranslationKey(),
                         oldDisplay.getTitle().getString(), neoDisplay.getTitle().getString(),
@@ -192,7 +232,7 @@ public abstract class ServerAdvancementLoaderMixin {
 
             if (BUILDER_MAP.containsKey(parentId) || map.containsKey(parentId)) {
                 Advancement.Builder builder = advJS$build(advBuilder);
-                map.put(advBuilder.getSavePath(), builder.parent(parentId));
+                map.put(advBuilder.getId(), builder.parent(parentId));
                 counter++;
             } else {
                 ConsoleJS.SERVER.error("AdvJS: Advancement '" + parentId + "' is not exist");
@@ -203,15 +243,15 @@ public abstract class ServerAdvancementLoaderMixin {
 
     @Unique
     private static Advancement.Builder advJS$build(AdvBuilder advBuilder) {
-        if (advBuilder.isWarn()) {
-            advBuilder.display(builder -> {
-                builder.setTitle(Text.translatable("advjs.attention").formatted(Formatting.RED));
-                builder.setDescription(Text.translatable("advjs.attention.desc"));
+        if (advBuilder.getWarn() != AdvBuilder.WarnType.NONE) {
+            advBuilder.display(displayBuilder -> {
+                displayBuilder.setTitle(Text.translatable("advjs.attention").formatted(Formatting.RED));
+                displayBuilder.setDescription(advBuilder.getWarn().msg);
             });
-            ConsoleJS.SERVER.warn("A warn advancement created, the parent is '" + advBuilder.getParent() + "'");
+            ConsoleJS.SERVER.warn("AdvJS: A warn advancement created, the parent is '" + advBuilder.getParent() + "'");
         }
         return new Advancement(
-            advBuilder.getSavePath(),
+            advBuilder.getId(),
             null,
             advBuilder.getDisplayInfo(),
             advBuilder.getRewards(),

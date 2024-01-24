@@ -19,6 +19,7 @@ public class AdvJS implements ModInitializer {
     public static final Path ADVENTURE = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_adventure.js");
     public static final Path NETHER = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_nether.js");
     public static final Path HUSBANDRY = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_husbandry.js");
+    public static final Path END = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_end.js");
 
     @Override
     public void onInitialize() {

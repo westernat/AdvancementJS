@@ -65,7 +65,7 @@ public class Bounds {
         if (o instanceof Number n) {
             var d = n.doubleValue();
             return new Bounds(d, d);
-        } else if (o instanceof List l && !l.isEmpty()) {
+        } else if (o instanceof List<?> l && !l.isEmpty()) {
             var min = (Number) l.get(0);
             var max = l.size() >= 2 ? (Number) l.get(1) : min;
             return new Bounds(min.doubleValue(), max.doubleValue());

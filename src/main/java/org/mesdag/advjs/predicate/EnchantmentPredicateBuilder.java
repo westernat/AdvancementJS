@@ -8,6 +8,7 @@ import net.minecraft.predicate.item.EnchantmentPredicate;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
+import org.mesdag.advjs.util.Bounds;
 
 public class EnchantmentPredicateBuilder {
     @Nullable
@@ -23,8 +24,8 @@ public class EnchantmentPredicateBuilder {
     }
 
     @Info("Match level of enchantment.")
-    public void setLevel(NumberRange.IntRange bounds) {
-        level = bounds;
+    public void setLevel(Bounds bounds) {
+        level = bounds.toIntegerBounds();
     }
 
     EnchantmentPredicate build() {

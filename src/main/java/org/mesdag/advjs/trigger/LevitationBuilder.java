@@ -13,7 +13,7 @@ class LevitationBuilder extends AbstractTriggerBuilder {
     NumberRange.IntRange duration = NumberRange.IntRange.ANY;
 
     @Info("The distance between the position where the player started levitating and the player's current position.")
-    public void setDistance(DistancePredicate distance) {
+    public void setDistanceByPredicate(DistancePredicate distance) {
         this.distance = distance;
     }
 
