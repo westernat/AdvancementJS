@@ -10,7 +10,7 @@ class EntityHurtPlayerBuilder extends AbstractTriggerBuilder {
     DamagePredicate damage = DamagePredicate.ANY;
 
     @Info("Checks the damage done to the player.")
-    public void setDamage(DamagePredicate damage) {
+    public void setDamageByPredicate(DamagePredicate damage) {
         this.damage = damage;
     }
 

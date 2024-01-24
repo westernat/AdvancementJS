@@ -18,7 +18,7 @@ class SingleEntityBuilder extends AbstractTriggerBuilder {
     public void setEntity(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
-        this.entity = EntityPredicate.wrap(builder.build());
+        this.entity = wrapEntity(builder.build());
     }
 
     public void setEntityByType(EntityType<?> entity) {

@@ -1,25 +1,26 @@
 package org.mesdag.advjs.configure;
 
 import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.kubejs.typings.Param;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.resources.ResourceLocation;
+import org.mesdag.advjs.util.DisplayOffset;
 
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static org.mesdag.advjs.configure.Data.GETTER_MAP;
-import static org.mesdag.advjs.configure.Data.REQUIRE_DONE;
+import static org.mesdag.advjs.configure.Data.*;
 
 public class AdvGetter {
-    private final ResourceLocation savePath;
+    private final ResourceLocation id;
     private Consumer<DisplayBuilder> displayConsumer;
     private Consumer<RewardsBuilder> rewardsConsumer;
     private Consumer<CriteriaBuilder> criteriaConsumer;
 
     @HideFromJS
-    public AdvGetter(ResourceLocation savePath) {
-        this.savePath = savePath;
+    public AdvGetter(ResourceLocation id) {
+        this.id = id;
         this.displayConsumer = displayBuilder -> {
         };
         this.rewardsConsumer = rewardsBuilder -> {
@@ -51,14 +52,14 @@ public class AdvGetter {
 
     @Info("Add a nameless child to this advancement just for test. Returns child.")
     public AdvBuilder addChild(Consumer<AdvBuilder> advBuilderConsumer) {
-        AdvBuilder child = new AdvBuilder(savePath, UUID.randomUUID().toString(), getRootPath(savePath), true);
+        AdvBuilder child = new AdvBuilder(id, UUID.randomUUID().toString(), getRootPath(id), AdvBuilder.WarnType.NAMELESS);
         advBuilderConsumer.accept(child);
         return child;
     }
 
     @Info("Add a named child to this advancement. Returns child.")
     public AdvBuilder addChild(String name, Consumer<AdvBuilder> advBuilderConsumer) {
-        AdvBuilder child = new AdvBuilder(savePath, name, getRootPath(savePath), false);
+        AdvBuilder child = new AdvBuilder(id, name, getRootPath(id), AdvBuilder.WarnType.NONE);
         advBuilderConsumer.accept(child);
         return child;
     }
@@ -76,12 +77,33 @@ public class AdvGetter {
 
     @Info("It will check if parent done. Defaults do not check.")
     public AdvGetter requireParentDone() {
-        REQUIRE_DONE.add(savePath);
+        REQUIRE_DONE.add(id);
+        return this;
+    }
+
+    @Info(value = "Configure this advancement's position",
+        params = {
+            @Param(name = "offsetX", value = "The offset x of display."),
+            @Param(name = "offsetY", value = "The offset y of display.")
+        })
+    public AdvGetter displayOffset(float x, float y) {
+        DISPLAY_OFFSET.put(id, new DisplayOffset(x, y, false));
+        return this;
+    }
+
+    @Info(value = "Configure this advancement's position",
+        params = {
+            @Param(name = "offsetX", value = "The offset x of display."),
+            @Param(name = "offsetY", value = "The offset y of display."),
+            @Param(name = "modifyChildren", value = "Determine should its children apply the same offset.")
+        })
+    public AdvGetter displayOffset(float x, float y, boolean modifyChildren) {
+        DISPLAY_OFFSET.put(id, new DisplayOffset(x, y, modifyChildren));
         return this;
     }
 
     private void update() {
-        GETTER_MAP.put(savePath, this);
+        GETTER_MAP.put(id, this);
     }
 
     @HideFromJS

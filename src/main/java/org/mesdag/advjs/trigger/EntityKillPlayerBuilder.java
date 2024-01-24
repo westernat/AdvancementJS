@@ -54,7 +54,7 @@ public class EntityKillPlayerBuilder extends AbstractTriggerBuilder {
     }
 
     @Info("Checks the type of damage that killed the player.")
-    public void setKillingBlow(DamageSourcePredicate killingBlow) {
+    public void setKillingBlowByPredicate(DamageSourcePredicate killingBlow) {
         this.killingBlow = killingBlow;
     }
 

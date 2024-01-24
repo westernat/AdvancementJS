@@ -25,7 +25,7 @@ public class EnchantmentPredicateBuilder {
 
     @Info("Match level of enchantment.")
     public void setLevel(Bounds bounds) {
-        level = bounds.toIntegerBounds();
+        this.level = bounds.toIntegerBounds();
     }
 
     EnchantmentPredicate build() {

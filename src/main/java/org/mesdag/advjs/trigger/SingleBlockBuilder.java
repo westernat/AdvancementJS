@@ -16,7 +16,7 @@ class SingleBlockBuilder extends AbstractTriggerBuilder {
         this.block = block;
     }
 
-    public void setState(StatePropertiesPredicate state) {
+    public void setStateByPredicate(StatePropertiesPredicate state) {
         this.state = state;
     }
 

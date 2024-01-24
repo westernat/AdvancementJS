@@ -13,7 +13,7 @@ public class TraveledThroughNetherBuilder extends AbstractTriggerBuilder {
     DistancePredicate distance = DistancePredicate.ANY;
 
     @Info("A location predicate for the last position before the player teleported to the Nether.")
-    public void setStartPosition(LocationPredicate startPosition) {
+    public void setStartPositionByPredicate(LocationPredicate startPosition) {
         this.startPosition = startPosition;
     }
 
@@ -25,7 +25,7 @@ public class TraveledThroughNetherBuilder extends AbstractTriggerBuilder {
     }
 
     @Info("The distance between the position where the player teleported to the Nether and the player's position when they returned.")
-    public void setDistance(DistancePredicate distance) {
+    public void setDistanceByPredicate(DistancePredicate distance) {
         this.distance = distance;
     }
 

@@ -1,6 +1,6 @@
 {
     "advjs.attention": "Attention",
-    "advjs.attention.desc": "Your custom advancement doesn't have a name",
+    "advjs.attention.nameless": "Your custom advancement doesn't have a name",
     "advjs.command.success": "Successfully generated %s",
     "advjs.command.failed": "Failed to generate %s"
 }

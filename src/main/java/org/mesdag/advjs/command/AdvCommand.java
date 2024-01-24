@@ -18,13 +18,16 @@ public class AdvCommand {
             .then(Commands.literal("adventure").executes(context -> run(context.getSource(), AdvJS.ADVENTURE, ADVENTURE)))
             .then(Commands.literal("nether").executes(context -> run(context.getSource(), AdvJS.NETHER, NETHER)))
             .then(Commands.literal("husbandry").executes(context -> run(context.getSource(), AdvJS.HUSBANDRY, HUSBANDRY)))
+            .then(Commands.literal("end").executes(context -> run(context.getSource(), AdvJS.END, END)))
             .then(Commands.literal("all").executes(context -> {
-                run(context.getSource(), AdvJS.EXAMPLE, EXAMPLE);
-                run(context.getSource(), AdvJS.STORY, STORY);
-                run(context.getSource(), AdvJS.ADVENTURE, ADVENTURE);
-                run(context.getSource(), AdvJS.NETHER, NETHER);
-                run(context.getSource(), AdvJS.HUSBANDRY, HUSBANDRY);
-                return 5;
+                CommandSourceStack source = context.getSource();
+                run(source, AdvJS.EXAMPLE, EXAMPLE);
+                run(source, AdvJS.STORY, STORY);
+                run(source, AdvJS.ADVENTURE, ADVENTURE);
+                run(source, AdvJS.NETHER, NETHER);
+                run(source, AdvJS.HUSBANDRY, HUSBANDRY);
+                run(source, AdvJS.END, END);
+                return 6;
             }))
         );
     }
@@ -39,6 +42,7 @@ public class AdvCommand {
         }
     }
 
+    public static final String END;
     public static final String HUSBANDRY;
     public static final String NETHER;
     public static final String ADVENTURE;
@@ -46,6 +50,151 @@ public class AdvCommand {
     public static final String EXAMPLE;
 
     static {
+        END = """
+            ServerEvents.advancement(event => {
+                const { TRIGGER } = event;
+                        
+                const end = event
+                    .create("advjs:end")
+                    .display(displayBuilder => {
+                        displayBuilder.setIcon("end_stone")
+                        displayBuilder.setTitle(Text.translate("advancements.end.root.title"))
+                        displayBuilder.setDescription(Text.translate("advancements.end.root.description"))
+                        displayBuilder.setBackground("textures/gui/advancements/backgrounds/end.png")
+                        displayBuilder.setShowToast(false)
+                        displayBuilder.setAnnounceToChat(false)
+                    })
+                    .criteria(criteriaBuilder => {
+                        criteriaBuilder.add("entered_end", TRIGGER.changedDimension(triggerBuilder => {
+                            triggerBuilder.setTo("the_end")
+                        }))
+                    });
+                        
+                const kill_dragon = end
+                    .addChild("kill_dragon", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("dragon_head")
+                                displayBuilder.setTitle(Text.translate("advancements.end.kill_dragon.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.end.kill_dragon.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("killed_dragon", TRIGGER.playerKilledEntity(triggerBuilder => {
+                                    triggerBuilder.setKilledByType("ender_dragon")
+                                }))
+                            })
+                    });
+                        
+                const enter_end_gateway = kill_dragon
+                    .addChild("enter_end_gateway", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("ender_pearl")
+                                displayBuilder.setTitle(Text.translate("advancements.end.enter_end_gateway.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.end.enter_end_gateway.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("entered_end_gateway", TRIGGER.entersBlock(triggerBuilder => {
+                                    triggerBuilder.setBlock("end_gateway")
+                                }))
+                            })
+                    });
+                        
+                kill_dragon
+                    .addChild("respawn_dragon", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("end_crystal")
+                                displayBuilder.setTitle(Text.translate("advancements.end.respawn_dragon.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.end.respawn_dragon.description"))
+                                displayBuilder.setFrameType(FrameType.GOAL)
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("summoned_dragon", TRIGGER.summonedEntity(triggerBuilder => {
+                                    triggerBuilder.setEntityByType("ender_dragon")
+                                }))
+                            })
+                    });
+                        
+                const find_end_city = enter_end_gateway
+                    .addChild("find_end_city", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("purpur_block")
+                                displayBuilder.setTitle(Text.translate("advancements.end.find_end_city.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.end.find_end_city.description"))
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("in_city", TRIGGER.location(triggerBuilder => {
+                                    triggerBuilder.setLocation(locationPredicateBuilder => {
+                                        locationPredicateBuilder.setStructure("end_city")
+                                    })
+                                }))
+                            })
+                    });
+                        
+                kill_dragon
+                    .addChild("dragon_breath", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("dragon_breath")
+                                displayBuilder.setTitle(Text.translate("advancements.end.dragon_breath.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.end.dragon_breath.description"))
+                                displayBuilder.setFrameType(FrameType.GOAL)
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("dragon_breath", TRIGGER.hasItems("dragon_breath"))
+                            })
+                    });
+                        
+                find_end_city
+                    .addChild("levitate", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("shulker_shell")
+                                displayBuilder.setTitle(Text.translate("advancements.end.levitate.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.end.levitate.description"))
+                                displayBuilder.setFrameType(FrameType.CHALLENGE)
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("levitated", TRIGGER.levitated(triggerBuilder => {
+                                    triggerBuilder.setDistance(distancePredicateBuilder => {
+                                        distancePredicateBuilder.setY({ min: 50 })
+                                    })
+                                }))
+                            })
+                            .rewards(rewardsBuilder => rewardsBuilder.setExperience(50))
+                    });
+                        
+                find_end_city
+                    .addChild("elytra", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("elytra")
+                                displayBuilder.setTitle(Text.translate("advancements.end.elytra.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.end.elytra.description"))
+                                displayBuilder.setFrameType(FrameType.GOAL)
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("elytra", TRIGGER.hasItems("elytra"))
+                            })
+                    });
+                        
+                kill_dragon
+                    .addChild("dragon_egg", advBuilder => {
+                        advBuilder
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("dragon_egg")
+                                displayBuilder.setTitle(Text.translate("advancements.end.dragon_egg.title"))
+                                displayBuilder.setDescription(Text.translate("advancements.end.dragon_egg.description"))
+                                displayBuilder.setFrameType(FrameType.GOAL)
+                            })
+                            .criteria(criteriaBuilder => {
+                                criteriaBuilder.add("dragon_egg", TRIGGER.hasItems("dragon_egg"))
+                            })
+                    });
+            })
+            """;
         HUSBANDRY = """
             ServerEvents.advancement(event => {
                 const { CONDITION, PROVIDER, TRIGGER } = event;
@@ -1952,7 +2101,7 @@ public class AdvCommand {
                 const jump5times = TRIGGER.tick((triggerBuilder) =>
                     triggerBuilder.addStat(Stats.JUMP, Stats.CUSTOM, {min: 5}));
                 const bred_in_nether = TRIGGER.bredAnimals((triggerBuilder) => {
-                    triggerBuilder.setChildByPredicate(PREDICATE.entity({
+                    triggerBuilder.setChildByPredicate(PREDICATE.entityFromJson({
                         stepping_on: {
                             dimension: "the_nether"
                         }
@@ -2002,6 +2151,8 @@ public class AdvCommand {
 
                 // Modify an exist advancement
                 event.get("minecraft:story/smelt_iron")
+                    // Apply offset to display
+                    .displayOffset(1, 1, true)
                     .modifyDisplay((displayBuilder) => displayBuilder.setIcon("diamond_pickaxe"))
                     .addChild("child2", (childBuilder) => {
                         childBuilder
@@ -2010,6 +2161,7 @@ public class AdvCommand {
                                 displayBuilder.setDescription(Text.green("Good luck"))
                             })
                             .criteria((criteriaBuilder) => criteriaBuilder.add("jump", jump5times))
+                            .displayOffset(-1, 0)
                     });
 
                 // Lock recipe by advancement

@@ -1,25 +1,22 @@
 package org.mesdag.advjs.util;
 
-import com.google.common.collect.ImmutableSet;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.NbtPredicate;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @HideFromJS
 public interface ItemSetter {
     default ItemPredicate wrapItem(Ingredient ingredient) {
-        ImmutableSet.Builder<Item> builder = ImmutableSet.builder();
-        for (ItemStack itemStack : ingredient.getItems()) {
-            builder.add(itemStack.getItem());
-        }
         return new ItemPredicate(
             null,
-            builder.build(),
+            Arrays.stream(ingredient.getItems()).map(ItemStack::getItem).collect(Collectors.toSet()),
             MinMaxBounds.Ints.ANY,
             MinMaxBounds.Ints.ANY,
             EnchantmentPredicate.NONE,

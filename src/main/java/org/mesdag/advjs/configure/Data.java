@@ -2,6 +2,7 @@ package org.mesdag.advjs.configure;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import org.mesdag.advjs.util.DisplayOffset;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,4 +13,5 @@ public class Data {
     public static final HashMap<ResourceLocation, AdvBuilder> BUILDER_MAP = new HashMap<>();
     public static final HashMap<Item, ResourceLocation> LOCK_MAP = new HashMap<>();
     public static final HashSet<ResourceLocation> REQUIRE_DONE = new HashSet<>();
+    public static final HashMap<ResourceLocation, DisplayOffset> DISPLAY_OFFSET = new HashMap<>();
 }

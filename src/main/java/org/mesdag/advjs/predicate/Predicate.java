@@ -2,7 +2,6 @@ package org.mesdag.advjs.predicate;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.nbt.CompoundTag;
 import org.mesdag.advjs.util.Bounds;
@@ -20,7 +19,6 @@ public class Predicate {
         return builder.build();
     }
 
-    @Info("Any BlockPredicate")
     public BlockPredicate anyBlock() {
         return BlockPredicate.ANY;
     }
@@ -35,7 +33,6 @@ public class Predicate {
         return builder.build();
     }
 
-    @Info("Any DamagePredicate")
     public DamagePredicate anyDamage() {
         return DamagePredicate.ANY;
     }
@@ -50,7 +47,6 @@ public class Predicate {
         return builder.build();
     }
 
-    @Info("Any DamageSourcePredicate")
     public DamageSourcePredicate anyDamageSource() {
         return DamageSourcePredicate.ANY;
     }
@@ -59,18 +55,12 @@ public class Predicate {
         return DistancePredicate.fromJson(o);
     }
 
-    @Info("""
-        To test the distance to the entity this predicate is invoked upon.
-                
-        Passes if the calculated distance is between the entered min and max, inclusive.
-        """)
     public DistancePredicate distance(Consumer<DistancePredicateBuilder> consumer) {
         DistancePredicateBuilder builder = new DistancePredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
 
-    @Info("Any DistancePredicate")
     public DistancePredicate anyDistance() {
         return DistancePredicate.ANY;
     }
@@ -85,7 +75,6 @@ public class Predicate {
         return builder.build();
     }
 
-    @Info("Any EnchantmentPredicate")
     public EnchantmentPredicate anyEnchantment() {
         return EnchantmentPredicate.ANY;
     }
@@ -94,19 +83,16 @@ public class Predicate {
         return EnchantmentPredicate.fromJsonArray(o);
     }
 
-    @Info("For testing the items that this entity holds in its equipment slots.")
     public EntityEquipmentPredicate entityEquipmentFromJson(JsonObject o) {
         return EntityEquipmentPredicate.fromJson(o);
     }
 
-    @Info("For testing the items that this entity holds in its equipment slots.")
     public EntityEquipmentPredicate entityEquipment(Consumer<EntityEquipmentPredicateBuilder> consumer) {
         EntityEquipmentPredicateBuilder builder = new EntityEquipmentPredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
 
-    @Info("Any EntityEquipmentPredicate")
     public EntityEquipmentPredicate anyEntityEquipment() {
         return EntityEquipmentPredicate.ANY;
     }
@@ -121,7 +107,6 @@ public class Predicate {
         return builder.build();
     }
 
-    @Info("Any EntityFlagsPredicate")
     public EntityFlagsPredicate anyEntityFlags() {
         return EntityFlagsPredicate.ANY;
     }
@@ -136,7 +121,6 @@ public class Predicate {
         return builder.build();
     }
 
-    @Info("Any EntityPredicate")
     public EntityPredicate anyEntity() {
         return EntityPredicate.ANY;
     }
@@ -151,7 +135,6 @@ public class Predicate {
         return builder.build();
     }
 
-    @Info("Any FluidPredicate")
     public FluidPredicate anyFluid() {
         return FluidPredicate.ANY;
     }
@@ -166,7 +149,6 @@ public class Predicate {
         return builder.build();
     }
 
-    @Info("Any ItemPredicate")
     public ItemPredicate anyItem() {
         return ItemPredicate.ANY;
     }
@@ -179,7 +161,6 @@ public class Predicate {
         return new LightPredicate.Builder().setComposite(bounds.toIntegerBounds()).build();
     }
 
-    @Info("Any LightPredicate")
     public LightPredicate anyLight() {
         return LightPredicate.ANY;
     }
@@ -194,24 +175,20 @@ public class Predicate {
         return builder.build();
     }
 
-    @Info("Any LocationPredicate")
     public LocationPredicate anyLocation() {
         return LocationPredicate.ANY;
     }
 
-    @Info("For testing the active status effects on the entity.")
     public MobEffectsPredicate mobEffectsFromJson(JsonObject o) {
         return MobEffectsPredicate.fromJson(o);
     }
 
-    @Info("For testing the active status effects on the entity.")
     public MobEffectsPredicate mobEffects(Consumer<MobEffectsPredicateBuilder> consumer) {
         MobEffectsPredicateBuilder builder = new MobEffectsPredicateBuilder();
         consumer.accept(builder);
         return builder.build();
     }
 
-    @Info("Any MobEffectsPredicate")
     public MobEffectsPredicate anyMobEffects() {
         return MobEffectsPredicate.ANY;
     }
@@ -226,7 +203,6 @@ public class Predicate {
         return builder.build();
     }
 
-    @Info("Any MobEffectInstancePredicate")
     public MobEffectsPredicate.MobEffectInstancePredicate anyMobEffectInstance() {
         return new MobEffectsPredicate.MobEffectInstancePredicate();
     }
@@ -235,7 +211,6 @@ public class Predicate {
         return new NbtPredicate(nbt);
     }
 
-    @Info("Any NbtPredicate")
     public NbtPredicate anyNbt() {
         return NbtPredicate.ANY;
     }
@@ -250,7 +225,6 @@ public class Predicate {
         return builder.builder.build();
     }
 
-    @Info("Any StatePropertiesPredicate")
     public StatePropertiesPredicate anyStateProperties() {
         return StatePropertiesPredicate.ANY;
     }
@@ -265,7 +239,6 @@ public class Predicate {
         return builder.predicate;
     }
 
-    @Info("Any EntityTypePredicate")
     public EntityTypePredicate anyEntityType() {
         return EntityTypePredicate.ANY;
     }

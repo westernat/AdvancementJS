@@ -48,7 +48,7 @@ class EffectsChangedBuilder extends AbstractTriggerBuilder {
     public void setSource(Consumer<EntityPredicateBuilder> consumer) {
         EntityPredicateBuilder builder = new EntityPredicateBuilder();
         consumer.accept(builder);
-        this.source = EntityPredicate.wrap(builder.build());
+        this.source = wrapEntity(builder.build());
     }
 
     @Info("""
