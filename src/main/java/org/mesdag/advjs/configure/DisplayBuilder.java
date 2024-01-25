@@ -12,7 +12,7 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
 import org.mesdag.advjs.util.DisplayOffset;
 
-import static org.mesdag.advjs.configure.Data.DISPLAY_OFFSET;
+import static org.mesdag.advjs.util.Data.DISPLAY_OFFSET;
 
 public class DisplayBuilder {
     private ItemStack icon;
@@ -104,7 +104,7 @@ public class DisplayBuilder {
             @Param(name = "offsetX", value = "The offset x of display."),
             @Param(name = "offsetY", value = "The offset y of display.")
         })
-    public void displayOffset(float x, float y) {
+    public void offset(float x, float y) {
         DISPLAY_OFFSET.put(source, new DisplayOffset(x, y, false));
     }
 
@@ -114,7 +114,7 @@ public class DisplayBuilder {
             @Param(name = "offsetY", value = "The offset y of display."),
             @Param(name = "modifyChildren", value = "Determine should its children apply the same offset.")
         })
-    public void displayOffset(float x, float y, boolean modifyChildren) {
+    public void offset(float x, float y, boolean modifyChildren) {
         DISPLAY_OFFSET.put(source, new DisplayOffset(x, y, modifyChildren));
     }
 

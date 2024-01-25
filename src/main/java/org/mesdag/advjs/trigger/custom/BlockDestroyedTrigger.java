@@ -50,7 +50,7 @@ public class BlockDestroyedTrigger extends SimpleCriterionTrigger<BlockDestroyed
         return ID;
     }
 
-    public static TriggerInstance blockDestroyed(Consumer<Builder> consumer) {
+    public static TriggerInstance create(Consumer<Builder> consumer) {
         Builder builder = new Builder();
         consumer.accept(builder);
         return new TriggerInstance(builder.player, builder.block, builder.statePredicate, builder.item);

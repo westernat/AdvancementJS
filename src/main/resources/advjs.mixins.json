@@ -10,7 +10,8 @@
         "PlayerAdvancementMixin",
         "PlayerMixin",
         "ServerAdvancementManagerMixin",
-        "ServerBossEventMixin"
+        "ServerBossEventMixin",
+        "ServerPlayerMixin"
     ],
     "minVersion": "0.8.5"
 }

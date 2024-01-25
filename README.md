@@ -12,9 +12,9 @@ ServerEvents.advancement((event) => {
 
     // Define trigger
     const jump5times = TRIGGER.tick((triggerBuilder) =>
-        triggerBuilder.addStat(Stats.JUMP, Stats.CUSTOM, {min: 5}));
+        triggerBuilder.addStat(Stats.JUMP, Stats.CUSTOM, { min: 5 }));
     const bred_in_nether = TRIGGER.bredAnimals((triggerBuilder) => {
-        triggerBuilder.setChild(PREDICATE.entity({
+        triggerBuilder.setChildByPredicate(PREDICATE.entityFromJson({
             stepping_on: {
                 dimension: "the_nether"
             }
@@ -55,25 +55,29 @@ ServerEvents.advancement((event) => {
             // Check if parent done, else it will not be done
             .requireParentDone()
     });
-    
+
     // Remove an exist advancement by RemoveFilter, available filter was writen in doc.
     // you can also remove like this: 'event.remove("minecraft:story/lava_bucket");'
     event.remove({
         icon: "minecraft:lava_bucket"
     });
-    
+
     // Modify an exist advancement
     event.get("minecraft:story/smelt_iron")
+        // Apply offset to display
+        .displayOffset(1, 1, true)
         .modifyDisplay((displayBuilder) => displayBuilder.setIcon("diamond_pickaxe"))
         .addChild("child2", (childBuilder) => {
             childBuilder
                 .display((displayBuilder) => {
                     displayBuilder.setTitle('A nice one!')
                     displayBuilder.setDescription(Text.green("Good luck"))
+                    // You can also apply offset at here
+                    displayBuilder.offset(-1, 0)
                 })
                 .criteria((criteriaBuilder) => criteriaBuilder.add("jump", jump5times))
         });
-    
+
     // Lock recipe by advancement
     event.lock("stone_slab", "minecraft:story/smelt_iron");
 })
@@ -87,12 +91,18 @@ Just use ```/reload```
   - blockDestroyed: triggers when the player breaks a block.
   - playerTouch: triggers when the player touch an entity.
   - bossEvent: triggers when the play joins a boss fight.
+  - increasedKillScore: triggers when the player killed an entity.
   - More idea...
 - Custom reward
   - addEffect: to give effect.
   - More idea...
-- Custom condition
-  - requireParentDone: check if parent done, else it will not be done
+- Custom method
+  - displayOffset(offsetX: number, offsetY: number, modifyChildren?: boolean)
+    - apply offset to advancement display and its children
+  - requireParentDone()
+    - check if parent done, else it will not be done.
+  - requireOthersDone(requires[]: ResourceLocation...)
+    - check if advancements that you put in had done.
   - More idea...
 
 # TODO

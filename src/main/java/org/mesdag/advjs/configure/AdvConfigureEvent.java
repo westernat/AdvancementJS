@@ -1,6 +1,5 @@
 package org.mesdag.advjs.configure;
 
-import com.google.gson.JsonElement;
 import dev.latvian.mods.kubejs.event.EventJS;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
@@ -9,11 +8,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.mesdag.advjs.predicate.Predicate;
 import org.mesdag.advjs.trigger.Trigger;
+import org.mesdag.advjs.util.AdvRemoveFilter;
 import org.mesdag.advjs.util.Condition;
 import org.mesdag.advjs.util.Provider;
 
-import static org.mesdag.advjs.configure.Data.FILTERS;
-import static org.mesdag.advjs.configure.Data.LOCK_MAP;
+import static org.mesdag.advjs.util.Data.FILTERS;
+import static org.mesdag.advjs.util.Data.LOCK_MAP;
 
 public class AdvConfigureEvent extends EventJS {
     @Info("""
@@ -31,6 +31,9 @@ public class AdvConfigureEvent extends EventJS {
 
     @Info("Create a new advancement root")
     public AdvBuilder create(ResourceLocation rootPath) {
+        if (rootPath.getNamespace().equals("minecraft")) {
+            new AdvBuilder(null, "root", rootPath, AdvBuilder.WarnType.NO_SPACE);
+        }
         return new AdvBuilder(null, "root", rootPath, AdvBuilder.WarnType.NONE);
     }
 
@@ -46,10 +49,9 @@ public class AdvConfigureEvent extends EventJS {
             frame: type of frame for the icon. Available value is 'challenge', 'goal' or 'task'.
             parent: the parent advancement path of this advancement.
         """)
-    public void remove(JsonElement jsonElement) {
-        RemoveFilter filter = RemoveFilter.of(jsonElement);
+    public void remove(AdvRemoveFilter filter) {
         if (filter.fail()) {
-            ConsoleJS.SERVER.warn("AdvJS/AdvConfigureEvent: Failed to create a filter");
+            ConsoleJS.SERVER.warn("AdvJS/remove: Failed to create a filter");
         } else {
             FILTERS.add(filter);
         }
@@ -60,7 +62,7 @@ public class AdvConfigureEvent extends EventJS {
         return new AdvGetter(path);
     }
 
-    @Info(value = "Lock recipe by advancement.",
+    @Info(value = "Lock recipe by advancement. It will only deny player take the result from GUI.",
         params = {
             @Param(name = "toLock"),
             @Param(name = "lockBy")

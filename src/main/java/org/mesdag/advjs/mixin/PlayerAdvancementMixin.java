@@ -1,8 +1,11 @@
 package org.mesdag.advjs.mixin;
 
+import dev.latvian.mods.kubejs.util.ConsoleJS;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.PlayerAdvancements;
+import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.util.FakePlayer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static org.mesdag.advjs.configure.Data.REQUIRE_DONE;
+import static org.mesdag.advjs.util.Data.REQUIRE_DONE;
 
 @Mixin(PlayerAdvancements.class)
 public abstract class PlayerAdvancementMixin {
@@ -28,10 +31,36 @@ public abstract class PlayerAdvancementMixin {
             return;
         }
 
-        if (REQUIRE_DONE.contains(advancement.getId())) {
+        ResourceLocation id = advancement.getId();
+        if (!REQUIRE_DONE.containsKey(id)) {
+            return;
+        }
+
+        ResourceLocation[] requires = REQUIRE_DONE.get(id);
+        if (requires.length == 0) {
             Advancement parent = advancement.getParent();
-            if (parent != null && !getOrStartProgress(parent).isDone()) {
+            if (parent == null) {
+                ConsoleJS.SERVER.warn("AdvJS/requireParentDone: Advancement '%s' is a root, so it can't check parent done".formatted(id));
+                return;
+            }
+
+            if (!getOrStartProgress(parent).isDone()) {
                 cir.setReturnValue(false);
+            }
+            return;
+        }
+
+        ServerAdvancementManager manager = player.server.getAdvancements();
+        for (ResourceLocation requireId : requires) {
+            Advancement required = manager.getAdvancement(requireId);
+            if (required == null) {
+                ConsoleJS.SERVER.warn("AdvJS/requireParentDone: Advancement '%s' is not exist, so '%s' will not check it".formatted(requireId, id));
+                continue;
+            }
+
+            if (!getOrStartProgress(required).isDone()) {
+                cir.setReturnValue(false);
+                return;
             }
         }
     }

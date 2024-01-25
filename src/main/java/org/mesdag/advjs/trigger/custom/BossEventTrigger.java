@@ -34,7 +34,7 @@ public class BossEventTrigger extends SimpleCriterionTrigger<BossEventTrigger.Tr
         return ID;
     }
 
-    public static TriggerInstance bossEvent(Consumer<Builder> consumer) {
+    public static TriggerInstance craete(Consumer<Builder> consumer) {
         Builder builder = new Builder();
         consumer.accept(builder);
         return new TriggerInstance(builder.player, builder.darkenScreen, builder.playBossMusic, builder.createWorldFog, builder.key);
@@ -64,7 +64,7 @@ public class BossEventTrigger extends SimpleCriterionTrigger<BossEventTrigger.Tr
         @Info("""
             Match 'translation key' or 'literal text' of boss bar.
                         
-            If set to "", it will not check key. Defaults to "".
+            If set to "", it will not check. Defaults to "".
             """)
         public void setKey(String key) {
             this.key = key;

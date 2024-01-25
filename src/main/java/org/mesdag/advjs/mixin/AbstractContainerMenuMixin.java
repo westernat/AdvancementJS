@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static org.mesdag.advjs.configure.Data.LOCK_MAP;
+import static org.mesdag.advjs.util.Data.LOCK_MAP;
 
 @Mixin(AbstractContainerMenu.class)
 public abstract class AbstractContainerMenuMixin {
@@ -32,18 +32,20 @@ public abstract class AbstractContainerMenuMixin {
         }
 
         Slot slot = slots.get(index);
-        if(!(slot.container instanceof ResultContainer)){
+        if (!(slot.container instanceof ResultContainer)) {
             return;
         }
 
         if (clickType == ClickType.PICKUP && player instanceof ServerPlayer serverPlayer) {
             Item result = slot.getItem().getItem();
             MinecraftServer server = serverPlayer.getServer();
-            if (server != null && LOCK_MAP.containsKey(result)) {
-                Advancement advancement = server.getAdvancements().getAdvancement(LOCK_MAP.get(result));
-                if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
-                    ci.cancel();
-                }
+            if (server == null || !LOCK_MAP.containsKey(result)) {
+                return;
+            }
+
+            Advancement advancement = server.getAdvancements().getAdvancement(LOCK_MAP.get(result));
+            if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
+                ci.cancel();
             }
         }
     }

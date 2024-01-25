@@ -18,6 +18,7 @@ import net.minecraft.world.level.storage.loot.LootDataManager;
 import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.AdvJSPlugin;
 import org.mesdag.advjs.configure.*;
+import org.mesdag.advjs.util.AdvRemoveFilter;
 import org.mesdag.advjs.util.DisplayOffset;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,12 +26,12 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Map;
 
-import static org.mesdag.advjs.configure.Data.*;
+import static org.mesdag.advjs.util.Data.*;
 
 @Mixin(ServerAdvancementManager.class)
 public abstract class ServerAdvancementManagerMixin {
@@ -40,46 +41,6 @@ public abstract class ServerAdvancementManagerMixin {
 
     @Shadow
     private AdvancementList advancements;
-
-    @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("TAIL"))
-    private void advJS$setLocation(Map<ResourceLocation, JsonElement> p_136034_, ResourceManager p_136035_, ProfilerFiller p_136036_, CallbackInfo ci) {
-        for (Map.Entry<ResourceLocation, DisplayOffset> entry : DISPLAY_OFFSET.entrySet()) {
-            ResourceLocation id = entry.getKey();
-            Advancement advancement = advancements.get(id);
-            if (advancement == null) {
-                ConsoleJS.SERVER.warn("AdvJS: Advancement '%s' is not exist".formatted(id));
-                continue;
-            }
-
-            DisplayOffset offset = entry.getValue();
-            advJS$applyOffset(advancement, offset.x, offset.y, offset.modifyChildren);
-        }
-    }
-
-    @Unique
-    private static void advJS$applyOffset(Advancement advancement, float x, float y, boolean modifyChildren) {
-        DisplayInfo displayInfo = advancement.getDisplay();
-        if (displayInfo == null) {
-            ConsoleJS.SERVER.warn("AdvJS: Advancement '%s' dose not have display".formatted(advancement.getId()));
-            return;
-        }
-
-        float rawX = displayInfo.getX();
-        float neoX = rawX + x;
-        float rawY = displayInfo.getY();
-        float neoY = rawY + y;
-        displayInfo.setLocation(neoX, neoY);
-        if (modifyChildren) {
-            for (Advancement child : advancement.getChildren()) {
-                advJS$applyOffset(child, x, y, true);
-            }
-        }
-
-        if (AdvJSPlugin.DEBUG) {
-            ConsoleJS.SERVER.debug("AdvJS: The display location of advancement '%s' has set from (%s, %s) to (%s, %s)"
-                .formatted(advancement.getId(), rawX, rawY, neoX, neoY));
-        }
-    }
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("HEAD"))
     private void advJS$remove(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfo ci) {
@@ -95,7 +56,7 @@ public abstract class ServerAdvancementManagerMixin {
             }
 
             JsonObject advJson = entry.getValue().getAsJsonObject();
-            for (RemoveFilter filter : FILTERS) {
+            for (AdvRemoveFilter filter : FILTERS) {
                 if (filter.isResolved()) {
                     continue;
                 }
@@ -122,20 +83,19 @@ public abstract class ServerAdvancementManagerMixin {
         ConsoleJS.SERVER.info("AdvJS: Removed " + counter + " advancements");
     }
 
-    @ModifyArg(
-        method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/AdvancementList;add(Ljava/util/Map;)V"))
-    private Map<ResourceLocation, Advancement.Builder> advjs$configure(Map<ResourceLocation, Advancement.Builder> map) {
+    @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/AdvancementList;add(Ljava/util/Map;)V", shift = At.Shift.BEFORE),
+        locals = LocalCapture.CAPTURE_FAILSOFT)
+    private void advjs$configure(Map<ResourceLocation, JsonElement> p_136034_, ResourceManager p_136035_, ProfilerFiller p_136036_, CallbackInfo ci, Map<ResourceLocation, Advancement.Builder> map, AdvancementList advancementlist) {
         advJS$modify(map, lootData);
         advJS$add(map);
         ConsoleJS.SERVER.info("AdvJS: Completely loaded!");
-        return map;
     }
 
     @Unique
     private static void advJS$modify(Map<ResourceLocation, Advancement.Builder> map, LootDataManager lootData) {
         if (AdvJSPlugin.DEBUG) {
-            ConsoleJS.SERVER.debug("AdvJS: Modification details:");
+            ConsoleJS.SERVER.info("AdvJS: Modification details:");
         }
 
         int counter = 0;
@@ -143,7 +103,7 @@ public abstract class ServerAdvancementManagerMixin {
             ResourceLocation id = entry.getKey();
             Advancement.Builder builder = map.get(id);
             if (builder == null) {
-                ConsoleJS.SERVER.error("AdvJS: Advancement '" + id + "' is not exist");
+                ConsoleJS.SERVER.error("AdvJS/modify: Advancement '%s' is not exist".formatted(id));
                 continue;
             }
             AdvGetter getter = entry.getValue();
@@ -178,7 +138,7 @@ public abstract class ServerAdvancementManagerMixin {
             counter++;
 
             if (AdvJSPlugin.DEBUG) {
-                ConsoleJS.SERVER.debug("""
+                ConsoleJS.SERVER.info("""
                     identifier: %s
                         parent: %s
                         display:
@@ -212,7 +172,7 @@ public abstract class ServerAdvancementManagerMixin {
                 );
             }
         }
-        ConsoleJS.SERVER.info("AdvJS: Modified " + counter + " advancements");
+        ConsoleJS.SERVER.info("AdvJS: Modified %s advancements".formatted(counter));
     }
 
     @Unique
@@ -227,15 +187,16 @@ public abstract class ServerAdvancementManagerMixin {
                 continue;
             }
 
+            ResourceLocation id = advBuilder.getId();
             if (BUILDER_MAP.containsKey(parentId) || map.containsKey(parentId)) {
-                Advancement.Builder builder = advJS$build(advBuilder);
-                map.put(advBuilder.getId(), builder.parent(parentId));
+                map.put(id, advJS$build(advBuilder).parent(parentId));
                 counter++;
             } else {
-                ConsoleJS.SERVER.error("AdvJS: Advancement '" + parentId + "' is not exist");
+                map.put(id, advJS$build(advBuilder.setWarn(AdvBuilder.WarnType.NO_PARENT)));
+                ConsoleJS.SERVER.error("AdvJS/add: Advancement '%s' can't find parent '%s'".formatted(id, parentId));
             }
         }
-        ConsoleJS.SERVER.info("AdvJS: Added " + counter + " advancements");
+        ConsoleJS.SERVER.info("AdvJS: Added %s advancements".formatted(counter));
     }
 
     @Unique
@@ -245,7 +206,7 @@ public abstract class ServerAdvancementManagerMixin {
                 displayBuilder.setTitle(Component.translatable("advjs.attention").withStyle(ChatFormatting.RED));
                 displayBuilder.setDescription(advBuilder.getWarn().msg);
             });
-            ConsoleJS.SERVER.warn("AdvJS: A warn advancement created, the parent is '" + advBuilder.getParent() + "'");
+            ConsoleJS.SERVER.warn("AdvJS: A warn advancement created, the id is '%s'".formatted(advBuilder.getId()));
         }
         return new Advancement(
             advBuilder.getId(),
@@ -256,5 +217,45 @@ public abstract class ServerAdvancementManagerMixin {
             advBuilder.getRequirements(),
             advBuilder.isSendsTelemetryEvent()
         ).deconstruct();
+    }
+
+    @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("TAIL"))
+    private void advJS$setLocation(Map<ResourceLocation, JsonElement> p_136034_, ResourceManager p_136035_, ProfilerFiller p_136036_, CallbackInfo ci) {
+        for (Map.Entry<ResourceLocation, DisplayOffset> entry : DISPLAY_OFFSET.entrySet()) {
+            ResourceLocation id = entry.getKey();
+            Advancement advancement = advancements.get(id);
+            if (advancement == null) {
+                ConsoleJS.SERVER.error("AdvJS/displayOffset: Advancement '%s' is not exist".formatted(id));
+                continue;
+            }
+
+            DisplayOffset offset = entry.getValue();
+            advJS$applyOffset(advancement, offset.x, offset.y, offset.modifyChildren);
+        }
+    }
+
+    @Unique
+    private static void advJS$applyOffset(Advancement advancement, float x, float y, boolean modifyChildren) {
+        DisplayInfo displayInfo = advancement.getDisplay();
+        if (displayInfo == null) {
+            ConsoleJS.SERVER.error("AdvJS/displayOffset: Advancement '%s' dose not have display".formatted(advancement.getId()));
+            return;
+        }
+
+        float rawX = displayInfo.getX();
+        float neoX = rawX + x;
+        float rawY = displayInfo.getY();
+        float neoY = rawY + y;
+        displayInfo.setLocation(neoX, neoY);
+        if (modifyChildren) {
+            for (Advancement child : advancement.getChildren()) {
+                advJS$applyOffset(child, x, y, true);
+            }
+        }
+
+        if (AdvJSPlugin.DEBUG) {
+            ConsoleJS.SERVER.info("AdvJS: The display location of advancement '%s' has set from (%s, %s) to (%s, %s)"
+                .formatted(advancement.getId(), rawX, rawY, neoX, neoY));
+        }
     }
 }

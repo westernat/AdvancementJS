@@ -1,8 +1,8 @@
-package org.mesdag.advjs.configure;
+package org.mesdag.advjs.util;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
+import dev.latvian.mods.kubejs.util.MapJS;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -10,8 +10,10 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
 
-public class RemoveFilter {
+
+public class AdvRemoveFilter {
     @Nullable ResourceLocation path;
     @Nullable String modid;
     @Nullable Item icon;
@@ -19,38 +21,42 @@ public class RemoveFilter {
     @Nullable String parent;
     private boolean resolved = false;
 
-    public static RemoveFilter of(JsonElement jsonElement) {
-        RemoveFilter filter = new RemoveFilter();
-        if (jsonElement.isJsonObject()) {
-            JsonObject object = jsonElement.getAsJsonObject();
-            if (object.has("mod")) {
-                String modid = object.get("mod").getAsString();
+    public static AdvRemoveFilter of(Object o) {
+        AdvRemoveFilter filter = new AdvRemoveFilter();
+        if (o instanceof CharSequence charSequence) {
+            filter.path = new ResourceLocation(charSequence.toString());
+        } else if (o instanceof Map) {
+            JsonObject jsonObject = MapJS.json(o);
+            if (jsonObject == null) {
+                return filter;
+            }
+
+            if (jsonObject.has("mod")) {
+                String modid = jsonObject.get("mod").getAsString();
                 if (ModList.get().isLoaded(modid)) {
                     filter.modid = modid;
                 } else {
-                    ConsoleJS.SERVER.warn("AdvJS/RemoveFilter: Mod '" + modid + "' not found");
+                    ConsoleJS.SERVER.warn("AdvJS/RemoveFilter: Mod '%s' not found".formatted(modid));
                 }
             }
 
-            if (object.has("icon")) {
-                String icon = object.get("icon").getAsString();
+            if (jsonObject.has("icon")) {
+                String icon = jsonObject.get("icon").getAsString();
                 Item item = BuiltInRegistries.ITEM.getOptional(new ResourceLocation(icon)).orElse(Items.AIR);
                 if (item != Items.AIR) {
                     filter.icon = item;
                 } else {
-                    ConsoleJS.SERVER.warn("AdvJS/RemoveFilter: Icon '" + icon + "' not found");
+                    ConsoleJS.SERVER.warn("AdvJS/RemoveFilter: Icon '%s' not found".formatted(icon));
                 }
             }
 
-            if (object.has("frame")) {
-                filter.frame = object.get("frame").getAsString();
+            if (jsonObject.has("frame")) {
+                filter.frame = jsonObject.get("frame").getAsString();
             }
 
-            if (object.has("parent")) {
-                filter.parent = object.get("parent").getAsString();
+            if (jsonObject.has("parent")) {
+                filter.parent = jsonObject.get("parent").getAsString();
             }
-        } else if (jsonElement.isJsonPrimitive()) {
-            filter.path = new ResourceLocation(jsonElement.getAsString());
         }
         return filter;
     }

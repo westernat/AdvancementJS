@@ -1,6 +1,5 @@
 package org.mesdag.advjs.trigger.custom;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.resources.ResourceLocation;
@@ -14,13 +13,7 @@ public class PlayerTouchTrigger extends SimpleCriterionTrigger<PlayerTouchTrigge
 
     @Override
     public @NotNull TriggerInstance createInstance(@NotNull JsonObject jsonObject, @NotNull ContextAwarePredicate composite, @NotNull DeserializationContext deserializationContext) {
-        JsonElement entity = jsonObject.get("entity");
-        ContextAwarePredicate touched;
-        if (entity.isJsonNull()) {
-            touched = ContextAwarePredicate.ANY;
-        } else {
-            touched = EntityPredicate.wrap(EntityPredicate.fromJson(entity));
-        }
+        ContextAwarePredicate touched = EntityPredicate.fromJson(jsonObject, "entity", deserializationContext);;
         return new TriggerInstance(composite, touched);
     }
 

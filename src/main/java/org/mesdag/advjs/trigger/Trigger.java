@@ -10,6 +10,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import org.mesdag.advjs.predicate.PlayerPredicateBuilder;
 import org.mesdag.advjs.trigger.custom.BlockDestroyedTrigger;
 import org.mesdag.advjs.trigger.custom.BossEventTrigger;
+import org.mesdag.advjs.trigger.custom.IncreasedKillScoreTrigger;
 import org.mesdag.advjs.trigger.custom.PlayerTouchTrigger;
 import org.mesdag.advjs.util.ItemSetter;
 
@@ -19,7 +20,7 @@ import java.util.function.Consumer;
 public class Trigger implements ItemSetter {
     @Info("Custom trigger, triggers when the player breaks a block.")
     public BlockDestroyedTrigger.TriggerInstance blockDestroyed(Consumer<BlockDestroyedTrigger.Builder> consumer) {
-        return BlockDestroyedTrigger.blockDestroyed(consumer);
+        return BlockDestroyedTrigger.create(consumer);
     }
 
     @Info("Custom trigger, triggers when the player touch an entity.")
@@ -29,9 +30,14 @@ public class Trigger implements ItemSetter {
         return new PlayerTouchTrigger.TriggerInstance(builder.player, builder.entity);
     }
 
-    @Info("Custom trigger, triggers when the play joins a boss fight.")
+    @Info("Custom trigger, triggers when the player joins a boss fight.")
     public BossEventTrigger.TriggerInstance bossEvent(Consumer<BossEventTrigger.Builder> consumer) {
-        return BossEventTrigger.bossEvent(consumer);
+        return BossEventTrigger.craete(consumer);
+    }
+
+    @Info("Custom trigger, triggers when the player killed an entity. It will match the score that player increased.")
+    public IncreasedKillScoreTrigger.TriggerInstance increasedKillScore(Consumer<IncreasedKillScoreTrigger.Builder> consumer) {
+        return IncreasedKillScoreTrigger.create(consumer);
     }
 
     @Info("Never triggers.")

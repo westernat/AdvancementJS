@@ -1855,7 +1855,7 @@ public class AdvCommand {
             """;
         STORY = """
             ServerEvents.advancement(event => {
-                const { PREDICATE, TRIGGER } = event;
+                const { TRIGGER } = event;
                         
                 const story = event
                     .create("advjs:story")
@@ -2159,9 +2159,10 @@ public class AdvCommand {
                             .display((displayBuilder) => {
                                 displayBuilder.setTitle('A nice one!')
                                 displayBuilder.setDescription(Text.green("Good luck"))
+                                // You can also apply offset at here
+                                displayBuilder.offset(-1, 0)
                             })
                             .criteria((criteriaBuilder) => criteriaBuilder.add("jump", jump5times))
-                            .displayOffset(-1, 0)
                     });
 
                 // Lock recipe by advancement

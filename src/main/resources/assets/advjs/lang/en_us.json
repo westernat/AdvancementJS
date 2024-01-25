@@ -1,6 +1,8 @@
 {
     "advjs.attention": "Attention",
     "advjs.attention.nameless": "Your custom advancement doesn't have a name",
+    "advjs.attention.no_space": "Your custom advancement is using namespace 'minecraft'",
+    "advjs.attention.no_parent": "Your custom advancement doesn't have parent",
     "advjs.command.success": "Successfully generated %s",
     "advjs.command.failed": "Failed to generate %s"
 }
