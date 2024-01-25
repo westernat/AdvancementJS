@@ -10,8 +10,9 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 import org.mesdag.advjs.predicate.PlayerPredicateBuilder;
 import org.mesdag.advjs.trigger.custom.BlockDestroyedCriterion;
-import org.mesdag.advjs.trigger.custom.BossEventConditions;
-import org.mesdag.advjs.trigger.custom.PlayerTouchConditions;
+import org.mesdag.advjs.trigger.custom.BossEventCriterion;
+import org.mesdag.advjs.trigger.custom.IncreasedKillScoreCriterion;
+import org.mesdag.advjs.trigger.custom.PlayerTouchCriterion;
 import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.List;
@@ -20,19 +21,24 @@ import java.util.function.Consumer;
 public class Trigger implements ItemSetter {
     @Info("Custom trigger, triggers when the player breaks a block.")
     public BlockDestroyedCriterion.Conditions blockDestroyed(Consumer<BlockDestroyedCriterion.Builder> consumer) {
-        return BlockDestroyedCriterion.blockDestroyed(consumer);
+        return BlockDestroyedCriterion.create(consumer);
     }
 
     @Info("Custom trigger, triggers when the player touch an entity.")
-    public PlayerTouchConditions.Conditions playerTouch(Consumer<SingleEntityBuilder> consumer) {
+    public PlayerTouchCriterion.Conditions playerTouch(Consumer<SingleEntityBuilder> consumer) {
         SingleEntityBuilder builder = new SingleEntityBuilder();
         consumer.accept(builder);
-        return new PlayerTouchConditions.Conditions(builder.player, builder.entity);
+        return new PlayerTouchCriterion.Conditions(builder.player, builder.entity);
     }
 
-    @Info("Custom trigger, triggers when the play joins a boss fight.")
-    public BossEventConditions.Conditions bossEvent(Consumer<BossEventConditions.Builder> consumer) {
-        return BossEventConditions.bossEvent(consumer);
+    @Info("Custom trigger, triggers when the player joins a boss fight.")
+    public BossEventCriterion.Conditions bossEvent(Consumer<BossEventCriterion.Builder> consumer) {
+        return BossEventCriterion.create(consumer);
+    }
+
+    @Info("Custom trigger, triggers when the player killed an entity. It will match the score that player increased.")
+    public IncreasedKillScoreCriterion.Condition increasedKillScore(Consumer<IncreasedKillScoreCriterion.Builder> consumer) {
+        return IncreasedKillScoreCriterion.create(consumer);
     }
 
     @Info("Never triggers.")

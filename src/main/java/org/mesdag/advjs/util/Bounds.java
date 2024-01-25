@@ -52,28 +52,50 @@ public class Bounds {
     }
 
     @Info("""
-    A number like A will wrap to an exactly bounds.
-    
-    A list like [A, B] will wrap to an between bounds.
-    
-    A map like {min: A} will wrap to an atLeast bounds.
-    
-    A map like {max: B} will wrap to an atMost bounds.
-    """)
+        A number like A will wrap to an exactly bounds.
+
+        A list like [A, B] will wrap to an between bounds.
+
+        A map like {min: A} will wrap to an atLeast bounds.
+
+        A map like {max: B} will wrap to an atMost bounds.
+        """)
     @SuppressWarnings("unchecked")
     public static Bounds of(Object o) {
-        if (o instanceof Number n) {
-            var d = n.doubleValue();
+        if (o instanceof Bounds bounds) {
+            return bounds;
+        } else if (o instanceof Number n) {
+            double d = n.doubleValue();
             return new Bounds(d, d);
         } else if (o instanceof List<?> l && !l.isEmpty()) {
-            var min = (Number) l.get(0);
-            var max = l.size() >= 2 ? (Number) l.get(1) : min;
+            Number min = (Number) l.get(0);
+            Number max = l.size() >= 2 ? (Number) l.get(1) : min;
             return new Bounds(min.doubleValue(), max.doubleValue());
         } else if (o instanceof Map) {
-            var m = (Map<String, Object>) o;
+            Map<String, Object> m = (Map<String, Object>) o;
             return new Bounds(m.containsKey("min") ? (Number) m.get("min") : null, m.containsKey("max") ? (Number) m.get("max") : null);
         }
 
+        return ANY;
+    }
+
+    public static Bounds exactly(double a) {
+        return new Bounds(a, a);
+    }
+
+    public static Bounds between(double a, double b) {
+        return new Bounds(a, b);
+    }
+
+    public static Bounds atLeast(double a) {
+        return new Bounds(a, null);
+    }
+
+    public static Bounds atMost(double b) {
+        return new Bounds(null, b);
+    }
+
+    public static Bounds any() {
         return ANY;
     }
 }

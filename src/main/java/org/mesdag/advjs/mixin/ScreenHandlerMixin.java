@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static org.mesdag.advjs.configure.Data.LOCK_MAP;
+import static org.mesdag.advjs.util.Data.LOCK_MAP;
 
 @Mixin(ScreenHandler.class)
 public abstract class ScreenHandlerMixin {
@@ -39,11 +39,13 @@ public abstract class ScreenHandlerMixin {
         if (actionType == SlotActionType.PICKUP && player instanceof ServerPlayerEntity serverPlayer) {
             Item result = slot.getStack().getItem();
             MinecraftServer server = serverPlayer.getServer();
-            if (server != null && LOCK_MAP.containsKey(result)) {
-                Advancement advancement = server.getAdvancementLoader().get(LOCK_MAP.get(result));
-                if (advancement != null && !serverPlayer.getAdvancementTracker().getProgress(advancement).isDone()) {
-                    ci.cancel();
-                }
+            if (server == null || !LOCK_MAP.containsKey(result)) {
+                return;
+            }
+
+            Advancement advancement = server.getAdvancementLoader().get(LOCK_MAP.get(result));
+            if (advancement != null && !serverPlayer.getAdvancementTracker().getProgress(advancement).isDone()) {
+                ci.cancel();
             }
         }
     }

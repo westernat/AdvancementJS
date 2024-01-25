@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static org.mesdag.advjs.configure.Data.*;
+import static org.mesdag.advjs.util.Data.*;
 
 public class AdvBuilder {
     @Nullable
@@ -37,7 +37,7 @@ public class AdvBuilder {
         this.name = name;
         this.rootPath = rootPath;
         this.warn = warn;
-        this.id = getSavePath();
+        this.id = generateId();
     }
 
     @Info("Add a nameless child to this advancement, just for test. Returns child.")
@@ -89,7 +89,13 @@ public class AdvBuilder {
 
     @Info("It will check if parent done. Defaults do not check.")
     public AdvBuilder requireParentDone() {
-        REQUIRE_DONE.add(id);
+        REQUIRE_DONE.put(id, new Identifier[0]);
+        return this;
+    }
+
+    @Info("It will check if advancements that you put in had done.")
+    public AdvBuilder requireOthersDone(Identifier... requires) {
+        REQUIRE_DONE.put(id, requires);
         return this;
     }
 
@@ -123,7 +129,7 @@ public class AdvBuilder {
         return parent;
     }
 
-    private Identifier getSavePath() {
+    private Identifier generateId() {
         if (name.contains(":")) {
             return new Identifier(name);
         }
@@ -166,13 +172,16 @@ public class AdvBuilder {
     }
 
     @HideFromJS
-    public void setWarn(WarnType warn) {
+    public AdvBuilder setWarn(WarnType warn) {
         this.warn = warn;
+        return this;
     }
 
     public enum WarnType {
         NONE(Text.empty()),
-        NAMELESS(Text.translatable("advjs.attention.nameless"));
+        NAMELESS(Text.translatable("advjs.attention.nameless")),
+        NO_SPACE(Text.translatable("advjs.attention.no_space")),
+        NO_PARENT(Text.translatable("advjs.attention.no_parent"));
 
         public final Text msg;
 

@@ -55,7 +55,7 @@ public class BlockDestroyedCriterion extends AbstractCriterion<BlockDestroyedCri
         return ID;
     }
 
-    public static Conditions blockDestroyed(Consumer<Builder> consumer) {
+    public static Conditions create(Consumer<Builder> consumer) {
         Builder builder = new Builder();
         consumer.accept(builder);
         return new Conditions(builder.player, builder.block, builder.statePredicate, builder.item);

@@ -19,7 +19,7 @@ public class AdvCommand {
             .then(CommandManager.literal("adventure").executes(context -> run(context.getSource(), AdvJS.ADVENTURE, ADVENTURE)))
             .then(CommandManager.literal("nether").executes(context -> run(context.getSource(), AdvJS.NETHER, NETHER)))
             .then(CommandManager.literal("husbandry").executes(context -> run(context.getSource(), AdvJS.HUSBANDRY, HUSBANDRY)))
-                .then(CommandManager.literal("end").executes(context -> run(context.getSource(), AdvJS.END, END)))
+            .then(CommandManager.literal("end").executes(context -> run(context.getSource(), AdvJS.END, END)))
             .then(CommandManager.literal("all").executes(context -> {
                 ServerCommandSource source = context.getSource();
                 run(source, AdvJS.EXAMPLE, EXAMPLE);
@@ -1856,7 +1856,7 @@ public class AdvCommand {
             """;
         STORY = """
             ServerEvents.advancement(event => {
-                const { PREDICATE, TRIGGER } = event;
+                const { TRIGGER } = event;
                         
                 const story = event
                     .create("advjs:story")
@@ -2160,9 +2160,10 @@ public class AdvCommand {
                             .display((displayBuilder) => {
                                 displayBuilder.setTitle('A nice one!')
                                 displayBuilder.setDescription(Text.green("Good luck"))
+                                // You can also apply offset at here
+                                displayBuilder.offset(-1, 0)
                             })
                             .criteria((criteriaBuilder) => criteriaBuilder.add("jump", jump5times))
-                            .displayOffset(-1, 0)
                     });
 
                 // Lock recipe by advancement

@@ -1,6 +1,5 @@
 package org.mesdag.advjs.trigger.custom;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.advancement.criterion.AbstractCriterion;
 import net.minecraft.advancement.criterion.AbstractCriterionConditions;
@@ -13,18 +12,12 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class PlayerTouchConditions extends AbstractCriterion<PlayerTouchConditions.Conditions> {
+public class PlayerTouchCriterion extends AbstractCriterion<PlayerTouchCriterion.Conditions> {
     static final Identifier ID = new Identifier("advjs:player_touch");
 
     @Override
-    public @NotNull PlayerTouchConditions.Conditions conditionsFromJson(@NotNull JsonObject jsonObject, @NotNull LootContextPredicate composite, @NotNull AdvancementEntityPredicateDeserializer deserializationContext) {
-        JsonElement entity = jsonObject.get("entity");
-        LootContextPredicate touched;
-        if (entity.isJsonNull()) {
-            touched = LootContextPredicate.EMPTY;
-        } else {
-            touched = EntityPredicate.asLootContextPredicate(EntityPredicate.fromJson(entity));
-        }
+    public @NotNull PlayerTouchCriterion.Conditions conditionsFromJson(@NotNull JsonObject jsonObject, @NotNull LootContextPredicate composite, @NotNull AdvancementEntityPredicateDeserializer deserializationContext) {
+        LootContextPredicate touched = EntityPredicate.contextPredicateFromJson(jsonObject, "entity", deserializationContext);
         return new Conditions(composite, touched);
     }
 

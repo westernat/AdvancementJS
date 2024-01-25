@@ -9,9 +9,10 @@
         "PlayerEntityMixin",
         "ScreenHandlerMixin",
         "ServerAdvancementLoaderMixin",
-        "ServerBossBarMixin"
+        "ServerBossBarMixin",
+        "ServerPlayerEntityMixin"
     ],
     "injectors": {
         "defaultRequire": 1
-	}
+    }
 }

@@ -13,11 +13,11 @@ import org.mesdag.advjs.trigger.AbstractTriggerBuilder;
 
 import java.util.function.Consumer;
 
-public class BossEventConditions extends AbstractCriterion<BossEventConditions.Conditions> {
+public class BossEventCriterion extends AbstractCriterion<BossEventCriterion.Conditions> {
     static final Identifier ID = new Identifier("advjs:boss_event");
 
     @Override
-    public @NotNull BossEventConditions.Conditions conditionsFromJson(@NotNull JsonObject jsonObject, @NotNull LootContextPredicate composite, @NotNull AdvancementEntityPredicateDeserializer deserializationContext) {
+    public @NotNull BossEventCriterion.Conditions conditionsFromJson(@NotNull JsonObject jsonObject, @NotNull LootContextPredicate composite, @NotNull AdvancementEntityPredicateDeserializer deserializationContext) {
         boolean darkenScreen = jsonObject.has("darken_screen") && jsonObject.get("darken_screen").getAsBoolean();
         boolean playBossMusic = jsonObject.has("play_boss_music") && jsonObject.get("play_boss_music").getAsBoolean();
         boolean createWorldFog = jsonObject.has("create_world_fog") && jsonObject.get("create_world_fog").getAsBoolean();
@@ -34,7 +34,7 @@ public class BossEventConditions extends AbstractCriterion<BossEventConditions.C
         return ID;
     }
 
-    public static Conditions bossEvent(Consumer<Builder> consumer) {
+    public static Conditions create(Consumer<Builder> consumer) {
         Builder builder = new Builder();
         consumer.accept(builder);
         return new Conditions(builder.player, builder.darkenScreen, builder.playBossMusic, builder.createWorldFog, builder.key);

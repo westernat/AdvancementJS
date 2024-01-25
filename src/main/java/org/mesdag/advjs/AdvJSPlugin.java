@@ -7,14 +7,11 @@ import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
 import org.mesdag.advjs.command.AdvCommand;
-import org.mesdag.advjs.util.Bounds;
-import org.mesdag.advjs.util.FrameTypeWrapper;
-import org.mesdag.advjs.util.GameTypeWrapper;
-import org.mesdag.advjs.util.RequirementsStrategyWrapper;
+import org.mesdag.advjs.util.*;
 
 import java.nio.file.Files;
 
-import static org.mesdag.advjs.configure.Data.*;
+import static org.mesdag.advjs.util.Data.*;
 
 public class AdvJSPlugin extends KubeJSPlugin {
     public static boolean DEBUG;
@@ -24,11 +21,13 @@ public class AdvJSPlugin extends KubeJSPlugin {
         event.add("FrameType", FrameTypeWrapper.class);
         event.add("RequirementsStrategy", RequirementsStrategyWrapper.class);
         event.add("GameType", GameTypeWrapper.class);
+        event.add("Bounds", Bounds.class);
     }
 
     @Override
     public void registerTypeWrappers(ScriptType type, TypeWrappers typeWrappers) {
         typeWrappers.registerSimple(Bounds.class, Bounds::of);
+        typeWrappers.registerSimple(AdvRemoveFilter.class, AdvRemoveFilter::of);
     }
 
     @Override

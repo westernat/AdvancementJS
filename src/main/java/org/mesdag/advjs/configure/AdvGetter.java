@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static org.mesdag.advjs.configure.Data.*;
+import static org.mesdag.advjs.util.Data.*;
 
 public class AdvGetter {
     private final Identifier id;
@@ -77,7 +77,13 @@ public class AdvGetter {
 
     @Info("It will check if parent done. Defaults do not check.")
     public AdvGetter requireParentDone() {
-        REQUIRE_DONE.add(id);
+        REQUIRE_DONE.put(id, new Identifier[0]);
+        return this;
+    }
+
+    @Info("It will check if advancements that you put in had done.")
+    public AdvGetter requireOthersDone(Identifier... requires) {
+        REQUIRE_DONE.put(id, requires);
         return this;
     }
 
