@@ -8,6 +8,7 @@ import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.util.FakePlayer;
+import org.mesdag.advjs.AdvJS;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,31 +31,19 @@ public abstract class PlayerAdvancementMixin {
             cir.setReturnValue(false);
             return;
         }
-
         ResourceLocation id = advancement.getId();
-        if (!REQUIRE_DONE.containsKey(id)) {
-            return;
-        }
-
+        if (!REQUIRE_DONE.containsKey(id)) return;
         ResourceLocation[] requires = REQUIRE_DONE.get(id);
         if (requires.length == 0) {
-            Advancement parent = advancement.getParent();
-            if (parent == null) {
-                ConsoleJS.SERVER.warn("AdvJS/requireParentDone: Advancement '%s' is a root, so it can't check parent done".formatted(id));
-                return;
-            }
-
-            if (!getOrStartProgress(parent).isDone()) {
-                cir.setReturnValue(false);
-            }
+            ConsoleJS.SERVER.error("AdvJS/requireDone: Invalid requires[] of '%s', which length is 0".formatted(id));
             return;
         }
 
         ServerAdvancementManager manager = player.server.getAdvancements();
         for (ResourceLocation requireId : requires) {
-            Advancement required = manager.getAdvancement(requireId);
+            Advancement required = requireId == AdvJS.PARENT ? advancement.getParent() : manager.getAdvancement(requireId);
             if (required == null) {
-                ConsoleJS.SERVER.warn("AdvJS/requireParentDone: Advancement '%s' is not exist, so '%s' will not check it".formatted(requireId, id));
+                ConsoleJS.SERVER.warn("AdvJS/requireDone: Advancement '%s' is not exist, so '%s' will not check it".formatted(requireId, id));
                 continue;
             }
 

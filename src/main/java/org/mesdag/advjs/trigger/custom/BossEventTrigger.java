@@ -9,12 +9,12 @@ import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
-import org.mesdag.advjs.trigger.AbstractTriggerBuilder;
+import org.mesdag.advjs.trigger.BaseTriggerInstanceBuilder;
 
 import java.util.function.Consumer;
 
 public class BossEventTrigger extends SimpleCriterionTrigger<BossEventTrigger.TriggerInstance> {
-    static final ResourceLocation ID = new ResourceLocation("advjs:boss_event");
+    static final ResourceLocation ID = new ResourceLocation("advjs", "boss_event");
 
     @Override
     public @NotNull TriggerInstance createInstance(@NotNull JsonObject jsonObject, @NotNull ContextAwarePredicate composite, @NotNull DeserializationContext deserializationContext) {
@@ -40,7 +40,7 @@ public class BossEventTrigger extends SimpleCriterionTrigger<BossEventTrigger.Tr
         return new TriggerInstance(builder.player, builder.darkenScreen, builder.playBossMusic, builder.createWorldFog, builder.key);
     }
 
-    public static class Builder extends AbstractTriggerBuilder {
+    public static class Builder extends BaseTriggerInstanceBuilder {
         boolean darkenScreen = false;
         boolean playBossMusic = false;
         boolean createWorldFog = false;

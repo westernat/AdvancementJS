@@ -11,7 +11,7 @@ import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
-class EffectsChangedBuilder extends AbstractTriggerBuilder {
+class EffectsChangedBuilder extends BaseTriggerInstanceBuilder {
     MobEffectsPredicate effects = MobEffectsPredicate.ANY;
     ContextAwarePredicate source = ContextAwarePredicate.ANY;
 

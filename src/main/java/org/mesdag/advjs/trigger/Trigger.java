@@ -1,23 +1,71 @@
 package org.mesdag.advjs.trigger;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
+import dev.latvian.mods.kubejs.util.ConsoleJS;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.storage.loot.LootDataManager;
 import org.mesdag.advjs.predicate.PlayerPredicateBuilder;
 import org.mesdag.advjs.trigger.custom.BlockDestroyedTrigger;
 import org.mesdag.advjs.trigger.custom.BossEventTrigger;
 import org.mesdag.advjs.trigger.custom.IncreasedKillScoreTrigger;
 import org.mesdag.advjs.trigger.custom.PlayerTouchTrigger;
+import org.mesdag.advjs.trigger.registry.BaseTriggerInstance;
+import org.mesdag.advjs.trigger.registry.CustomTriggers;
 import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.List;
 import java.util.function.Consumer;
 
 public class Trigger implements ItemSetter {
+    private final LootDataManager lootData;
+
+    @HideFromJS
+    public Trigger(LootDataManager lootData) {
+        this.lootData = lootData;
+    }
+
+    @Info("Your custom trigger, which not match player.")
+    public BaseTriggerInstance custom(ResourceLocation id) {
+        if(CustomTriggers.TRIGGERS.containsKey(id)) {
+            return CustomTriggers.TRIGGERS.get(id).create();
+        }
+        ConsoleJS.SERVER.error("No such trigger: " + id);
+        return CustomTriggers.IMPOSSIBLE;
+    }
+
+    @Info("Your custom trigger, which will match player.")
+    public BaseTriggerInstance custom(ResourceLocation id, Consumer<BaseTriggerInstanceBuilder> consumer) {
+        if(CustomTriggers.TRIGGERS.containsKey(id)) {
+            BaseTriggerInstanceBuilder builder = new BaseTriggerInstanceBuilder();
+            consumer.accept(builder);
+            return CustomTriggers.TRIGGERS.get(id).create(builder.player);
+        }
+        ConsoleJS.SERVER.error("No such trigger: " + id);
+        return CustomTriggers.IMPOSSIBLE;
+    }
+
+    @Info("Create new trigger by json.")
+    public CriterionTriggerInstance fromJson(JsonObject jsonObject) {
+        ResourceLocation id = new ResourceLocation(GsonHelper.getAsString(jsonObject, "trigger"));
+        CriterionTrigger<?> criteriontrigger = CriteriaTriggers.getCriterion(id);
+        if (criteriontrigger == null) {
+            throw new JsonSyntaxException("Invalid criterion trigger: " + id);
+        } else {
+            return criteriontrigger.createInstance(GsonHelper.getAsJsonObject(jsonObject, "conditions", new JsonObject()), new DeserializationContext(id, lootData));
+        }
+    }
+
     @Info("Custom trigger, triggers when the player breaks a block.")
     public BlockDestroyedTrigger.TriggerInstance blockDestroyed(Consumer<BlockDestroyedTrigger.Builder> consumer) {
         return BlockDestroyedTrigger.create(consumer);

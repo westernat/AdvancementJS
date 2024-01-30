@@ -13,7 +13,7 @@ import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
 
-class FishingRodHookedBuilder extends AbstractTriggerBuilder implements ItemSetter {
+class FishingRodHookedBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
     ItemPredicate rod = ItemPredicate.ANY;
     ContextAwarePredicate entity = ContextAwarePredicate.ANY;
     ItemPredicate item = ItemPredicate.ANY;

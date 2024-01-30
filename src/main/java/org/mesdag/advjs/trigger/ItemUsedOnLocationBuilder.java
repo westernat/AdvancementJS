@@ -8,7 +8,7 @@ import org.mesdag.advjs.util.ItemSetter;
 import java.util.ArrayList;
 import java.util.List;
 
-class ItemUsedOnLocationBuilder extends AbstractTriggerBuilder implements ItemSetter {
+class ItemUsedOnLocationBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
     final ArrayList<ICondition> conditions = new ArrayList<>();
 
     @Info("Add a predicate condition.")

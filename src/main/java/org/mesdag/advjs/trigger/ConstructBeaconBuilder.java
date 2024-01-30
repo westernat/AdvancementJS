@@ -4,7 +4,7 @@ import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import org.mesdag.advjs.util.Bounds;
 
-class ConstructBeaconBuilder extends AbstractTriggerBuilder {
+class ConstructBeaconBuilder extends BaseTriggerInstanceBuilder {
     MinMaxBounds.Ints level = MinMaxBounds.Ints.ANY;
 
     @Info("The level of the updated beacon structure.")

@@ -1,11 +1,10 @@
-package org.mesdag.advjs.configure;
+package org.mesdag.advjs.advancement;
 
 import dev.latvian.mods.kubejs.event.EventJS;
 import dev.latvian.mods.kubejs.typings.Info;
-import dev.latvian.mods.kubejs.typings.Param;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import org.mesdag.advjs.predicate.Predicate;
 import org.mesdag.advjs.trigger.Trigger;
 import org.mesdag.advjs.util.AdvRemoveFilter;
@@ -13,15 +12,14 @@ import org.mesdag.advjs.util.Condition;
 import org.mesdag.advjs.util.Provider;
 
 import static org.mesdag.advjs.util.Data.FILTERS;
-import static org.mesdag.advjs.util.Data.LOCK_MAP;
 
-public class AdvConfigureEvent extends EventJS {
+public class AdvConfigureEventJS extends EventJS {
     @Info("""
         Trigger required in advancement.
 
         More details please goto https://minecraft.wiki/w/Advancement/JSON_format
         """)
-    public final Trigger TRIGGER = new Trigger();
+    public final Trigger TRIGGER;
     @Info("Predicate required in trigger.")
     public final Predicate PREDICATE = new Predicate();
     @Info("Conditions used in trigger or predicate.")
@@ -29,18 +27,20 @@ public class AdvConfigureEvent extends EventJS {
     @Info("Provides several data of vanilla.")
     public final Provider PROVIDER = new Provider();
 
+    @HideFromJS
+    public AdvConfigureEventJS(Trigger trigger) {
+        this.TRIGGER = trigger;
+    }
+
     @Info("Create a new advancement root")
     public AdvBuilder create(ResourceLocation rootPath) {
-        if (rootPath.getNamespace().equals("minecraft")) {
-            new AdvBuilder(null, "root", rootPath, AdvBuilder.WarnType.NO_SPACE);
-        }
-        return new AdvBuilder(null, "root", rootPath, AdvBuilder.WarnType.NONE);
+        return new AdvBuilder(null, "root", rootPath, rootPath.getNamespace().equals("minecraft") ? AdvBuilder.WarnType.NO_SPACE : AdvBuilder.WarnType.NONE);
     }
 
     @Info("""
         It will automatically remove all of its children.
 
-        If you put in a string, it will remove advancement by its path.
+        If you put in a string, it will remove advancement by its id.
 
         Else if you put in a json object, it will remove advancement by filter:
 
@@ -60,23 +60,5 @@ public class AdvConfigureEvent extends EventJS {
     @Info("Get an exist advancement to modify.")
     public AdvGetter get(ResourceLocation path) {
         return new AdvGetter(path);
-    }
-
-    @Info(value = "Lock recipe by advancement. It will only deny player take the result from GUI.",
-        params = {
-            @Param(name = "toLock"),
-            @Param(name = "lockBy")
-        })
-    public void lock(ItemStack toLock, ResourceLocation lockBy) {
-        LOCK_MAP.put(toLock.getItem(), lockBy);
-    }
-
-    @Info(value = "Lock recipe by advancement. It will only deny player take the result from GUI.",
-        params = {
-            @Param(name = "toLock"),
-            @Param(name = "lockBy")
-        })
-    public void lock(ItemStack toLock, AdvBuilder lockBy) {
-        LOCK_MAP.put(toLock.getItem(), lockBy.getId());
     }
 }

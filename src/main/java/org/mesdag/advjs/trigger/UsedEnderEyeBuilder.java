@@ -4,7 +4,7 @@ import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import org.mesdag.advjs.util.Bounds;
 
-class UsedEnderEyeBuilder extends AbstractTriggerBuilder {
+class UsedEnderEyeBuilder extends BaseTriggerInstanceBuilder {
     MinMaxBounds.Doubles distance = MinMaxBounds.Doubles.ANY;
 
     @Info("The horizontal distance between the player and the stronghold.")

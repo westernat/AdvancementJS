@@ -9,7 +9,7 @@ import org.mesdag.advjs.util.EntitySetter;
 
 import java.util.function.Consumer;
 
-public abstract class AbstractTriggerBuilder implements EntitySetter {
+public class BaseTriggerInstanceBuilder implements EntitySetter {
     public ContextAwarePredicate player = ContextAwarePredicate.ANY;
 
     public void setPlayerByPredicate(PlayerPredicate player) {

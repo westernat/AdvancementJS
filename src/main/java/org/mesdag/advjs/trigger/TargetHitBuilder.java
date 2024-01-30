@@ -11,7 +11,7 @@ import org.mesdag.advjs.util.Bounds;
 
 import java.util.function.Consumer;
 
-class TargetHitBuilder extends AbstractTriggerBuilder {
+class TargetHitBuilder extends BaseTriggerInstanceBuilder {
     MinMaxBounds.Ints signalStrength = MinMaxBounds.Ints.ANY;
     ContextAwarePredicate projectile = ContextAwarePredicate.ANY;
 

@@ -24,9 +24,7 @@ public abstract class AdvancementRewardsMixin implements RewardsAccessor {
 
     @Inject(method = "grant", at = @At("HEAD"))
     private void advJS$grant(ServerPlayer serverPlayer, CallbackInfo ci) {
-        if (advJS$mobEffectInstances == null) {
-            return;
-        }
+        if (advJS$mobEffectInstances == null) return;
 
         for (MobEffectInstance mobEffectInstance : advJS$mobEffectInstances) {
             if (mobEffectInstance != null) {

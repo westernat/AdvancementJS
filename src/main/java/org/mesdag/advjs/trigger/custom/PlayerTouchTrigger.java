@@ -9,7 +9,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayerTouchTrigger extends SimpleCriterionTrigger<PlayerTouchTrigger.TriggerInstance> {
-    static final ResourceLocation ID = new ResourceLocation("advjs:player_touch");
+    static final ResourceLocation ID = new ResourceLocation("advjs", "player_touch");
 
     @Override
     public @NotNull TriggerInstance createInstance(@NotNull JsonObject jsonObject, @NotNull ContextAwarePredicate composite, @NotNull DeserializationContext deserializationContext) {

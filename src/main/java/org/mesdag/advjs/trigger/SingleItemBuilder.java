@@ -7,7 +7,7 @@ import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
 
-class SingleItemBuilder extends AbstractTriggerBuilder implements ItemSetter {
+class SingleItemBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
     ItemPredicate item = ItemPredicate.ANY;
 
     public void setItem(ItemPredicate item) {

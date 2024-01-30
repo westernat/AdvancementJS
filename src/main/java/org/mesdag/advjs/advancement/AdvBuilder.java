@@ -1,7 +1,8 @@
-package org.mesdag.advjs.configure;
+package org.mesdag.advjs.advancement;
 
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
+import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
@@ -11,6 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 import org.mesdag.advjs.util.DisplayOffset;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -38,6 +41,7 @@ public class AdvBuilder {
         this.rootPath = rootPath;
         this.warn = warn;
         this.id = generateId();
+        BUILDER_MAP.put(id, this);
     }
 
     @Info("Add a nameless child to this advancement, just for test. Returns child.")
@@ -62,40 +66,53 @@ public class AdvBuilder {
             builder.setBackground(new ResourceLocation("textures/gui/advancements/backgrounds/stone.png"));
         }
         this.displayBuilder = builder;
-        update();
         return this;
     }
 
     @Info("The criteria to be tracked by this advancement.")
     public AdvBuilder criteria(Consumer<CriteriaBuilder> criteriaBuilderConsumer) {
         criteriaBuilderConsumer.accept(criteriaBuilder);
-        update();
         return this;
     }
 
     @Info("The rewards provided when this advancement is obtained.")
     public AdvBuilder rewards(Consumer<RewardsBuilder> rewardsBuilderConsumer) {
         rewardsBuilderConsumer.accept(rewardsBuilder);
-        update();
         return this;
     }
 
     @Info("Determines whether telemetry data should be collected when this advancement is achieved or not. Defaults to false.")
     public AdvBuilder sendsTelemetryEvent() {
         this.sendsTelemetryEvent = true;
-        update();
         return this;
     }
 
     @Info("It will check if parent done. Defaults do not check.")
     public AdvBuilder requireParentDone() {
-        REQUIRE_DONE.put(id, new ResourceLocation[0]);
+        if (parent == null) {
+            ConsoleJS.SERVER.warn("AdvJS/requireParentDone: Advancement '%s' is a root, so it can't check parent done".formatted(id));
+            return this;
+        }
+
+        if (REQUIRE_DONE.containsKey(id)) {
+            ArrayList<ResourceLocation> list = new ArrayList<>(Arrays.stream(REQUIRE_DONE.get(id)).toList());
+            list.add(parent);
+            REQUIRE_DONE.put(id, list.toArray(ResourceLocation[]::new));
+        } else {
+            REQUIRE_DONE.put(id, new ResourceLocation[]{parent});
+        }
         return this;
     }
 
     @Info("It will check if advancements that you put in had done.")
     public AdvBuilder requireOthersDone(ResourceLocation... requires) {
-        REQUIRE_DONE.put(id, requires);
+        if (REQUIRE_DONE.containsKey(id)) {
+            ArrayList<ResourceLocation> list = new ArrayList<>(Arrays.stream(requires).toList());
+            list.add(parent);
+            REQUIRE_DONE.put(id, list.toArray(ResourceLocation[]::new));
+        } else {
+            REQUIRE_DONE.put(id, requires);
+        }
         return this;
     }
 
@@ -118,10 +135,6 @@ public class AdvBuilder {
     public AdvBuilder displayOffset(float x, float y, boolean modifyChildren) {
         DISPLAY_OFFSET.put(id, new DisplayOffset(x, y, modifyChildren));
         return this;
-    }
-
-    private void update() {
-        BUILDER_MAP.put(id, this);
     }
 
     @Info("Get parent of this advancement.")

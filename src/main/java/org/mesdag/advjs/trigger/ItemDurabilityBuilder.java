@@ -10,7 +10,7 @@ import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
 
-class ItemDurabilityBuilder extends AbstractTriggerBuilder implements ItemSetter {
+class ItemDurabilityBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
     ItemPredicate item = ItemPredicate.ANY;
     MinMaxBounds.Ints durability = MinMaxBounds.Ints.ANY;
     MinMaxBounds.Ints delta = MinMaxBounds.Ints.ANY;

@@ -9,7 +9,7 @@ import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
-class LightningStrikeBuilder extends AbstractTriggerBuilder {
+class LightningStrikeBuilder extends BaseTriggerInstanceBuilder {
     ContextAwarePredicate lightning = ContextAwarePredicate.ANY;
     ContextAwarePredicate bystander = ContextAwarePredicate.ANY;
 

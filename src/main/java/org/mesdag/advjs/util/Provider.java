@@ -1,6 +1,5 @@
 package org.mesdag.advjs.util;
 
-import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.packs.VanillaRecipeProvider;
 import net.minecraft.resources.ResourceKey;
@@ -26,17 +25,14 @@ public class Provider {
     private static final List<ResourceLocation> WAX_SCRAPING_TOOLS = Stream.of(Items.WOODEN_AXE, Items.GOLDEN_AXE, Items.STONE_AXE, Items.IRON_AXE, Items.DIAMOND_AXE, Items.NETHERITE_AXE).map(BuiltInRegistries.ITEM::getKey).toList();
     private static final List<ResourceLocation> catVariants = Arrays.stream(EntityPredicateBuilder.CatType.values()).map(catType -> catType.variant.location()).toList();
 
-    @Info("Get all biomes id of overworld.")
     public List<ResourceLocation> getOverworldBiomes() {
         return overworldBiomes;
     }
 
-    @Info("Get all biomes id of nether.")
     public List<ResourceLocation> getNetherBiomes() {
         return netherBiomes;
     }
 
-    @Info("Get all smithing trims id.")
     public List<ResourceLocation> getSmithingTrims() {
         return smithingTrims;
     }

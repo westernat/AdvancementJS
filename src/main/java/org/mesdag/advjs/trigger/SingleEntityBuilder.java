@@ -8,7 +8,7 @@ import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
-class SingleEntityBuilder extends AbstractTriggerBuilder {
+class SingleEntityBuilder extends BaseTriggerInstanceBuilder {
     ContextAwarePredicate entity = ContextAwarePredicate.ANY;
 
     public void setEntityByPredicate(EntityPredicate entity) {

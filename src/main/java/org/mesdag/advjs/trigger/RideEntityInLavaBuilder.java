@@ -8,7 +8,7 @@ import org.mesdag.advjs.predicate.LocationPredicateBuilder;
 
 import java.util.function.Consumer;
 
-public class RideEntityInLavaBuilder extends AbstractTriggerBuilder {
+public class RideEntityInLavaBuilder extends BaseTriggerInstanceBuilder {
     LocationPredicate startPosition = LocationPredicate.ANY;
     DistancePredicate distance = DistancePredicate.ANY;
 

@@ -13,5 +13,8 @@
         "ServerBossEventMixin",
         "ServerPlayerMixin"
     ],
-    "minVersion": "0.8.5"
+    "minVersion": "0.8.5",
+    "client": [
+        "revelationary.ClientAdvancementsMixin"
+    ]
 }

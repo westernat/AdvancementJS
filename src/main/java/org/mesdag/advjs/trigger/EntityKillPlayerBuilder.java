@@ -11,7 +11,7 @@ import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
-public class EntityKillPlayerBuilder extends AbstractTriggerBuilder {
+public class EntityKillPlayerBuilder extends BaseTriggerInstanceBuilder {
     ContextAwarePredicate killer = ContextAwarePredicate.ANY;
     DamageSourcePredicate killingBlow = DamageSourcePredicate.ANY;
 

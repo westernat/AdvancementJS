@@ -10,7 +10,7 @@ import org.mesdag.advjs.predicate.condition.ICondition;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-public class ChanneledLightningBuilder extends AbstractTriggerBuilder {
+public class ChanneledLightningBuilder extends BaseTriggerInstanceBuilder {
     final ArrayList<ContextAwarePredicate> victims = new ArrayList<>();
 
     @Info("""

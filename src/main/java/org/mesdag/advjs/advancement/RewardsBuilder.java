@@ -1,4 +1,4 @@
-package org.mesdag.advjs.configure;
+package org.mesdag.advjs.advancement;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

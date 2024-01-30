@@ -13,13 +13,13 @@ import org.jetbrains.annotations.NotNull;
 import org.mesdag.advjs.predicate.DamageSourcePredicateBuilder;
 import org.mesdag.advjs.predicate.EntityPredicateBuilder;
 import org.mesdag.advjs.predicate.condition.ICondition;
-import org.mesdag.advjs.trigger.AbstractTriggerBuilder;
+import org.mesdag.advjs.trigger.BaseTriggerInstanceBuilder;
 import org.mesdag.advjs.util.Bounds;
 
 import java.util.function.Consumer;
 
 public class IncreasedKillScoreTrigger extends SimpleCriterionTrigger<IncreasedKillScoreTrigger.TriggerInstance> {
-    static final ResourceLocation ID = new ResourceLocation("advjs:increased_kill_score");
+    static final ResourceLocation ID = new ResourceLocation("advjs", "increased_kill_score");
 
     @Override
     public @NotNull TriggerInstance createInstance(@NotNull JsonObject jsonObject, @NotNull ContextAwarePredicate playerPredicate, @NotNull DeserializationContext deserializationContext) {
@@ -45,7 +45,7 @@ public class IncreasedKillScoreTrigger extends SimpleCriterionTrigger<IncreasedK
         return new TriggerInstance(builder.player, builder.killedPredicate, builder.scoreBounds, builder.damageSourcePredicate);
     }
 
-    public static class Builder extends AbstractTriggerBuilder {
+    public static class Builder extends BaseTriggerInstanceBuilder {
         ContextAwarePredicate killedPredicate = ContextAwarePredicate.ANY;
         MinMaxBounds.Ints scoreBounds = MinMaxBounds.Ints.ANY;
         DamageSourcePredicate damageSourcePredicate = DamageSourcePredicate.ANY;

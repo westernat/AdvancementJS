@@ -8,6 +8,7 @@ version = "${mod_version}"
 displayName = "AdvancementJS"
 authors = "Weternat"
 description = '''Configure advancements by KubeJS'''
+logoFile = "logo.png"
 
 [[dependencies.advjs]]
 modId = "forge"

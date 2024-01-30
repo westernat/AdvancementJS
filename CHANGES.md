@@ -8,7 +8,35 @@
 - More advancement warning message show in advancement.
 - Banding Bounds to KubeJS
 - New trigger: increasedKillScore
-  - Triggers when the player killed an entity, it will match the score that player increased.
+  - Triggers when the player killed an entity, it will triggerTest the score that player increased.
 
 ## Rename
 - AdvBuilder.getSavePath() -> AdvBuilder.getId()
+
+# 2.5.0
+## Addition
+- BlockDestroyedTrigger.Builder.ofTag(tag: ResourceLocation): void
+- AdvConfigureEventJS.lock(toLock: Ingredient, lockBy: ResourceLocation): void
+- AdvConfigureEventJS.lock(toLock: ItemPredicate, lockBy: ResourceLocation): void
+- Trigger.fromJson(json: JsonObject): CriterionTriggerInstance
+
+## Removal
+- AdvConfigureEventJS.lock(toLock: ItemStack, lockBy: ResourceLocation): void
+- AdvConfigureEventJS.lock(toLock: ItemStack, lockBy: AdvBuilder): void
+
+## Fix
+- Allow ```requireParentDone``` and ```requireOthersDone``` use in same advancement
+
+# 2.6.0
+## Compat
+- ```Revelationary```(Fabric only), the new client event: ```AdvJSEvents.revelation```
+- ```EventHorizon```(Forge only), the new client event: ```AdvJSEvents.revelation```
+
+## Reconstruct
+- ```ServerEvents.advancement``` -> ```AdvJSEvents.advancement```
+- ```AdvConfigureEventJS.lock``` -> ```AdvJSEvents.lock```
+
+## Addition
+- The new startup event ```AdvJSEvents.trigger```, for registering custom trigger
+  - Use ```CustomTriggers.of(id: ResourceLocation): BaseTrigger``` to get your custom trigger for triggers
+  - Use ```Trigger.custom(id: ResourceLocation): BaseTriggerInstance``` to create a trigger instance for criteria

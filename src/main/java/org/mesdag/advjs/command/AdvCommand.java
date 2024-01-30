@@ -13,7 +13,11 @@ import java.nio.file.Path;
 public class AdvCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("advjs").requires(sourceStack -> sourceStack.hasPermission(2))
-            .then(Commands.literal("example").executes(context -> run(context.getSource(), AdvJS.EXAMPLE, EXAMPLE)))
+            .then(Commands.literal("example").executes(context -> {
+                run(context.getSource(), AdvJS.SERVER_EXAMPLE, SERVER_EXAMPLE);
+                run(context.getSource(), AdvJS.STARTUP_EXAMPLE, STARTUP_EXAMPLE);
+                return 2;
+            }))
             .then(Commands.literal("story").executes(context -> run(context.getSource(), AdvJS.STORY, STORY)))
             .then(Commands.literal("adventure").executes(context -> run(context.getSource(), AdvJS.ADVENTURE, ADVENTURE)))
             .then(Commands.literal("nether").executes(context -> run(context.getSource(), AdvJS.NETHER, NETHER)))
@@ -21,7 +25,7 @@ public class AdvCommand {
             .then(Commands.literal("end").executes(context -> run(context.getSource(), AdvJS.END, END)))
             .then(Commands.literal("all").executes(context -> {
                 CommandSourceStack source = context.getSource();
-                run(source, AdvJS.EXAMPLE, EXAMPLE);
+                run(source, AdvJS.SERVER_EXAMPLE, SERVER_EXAMPLE);
                 run(source, AdvJS.STORY, STORY);
                 run(source, AdvJS.ADVENTURE, ADVENTURE);
                 run(source, AdvJS.NETHER, NETHER);
@@ -47,7 +51,8 @@ public class AdvCommand {
     public static final String NETHER;
     public static final String ADVENTURE;
     public static final String STORY;
-    public static final String EXAMPLE;
+    public static final String SERVER_EXAMPLE;
+    public static final String STARTUP_EXAMPLE;
 
     static {
         END = """
@@ -2091,16 +2096,16 @@ public class AdvCommand {
                     });
             })
             """;
-        EXAMPLE = """
-            // You Can Turn Off Auto Generate In common.properties
-            // You can also use '/advjs' command to generate this;
-            ServerEvents.advancement((event) => {
+        SERVER_EXAMPLE = """
+            // You can turn off auto generate in common.properties
+            // You can also use '/advjs' command to generate this
+            AdvJSEvents.advancement(event => {
                 const { PREDICATE, TRIGGER } = event;
 
                 // Define trigger
-                const jump5times = TRIGGER.tick((triggerBuilder) =>
-                    triggerBuilder.addStat(Stats.JUMP, Stats.CUSTOM, {min: 5}));
-                const bred_in_nether = TRIGGER.bredAnimals((triggerBuilder) => {
+                const jump5times = TRIGGER.tick(triggerBuilder =>
+                    triggerBuilder.addStat(Stats.JUMP, Stats.CUSTOM, { min: 5 }));
+                const bred_in_nether = TRIGGER.bredAnimals(triggerBuilder => {
                     triggerBuilder.setChildByPredicate(PREDICATE.entityFromJson({
                         stepping_on: {
                             dimension: "the_nether"
@@ -2108,34 +2113,37 @@ public class AdvCommand {
                     }))
                 });
                 // AdvJS custom trigger
-                const destroy_dirt = TRIGGER.blockDestroyed((triggerBuilder) => triggerBuilder.setBlock("dirt"));
+                const destroy_dirt = TRIGGER.blockDestroyed(triggerBuilder => triggerBuilder.setBlock("dirt"));
+                // Your custom trigger
+                const get_adv = TRIGGER.custom("advjs:get_adv");
 
                 // Create root advancement
                 const root = event.create("advjs:hell")
-                    .display((displayBuilder) => {
+                    .display(displayBuilder => {
                         displayBuilder.setTitle("AdvancementJS")
                         displayBuilder.setDescription("Quick example")
                         displayBuilder.setIcon("diamond")
                     })
-                    .criteria((criteriaBuilder) => criteriaBuilder.add("dirt", destroy_dirt))
+                    .criteria(criteriaBuilder => criteriaBuilder.add("dirt", destroy_dirt))
                     // AdvJS custom reward
-                    .rewards((rewardsBuilder) => rewardsBuilder.addEffect("absorption", 200));
+                    .rewards(rewardsBuilder => rewardsBuilder.addEffect("absorption", 200));
 
                 // Add child for root
-                root.addChild("child1", (childBuilder) => {
+                root.addChild("child1", childBuilder => {
                     childBuilder
-                        .display((displayBuilder) => {
+                        .display(displayBuilder => {
                             displayBuilder.setTitle(Text.red("Holy"))
                             displayBuilder.setDescription(Text.red("Hell starts"))
                         })
-                        .criteria((criteriaBuilder) => {
+                        .criteria(criteriaBuilder => {
                             // 'OR' means that if you want to achieve this advancement,
                             // you just need one of two triggers matched below
                             criteriaBuilder.setStrategy(RequirementsStrategy.OR)
                             criteriaBuilder.add("bred", bred_in_nether)
                             criteriaBuilder.add("jump", jump5times)
+                            criteriaBuilder.add("get_adv", get_adv)
                         })
-                        .rewards((rewardsBuilder) => {
+                        .rewards(rewardsBuilder => {
                             rewardsBuilder.setRecipes("minecraft:lodestone", "minecraft:brewing_stand")
                             rewardsBuilder.setExperience(100)
                         })
@@ -2153,20 +2161,45 @@ public class AdvCommand {
                 event.get("minecraft:story/smelt_iron")
                     // Apply offset to display
                     .displayOffset(1, 1, true)
-                    .modifyDisplay((displayBuilder) => displayBuilder.setIcon("diamond_pickaxe"))
-                    .addChild("child2", (childBuilder) => {
+                    .modifyDisplay(displayBuilder => displayBuilder.setIcon("diamond_pickaxe"))
+                    .addChild("child2", childBuilder => {
                         childBuilder
-                            .display((displayBuilder) => {
-                                displayBuilder.setTitle('A nice one!')
+                            .display(displayBuilder => {
+                                displayBuilder.setIcon("recovery_compass")
+                                displayBuilder.setTitle('I will come back!')
                                 displayBuilder.setDescription(Text.green("Good luck"))
-                                // You can also apply offset at here
                                 displayBuilder.offset(-1, 0)
                             })
-                            .criteria((criteriaBuilder) => criteriaBuilder.add("jump", jump5times))
+                            // The trigger could also be created from json
+                            .criteria(criteriaBuilder => criteriaBuilder.add("go_back_to_home", TRIGGER.fromJson({
+                                "trigger": "minecraft:changed_dimension",
+                                "conditions": {
+                                    "from": "minecraft:the_end",
+                                    "to": "minecraft:overworld"
+                                }
+                            })))
                     });
+            })
 
+            AdvJSEvents.lock(event => {
                 // Lock recipe by advancement
-                event.lock("stone_slab", "minecraft:story/smelt_iron");
+                event.result("stone_slab", "minecraft:story/smelt_iron");
+            })
+                        
+            PlayerEvents.advancement(event => {
+                const player = event.getPlayer();
+                // The first argument is use for match player predicate, the other two is the matches you defined
+                CustomTriggers.of("advjs:get_adv").trigger(player, event.getAdvancement(), player.username)
+            })
+            """;
+        STARTUP_EXAMPLE = """
+            // Create a custom trigger
+            AdvJSEvents.trigger(event => {
+                event.create("advjs:get_adv")
+                    // How many matches you defined, how many tests you should put in
+                    // In this example, we defined 2 matches
+                    .match(advancement => advancement.getId() == "minecraft:story/smelt_iron")
+                    .match(playerName => playerName == "Dev")
             })
             """;
     }

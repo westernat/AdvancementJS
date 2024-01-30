@@ -10,7 +10,7 @@ import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
 
-class EnchantedItemBuilder extends AbstractTriggerBuilder implements ItemSetter {
+class EnchantedItemBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
     ItemPredicate item;
     MinMaxBounds.Ints levels;
 

@@ -9,7 +9,7 @@ import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
-class BredAnimalsBuilder extends AbstractTriggerBuilder {
+class BredAnimalsBuilder extends BaseTriggerInstanceBuilder {
     ContextAwarePredicate parent = ContextAwarePredicate.ANY;
     ContextAwarePredicate partner = ContextAwarePredicate.ANY;
     ContextAwarePredicate child = ContextAwarePredicate.ANY;
