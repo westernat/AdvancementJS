@@ -10,7 +10,7 @@ import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
 
-class ItemDurabilityBuilder extends AbstractTriggerBuilder implements ItemSetter {
+class ItemDurabilityBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
     ItemPredicate item = ItemPredicate.ANY;
     NumberRange.IntRange durability = NumberRange.IntRange.ANY;
     NumberRange.IntRange delta = NumberRange.IntRange.ANY;

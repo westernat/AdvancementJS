@@ -12,7 +12,7 @@ import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
 
-class TradeBuilder extends AbstractTriggerBuilder implements ItemSetter {
+class TradeBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
     LootContextPredicate villager = LootContextPredicate.EMPTY;
     ItemPredicate item = ItemPredicate.ANY;
 

@@ -8,7 +8,7 @@ import org.mesdag.advjs.predicate.LocationPredicateBuilder;
 
 import java.util.function.Consumer;
 
-public class TraveledThroughNetherBuilder extends AbstractTriggerBuilder {
+public class TraveledThroughNetherBuilder extends BaseTriggerInstanceBuilder {
     LocationPredicate startPosition = LocationPredicate.ANY;
     DistancePredicate distance = DistancePredicate.ANY;
 

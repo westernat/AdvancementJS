@@ -8,7 +8,7 @@ import org.mesdag.advjs.predicate.LocationPredicateBuilder;
 
 import java.util.function.Consumer;
 
-public class FallFromHeightBuilder extends AbstractTriggerBuilder {
+public class FallFromHeightBuilder extends BaseTriggerInstanceBuilder {
     LocationPredicate startPosition = LocationPredicate.ANY;
     DistancePredicate distance = DistancePredicate.ANY;
 

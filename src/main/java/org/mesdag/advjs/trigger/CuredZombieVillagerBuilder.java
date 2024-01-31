@@ -8,7 +8,7 @@ import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
-class CuredZombieVillagerBuilder extends AbstractTriggerBuilder {
+class CuredZombieVillagerBuilder extends BaseTriggerInstanceBuilder {
     LootContextPredicate zombie = LootContextPredicate.EMPTY;
     LootContextPredicate villager = LootContextPredicate.EMPTY;
     @Info("""

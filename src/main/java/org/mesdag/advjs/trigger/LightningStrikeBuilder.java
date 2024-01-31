@@ -10,7 +10,7 @@ import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
-class LightningStrikeBuilder extends AbstractTriggerBuilder {
+class LightningStrikeBuilder extends BaseTriggerInstanceBuilder {
     LootContextPredicate lightning = LootContextPredicate.EMPTY;
     LootContextPredicate bystander = LootContextPredicate.EMPTY;
 

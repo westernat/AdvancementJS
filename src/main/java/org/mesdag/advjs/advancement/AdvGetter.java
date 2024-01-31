@@ -1,11 +1,13 @@
-package org.mesdag.advjs.configure;
+package org.mesdag.advjs.advancement;
 
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.util.Identifier;
+import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.util.DisplayOffset;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -27,26 +29,24 @@ public class AdvGetter {
         };
         this.criteriaConsumer = criteriaBuilder -> {
         };
+        GETTER_MAP.put(id, this);
     }
 
     @Info("Modify the display. Defaults to original display.")
     public AdvGetter modifyDisplay(Consumer<DisplayBuilder> displayBuilderConsumer) {
         this.displayConsumer = displayBuilderConsumer;
-        update();
         return this;
     }
 
     @Info("Modify the criteria. Defaults to original criteria.")
     public AdvGetter modifyCriteria(Consumer<CriteriaBuilder> criteriaBuilderConsumer) {
         this.criteriaConsumer = criteriaBuilderConsumer;
-        update();
         return this;
     }
 
     @Info("Modify the rewards. Defaults to original rewards.")
     public AdvGetter modifyRewards(Consumer<RewardsBuilder> rewardsBuilderConsumer) {
         this.rewardsConsumer = rewardsBuilderConsumer;
-        update();
         return this;
     }
 
@@ -77,13 +77,25 @@ public class AdvGetter {
 
     @Info("It will check if parent done. Defaults do not check.")
     public AdvGetter requireParentDone() {
-        REQUIRE_DONE.put(id, new Identifier[0]);
+        if (REQUIRE_DONE.containsKey(id)) {
+            ArrayList<Identifier> list = new ArrayList<>(Arrays.stream(REQUIRE_DONE.get(id)).toList());
+            list.add(AdvJS.PARENT);
+            REQUIRE_DONE.put(id, list.toArray(Identifier[]::new));
+        } else {
+            REQUIRE_DONE.put(id, new Identifier[]{AdvJS.PARENT});
+        }
         return this;
     }
 
     @Info("It will check if advancements that you put in had done.")
     public AdvGetter requireOthersDone(Identifier... requires) {
-        REQUIRE_DONE.put(id, requires);
+        if (REQUIRE_DONE.containsKey(id)) {
+            ArrayList<Identifier> list = new ArrayList<>(Arrays.stream(requires).toList());
+            list.add(AdvJS.PARENT);
+            REQUIRE_DONE.put(id, list.toArray(Identifier[]::new));
+        } else {
+            REQUIRE_DONE.put(id, requires);
+        }
         return this;
     }
 
@@ -106,10 +118,6 @@ public class AdvGetter {
     public AdvGetter displayOffset(float x, float y, boolean modifyChildren) {
         DISPLAY_OFFSET.put(id, new DisplayOffset(x, y, modifyChildren));
         return this;
-    }
-
-    private void update() {
-        GETTER_MAP.put(id, this);
     }
 
     @HideFromJS

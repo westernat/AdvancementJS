@@ -6,15 +6,16 @@ import dev.latvian.mods.kubejs.script.BindingsEvent;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
+import org.mesdag.advjs.advancement.AdvLockEventJS;
 import org.mesdag.advjs.command.AdvCommand;
+import org.mesdag.advjs.trigger.registry.CustomTriggers;
+import org.mesdag.advjs.trigger.registry.TriggerRegistryEventJS;
 import org.mesdag.advjs.util.*;
 
 import java.nio.file.Files;
 
-import static org.mesdag.advjs.util.Data.*;
-
 public class AdvJSPlugin extends KubeJSPlugin {
-    public static boolean DEBUG;
+    static boolean DEBUG;
 
     @Override
     public void registerBindings(BindingsEvent event) {
@@ -22,6 +23,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
         event.add("RequirementsStrategy", RequirementsStrategyWrapper.class);
         event.add("GameType", GameTypeWrapper.class);
         event.add("Bounds", Bounds.class);
+        event.add("CustomTriggers", CustomTriggers.class);
     }
 
     @Override
@@ -31,13 +33,20 @@ public class AdvJSPlugin extends KubeJSPlugin {
     }
 
     @Override
+    public void initStartup() {
+        AdvJSEvents.TRIGGER.post(new TriggerRegistryEventJS());
+        CustomTriggers.registerAll();
+    }
+
+    @Override
     public void onServerReload() {
-        FILTERS.clear();
-        GETTER_MAP.clear();
-        BUILDER_MAP.clear();
-        LOCK_MAP.clear();
-        REQUIRE_DONE.clear();
-        DISPLAY_OFFSET.clear();
+        Data.clear();
+        AdvJSEvents.LOCK.post(new AdvLockEventJS());
+    }
+
+    @Override
+    public void registerEvents() {
+        AdvJSEvents.GROUP.register();
     }
 
     @Override
@@ -47,10 +56,20 @@ public class AdvJSPlugin extends KubeJSPlugin {
     }
 
     private static void example(boolean generate) {
-        if (generate && Files.notExists(AdvJS.EXAMPLE)) {
+        if (!generate) return;
+
+        if (Files.notExists(AdvJS.STARTUP_EXAMPLE)) {
             try {
-                Files.writeString(AdvJS.EXAMPLE, AdvCommand.EXAMPLE);
-                ConsoleJS.SERVER.info("AdvJS: Generated advjs_example.js");
+                Files.writeString(AdvJS.STARTUP_EXAMPLE, AdvCommand.STARTUP_EXAMPLE);
+                ConsoleJS.SERVER.info("AdvJS: Generated advjs_startup.js");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        if (Files.notExists(AdvJS.SERVER_EXAMPLE)) {
+            try {
+                Files.writeString(AdvJS.SERVER_EXAMPLE, AdvCommand.SERVER_EXAMPLE);
+                ConsoleJS.SERVER.info("AdvJS: Generated advjs_server.js");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

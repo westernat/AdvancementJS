@@ -8,8 +8,8 @@
 		"Westernat"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/westernat/",
+		"sources": "https://github.com/westernat/advancementjs"
 	},
 	"license": "LGPL v2.1",
 	"icon": "assets/advjs/logo.png",
@@ -30,6 +30,6 @@
 		"fabric-api": "*"
 	},
 	"suggests": {
-		"another-mod": "*"
+		"revjs": "*"
 	}
 }

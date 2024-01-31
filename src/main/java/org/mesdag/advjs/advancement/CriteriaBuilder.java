@@ -1,4 +1,4 @@
-package org.mesdag.advjs.configure;
+package org.mesdag.advjs.advancement;
 
 import com.google.common.collect.Maps;
 import dev.latvian.mods.kubejs.typings.Info;

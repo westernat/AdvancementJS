@@ -13,7 +13,7 @@ import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
 
-class PlayerInteractBuilder extends AbstractTriggerBuilder implements ItemSetter {
+class PlayerInteractBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
     ItemPredicate item = ItemPredicate.ANY;
     LootContextPredicate entity = LootContextPredicate.EMPTY;
 

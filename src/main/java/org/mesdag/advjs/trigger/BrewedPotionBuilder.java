@@ -6,7 +6,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-public class BrewedPotionBuilder extends AbstractTriggerBuilder {
+public class BrewedPotionBuilder extends BaseTriggerInstanceBuilder {
     @Nullable
     Potion potion = null;
 

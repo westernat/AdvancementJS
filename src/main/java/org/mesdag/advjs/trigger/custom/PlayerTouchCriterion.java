@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayerTouchCriterion extends AbstractCriterion<PlayerTouchCriterion.Conditions> {
-    static final Identifier ID = new Identifier("advjs:player_touch");
+    static final Identifier ID = new Identifier("advjs", "player_touch");
 
     @Override
     public @NotNull PlayerTouchCriterion.Conditions conditionsFromJson(@NotNull JsonObject jsonObject, @NotNull LootContextPredicate composite, @NotNull AdvancementEntityPredicateDeserializer deserializationContext) {

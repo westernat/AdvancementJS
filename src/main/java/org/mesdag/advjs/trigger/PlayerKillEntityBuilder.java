@@ -11,7 +11,7 @@ import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
-class PlayerKillEntityBuilder extends AbstractTriggerBuilder {
+class PlayerKillEntityBuilder extends BaseTriggerInstanceBuilder {
     LootContextPredicate killed = LootContextPredicate.EMPTY;
     DamageSourcePredicate killingBlow = DamageSourcePredicate.EMPTY;
 

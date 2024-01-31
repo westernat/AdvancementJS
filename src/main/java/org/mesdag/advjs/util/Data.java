@@ -1,18 +1,27 @@
 package org.mesdag.advjs.util;
 
-import net.minecraft.item.Item;
+import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.util.Identifier;
-import org.mesdag.advjs.configure.AdvBuilder;
-import org.mesdag.advjs.configure.AdvGetter;
+import org.mesdag.advjs.advancement.AdvBuilder;
+import org.mesdag.advjs.advancement.AdvGetter;
 
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 
 public class Data {
     public static final HashSet<AdvRemoveFilter> FILTERS = new HashSet<>();
-    public static final HashMap<Identifier, AdvGetter> GETTER_MAP = new HashMap<>();
-    public static final HashMap<Identifier, AdvBuilder> BUILDER_MAP = new HashMap<>();
-    public static final HashMap<Item, Identifier> LOCK_MAP = new HashMap<>();
-    public static final HashMap<Identifier, Identifier[]> REQUIRE_DONE = new HashMap<>();
-    public static final HashMap<Identifier, DisplayOffset> DISPLAY_OFFSET = new HashMap<>();
+    public static final Hashtable<Identifier, AdvGetter> GETTER_MAP = new Hashtable<>();
+    public static final Hashtable<Identifier, AdvBuilder> BUILDER_MAP = new Hashtable<>();
+    public static final Hashtable<ItemPredicate, Identifier> LOCK_MAP = new Hashtable<>();
+    public static final Hashtable<Identifier, Identifier[]> REQUIRE_DONE = new Hashtable<>();
+    public static final Hashtable<Identifier, DisplayOffset> DISPLAY_OFFSET = new Hashtable<>();
+
+    public static void clear() {
+        FILTERS.clear();
+        GETTER_MAP.clear();
+        BUILDER_MAP.clear();
+        LOCK_MAP.clear();
+        REQUIRE_DONE.clear();
+        DISPLAY_OFFSET.clear();
+    }
 }

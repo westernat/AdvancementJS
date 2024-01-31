@@ -9,12 +9,12 @@ import net.minecraft.predicate.entity.LootContextPredicate;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
-import org.mesdag.advjs.trigger.AbstractTriggerBuilder;
+import org.mesdag.advjs.trigger.BaseTriggerInstanceBuilder;
 
 import java.util.function.Consumer;
 
 public class BossEventCriterion extends AbstractCriterion<BossEventCriterion.Conditions> {
-    static final Identifier ID = new Identifier("advjs:boss_event");
+    static final Identifier ID = new Identifier("advjs", "boss_event");
 
     @Override
     public @NotNull BossEventCriterion.Conditions conditionsFromJson(@NotNull JsonObject jsonObject, @NotNull LootContextPredicate composite, @NotNull AdvancementEntityPredicateDeserializer deserializationContext) {
@@ -40,7 +40,7 @@ public class BossEventCriterion extends AbstractCriterion<BossEventCriterion.Con
         return new Conditions(builder.player, builder.darkenScreen, builder.playBossMusic, builder.createWorldFog, builder.key);
     }
 
-    public static class Builder extends AbstractTriggerBuilder {
+    public static class Builder extends BaseTriggerInstanceBuilder {
         boolean darkenScreen = false;
         boolean playBossMusic = false;
         boolean createWorldFog = false;

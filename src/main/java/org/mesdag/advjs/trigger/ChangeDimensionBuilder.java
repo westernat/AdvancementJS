@@ -7,7 +7,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 
-class ChangeDimensionBuilder extends AbstractTriggerBuilder {
+class ChangeDimensionBuilder extends BaseTriggerInstanceBuilder {
     RegistryKey<World> from = null;
     RegistryKey<World> to = null;
 

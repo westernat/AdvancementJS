@@ -5,7 +5,7 @@ import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.predicate.NumberRange;
 import org.mesdag.advjs.util.Bounds;
 
-class ConstructBeaconBuilder extends AbstractTriggerBuilder {
+class ConstructBeaconBuilder extends BaseTriggerInstanceBuilder {
     NumberRange.IntRange level = NumberRange.IntRange.ANY;
 
     @Info("The level of the updated beacon structure.")

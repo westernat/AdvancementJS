@@ -9,7 +9,7 @@ import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.stream.Stream;
 
-class InventoryChangeBuilder extends AbstractTriggerBuilder implements ItemSetter {
+class InventoryChangeBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
     NumberRange.IntRange slotsOccupied = NumberRange.IntRange.ANY;
     NumberRange.IntRange slotsFull = NumberRange.IntRange.ANY;
     NumberRange.IntRange slotsEmpty = NumberRange.IntRange.ANY;

@@ -10,7 +10,7 @@ import org.mesdag.advjs.util.ItemSetter;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-class RecipeCraftedBuilder extends AbstractTriggerBuilder implements ItemSetter {
+class RecipeCraftedBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
     Identifier recipe = new Identifier("wooden_sword");
     final ArrayList<ItemPredicate> predicates = new ArrayList<>();
 

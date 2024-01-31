@@ -26,6 +26,13 @@ repositories {
 			includeGroup "dev.latvian.mods"
 		}
 	}
+
+	maven {
+		url = "https://api.modrinth.com/maven"
+		content {
+			includeGroup "maven.modrinth"
+		}
+	}
 }
 
 dependencies {
@@ -34,7 +41,8 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modImplementation("dev.latvian.mods:kubejs-fabric:${kubejs_version}")
+	modImplementation "dev.latvian.mods:kubejs-fabric:${kubejs_version}"
+	modCompileOnly "maven.modrinth:Revelationary:${revelationary_version}"
 }
 
 processResources {

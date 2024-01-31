@@ -16,8 +16,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.profiler.Profiler;
 import org.mesdag.advjs.AdvJS;
-import org.mesdag.advjs.AdvJSPlugin;
-import org.mesdag.advjs.configure.*;
+import org.mesdag.advjs.advancement.*;
+import org.mesdag.advjs.trigger.Trigger;
+import org.mesdag.advjs.util.AdvJSEvents;
 import org.mesdag.advjs.util.AdvRemoveFilter;
 import org.mesdag.advjs.util.DisplayOffset;
 import org.spongepowered.asm.mixin.Final;
@@ -44,22 +45,17 @@ public abstract class ServerAdvancementLoaderMixin {
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("HEAD"))
     private void advJS$remove(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
-        AdvJS.ADVANCEMENT.post(new AdvConfigureEvent());
+        AdvJSEvents.ADVANCEMENT.post(new AdvConfigureEventJS(new Trigger(conditionManager)));
 
         int counter = 0;
         ImmutableSet.Builder<Identifier> builder = new ImmutableSet.Builder<>();
         for (Map.Entry<Identifier, JsonElement> entry : map.entrySet()) {
             Identifier key = entry.getKey();
-            if (key.toString().startsWith("minecraft:recipe")) {
-                // Filter all recipe advancement
-                continue;
-            }
+            if (key.toString().startsWith("minecraft:recipe")) continue;
 
             JsonObject advJson = entry.getValue().getAsJsonObject();
             for (AdvRemoveFilter filter : FILTERS) {
-                if (filter.isResolved()) {
-                    continue;
-                }
+                if (filter.isResolved()) continue;
 
                 String parent = advJson.has("parent") ? advJson.get("parent").getAsString() : null;
                 if (advJson.has("display")) {
@@ -86,7 +82,7 @@ public abstract class ServerAdvancementLoaderMixin {
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/advancement/AdvancementManager;load(Ljava/util/Map;)V", shift = At.Shift.BEFORE),
         locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void advjs$configure(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci, Map<Identifier, Advancement.Builder> map2, AdvancementManager advancementManager) {
+    private void advjs$modify_add(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci, Map<Identifier, Advancement.Builder> map2, AdvancementManager advancementManager) {
         advJS$modify(map2, conditionManager);
         advJS$add(map2);
         ConsoleJS.SERVER.info("AdvJS: Completely loaded!");
@@ -94,9 +90,7 @@ public abstract class ServerAdvancementLoaderMixin {
 
     @Unique
     private static void advJS$modify(Map<Identifier, Advancement.Builder> map, LootManager predicateManager) {
-        if (AdvJSPlugin.DEBUG) {
-            ConsoleJS.SERVER.info("AdvJS: Modification details:");
-        }
+        AdvJS.debugInfo("AdvJS: Modification details:");
 
         int counter = 0;
         for (Map.Entry<Identifier, AdvGetter> entry : GETTER_MAP.entrySet()) {
@@ -141,40 +135,38 @@ public abstract class ServerAdvancementLoaderMixin {
             map.put(id, neo);
             counter++;
 
-            if (AdvJSPlugin.DEBUG) {
-                ConsoleJS.SERVER.info("""
-                    identifier: %s
-                        parent: %s
-                        display:
-                            icon: %s -> %s
-                            title: %s -> %s
-                            description: %s -> %s
-                            background: %s -> %s
-                            frame: %s -> %s
-                            showToast: %s -> %s
-                            announceToChat: %s -> %s
-                            hidden: %s -> %s
-                        rewards: %s
-                        requirements: %s
-                        criteria: %s
-                    """
-                    .formatted(
-                        id,
-                        parentId,
-                        oldDisplay.getIcon().getTranslationKey(), neoDisplay.getIcon().getTranslationKey(),
-                        oldDisplay.getTitle().getString(), neoDisplay.getTitle().getString(),
-                        oldDisplay.getDescription().getString(), neoDisplay.getDescription().getString(),
-                        oldDisplay.getBackground(), neoDisplay.getBackground(),
-                        oldDisplay.getFrame().getId(), neoDisplay.getFrame().getId(),
-                        oldDisplay.shouldShowToast(), neoDisplay.shouldShowToast(),
-                        oldDisplay.shouldAnnounceToChat(), neoDisplay.shouldAnnounceToChat(),
-                        oldDisplay.isHidden(), neoDisplay.isHidden(),
-                        neoRewards,
-                        neoRequirements,
-                        String.join(",", neo.getCriteria().keySet())
-                    )
-                );
-            }
+            AdvJS.debugInfo("""
+                identifier: %s
+                    parent: %s
+                    display:
+                        icon: %s -> %s
+                        title: %s -> %s
+                        description: %s -> %s
+                        background: %s -> %s
+                        frame: %s -> %s
+                        showToast: %s -> %s
+                        announceToChat: %s -> %s
+                        hidden: %s -> %s
+                    rewards: %s
+                    requirements: %s
+                    criteria: %s
+                """
+                .formatted(
+                    id,
+                    parentId,
+                    oldDisplay.getIcon().getTranslationKey(), neoDisplay.getIcon().getTranslationKey(),
+                    oldDisplay.getTitle().getString(), neoDisplay.getTitle().getString(),
+                    oldDisplay.getDescription().getString(), neoDisplay.getDescription().getString(),
+                    oldDisplay.getBackground(), neoDisplay.getBackground(),
+                    oldDisplay.getFrame().getId(), neoDisplay.getFrame().getId(),
+                    oldDisplay.shouldShowToast(), neoDisplay.shouldShowToast(),
+                    oldDisplay.shouldAnnounceToChat(), neoDisplay.shouldAnnounceToChat(),
+                    oldDisplay.isHidden(), neoDisplay.isHidden(),
+                    neoRewards,
+                    neoRequirements,
+                    String.join(",", neo.getCriteria().keySet())
+                )
+            );
         }
         ConsoleJS.SERVER.info("AdvJS: Modified %s advancements".formatted(counter));
     }
@@ -235,7 +227,7 @@ public abstract class ServerAdvancementLoaderMixin {
             }
 
             DisplayOffset offset = entry.getValue();
-            advJS$applyOffset(advancement, offset.x, offset.y, offset.modifyChildren);
+            advJS$applyOffset(advancement, offset.offsetX(), offset.offsetY(), offset.modifyChildren());
         }
     }
 
@@ -258,9 +250,6 @@ public abstract class ServerAdvancementLoaderMixin {
             }
         }
 
-        if (AdvJSPlugin.DEBUG) {
-            ConsoleJS.SERVER.info("AdvJS: The display location of advancement '%s' has set from (%s, %s) to (%s, %s)"
-                .formatted(advancement.getId(), rawX, rawY, neoX, neoY));
-        }
+        AdvJS.debugInfo("AdvJS: The display location of advancement '%s' has set from (%s, %s) to (%s, %s)".formatted(advancement.getId(), rawX, rawY, neoX, neoY));
     }
 }
