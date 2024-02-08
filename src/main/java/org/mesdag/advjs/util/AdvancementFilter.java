@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 
-public class AdvRemoveFilter {
+public class AdvancementFilter {
     @Nullable ResourceLocation path;
     @Nullable String modid;
     @Nullable Item icon;
@@ -21,8 +21,8 @@ public class AdvRemoveFilter {
     @Nullable String parent;
     private boolean resolved = false;
 
-    public static AdvRemoveFilter of(Object o) {
-        AdvRemoveFilter filter = new AdvRemoveFilter();
+    public static AdvancementFilter of(Object o) {
+        AdvancementFilter filter = new AdvancementFilter();
         if (o instanceof CharSequence charSequence) {
             filter.path = new ResourceLocation(charSequence.toString());
         } else if (o instanceof Map) {

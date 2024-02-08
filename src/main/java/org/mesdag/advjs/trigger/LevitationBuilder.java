@@ -8,7 +8,7 @@ import org.mesdag.advjs.util.Bounds;
 
 import java.util.function.Consumer;
 
-class LevitationBuilder extends BaseTriggerInstanceBuilder {
+public class LevitationBuilder extends BaseTriggerInstanceBuilder {
     DistancePredicate distance = DistancePredicate.ANY;
     MinMaxBounds.Ints duration = MinMaxBounds.Ints.ANY;
 

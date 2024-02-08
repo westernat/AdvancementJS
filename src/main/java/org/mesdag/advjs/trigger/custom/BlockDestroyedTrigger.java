@@ -61,9 +61,9 @@ public class BlockDestroyedTrigger extends SimpleCriterionTrigger<BlockDestroyed
 
     public static class Builder extends BaseTriggerInstanceBuilder implements ItemSetter {
         @Nullable
-        Block block = null;
+        Block block;
         @Nullable
-        TagKey<Block> tag = null;
+        TagKey<Block> tag;
         StatePropertiesPredicate statePredicate = StatePropertiesPredicate.ANY;
         ItemPredicate item = ItemPredicate.ANY;
 

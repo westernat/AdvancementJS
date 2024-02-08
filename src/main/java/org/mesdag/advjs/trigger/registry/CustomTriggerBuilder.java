@@ -5,14 +5,13 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.LinkedList;
 
 
-public class BaseTriggerBuilder {
+public class CustomTriggerBuilder {
     final LinkedList<TriggerMatchCallback> callbacks = new LinkedList<>();
-
-    BaseTriggerBuilder(ResourceLocation id) {
+    CustomTriggerBuilder(ResourceLocation id) {
         CustomTriggers.BUILDERS.put(id, this);
     }
 
-    public BaseTriggerBuilder match(TriggerMatchCallback callback) {
+    public CustomTriggerBuilder match(TriggerMatchCallback callback) {
         callbacks.add(callback);
         return this;
     }

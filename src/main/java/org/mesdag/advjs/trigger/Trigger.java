@@ -20,7 +20,7 @@ import org.mesdag.advjs.trigger.custom.BlockDestroyedTrigger;
 import org.mesdag.advjs.trigger.custom.BossEventTrigger;
 import org.mesdag.advjs.trigger.custom.IncreasedKillScoreTrigger;
 import org.mesdag.advjs.trigger.custom.PlayerTouchTrigger;
-import org.mesdag.advjs.trigger.registry.BaseTriggerInstance;
+import org.mesdag.advjs.trigger.registry.CustomTriggerInstance;
 import org.mesdag.advjs.trigger.registry.CustomTriggers;
 import org.mesdag.advjs.util.ItemSetter;
 
@@ -36,22 +36,22 @@ public class Trigger implements ItemSetter {
     }
 
     @Info("Your custom trigger, which not match player.")
-    public BaseTriggerInstance custom(ResourceLocation id) {
+    public CustomTriggerInstance custom(ResourceLocation id) {
         if(CustomTriggers.TRIGGERS.containsKey(id)) {
             return CustomTriggers.TRIGGERS.get(id).create();
         }
-        ConsoleJS.SERVER.error("No such trigger: " + id);
+        ConsoleJS.SERVER.error("No such trigger: '%s'".formatted(id));
         return CustomTriggers.IMPOSSIBLE;
     }
 
     @Info("Your custom trigger, which will match player.")
-    public BaseTriggerInstance custom(ResourceLocation id, Consumer<BaseTriggerInstanceBuilder> consumer) {
+    public CustomTriggerInstance custom(ResourceLocation id, Consumer<BaseTriggerInstanceBuilder> consumer) {
         if(CustomTriggers.TRIGGERS.containsKey(id)) {
             BaseTriggerInstanceBuilder builder = new BaseTriggerInstanceBuilder();
             consumer.accept(builder);
             return CustomTriggers.TRIGGERS.get(id).create(builder.player);
         }
-        ConsoleJS.SERVER.error("No such trigger: " + id);
+        ConsoleJS.SERVER.error("No such trigger: '%s'".formatted(id));
         return CustomTriggers.IMPOSSIBLE;
     }
 

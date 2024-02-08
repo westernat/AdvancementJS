@@ -26,7 +26,7 @@ public class DisplayBuilder {
     private boolean hidden;
     private final ResourceLocation source;
 
-    DisplayBuilder(ResourceLocation source) {
+    public DisplayBuilder(ResourceLocation source) {
         this.icon = new ItemStack(Items.APPLE);
         this.title = Component.literal("title");
         this.description = Component.literal("description");

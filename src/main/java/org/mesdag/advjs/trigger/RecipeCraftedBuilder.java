@@ -10,7 +10,7 @@ import org.mesdag.advjs.util.ItemSetter;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-class RecipeCraftedBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
+public class RecipeCraftedBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
     ResourceLocation recipe = new ResourceLocation("wooden_sword");
     final ArrayList<ItemPredicate> predicates = new ArrayList<>();
 

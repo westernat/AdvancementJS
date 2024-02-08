@@ -3,7 +3,7 @@ package org.mesdag.advjs.util;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.world.effect.MobEffectInstance;
 
-public interface RewardsAccessor {
+public interface RewardsKJS {
     default AdvancementRewards advJS$getSelf() {
         return (AdvancementRewards) this;
     }

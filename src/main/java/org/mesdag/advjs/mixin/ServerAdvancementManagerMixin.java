@@ -3,6 +3,7 @@ package org.mesdag.advjs.mixin;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import dev.latvian.mods.kubejs.core.ItemKJS;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.*;
@@ -19,7 +20,7 @@ import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.advancement.*;
 import org.mesdag.advjs.trigger.Trigger;
 import org.mesdag.advjs.util.AdvJSEvents;
-import org.mesdag.advjs.util.AdvRemoveFilter;
+import org.mesdag.advjs.util.AdvancementFilter;
 import org.mesdag.advjs.util.DisplayOffset;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -54,7 +55,7 @@ public abstract class ServerAdvancementManagerMixin {
             if (key.toString().startsWith("minecraft:recipe")) continue;
 
             JsonObject advJson = entry.getValue().getAsJsonObject();
-            for (AdvRemoveFilter filter : FILTERS) {
+            for (AdvancementFilter filter : FILTERS) {
                 if (filter.isResolved()) continue;
 
                 String parent = advJson.has("parent") ? advJson.get("parent").getAsString() : null;
@@ -76,7 +77,7 @@ public abstract class ServerAdvancementManagerMixin {
             counter++;
         }
 
-        ConsoleJS.SERVER.info("AdvJS: Removed " + counter + " advancements");
+        ConsoleJS.SERVER.info("AdvJS: Removed '%s' advancements".formatted(counter));
     }
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
@@ -93,7 +94,7 @@ public abstract class ServerAdvancementManagerMixin {
         AdvJS.debugInfo("AdvJS: Modification details:");
 
         int counter = 0;
-        for (Map.Entry<ResourceLocation, AdvGetter> entry : GETTER_MAP.entrySet()) {
+        for (Map.Entry<ResourceLocation, AdvGetter> entry : GETTERS.entrySet()) {
             ResourceLocation id = entry.getKey();
             Advancement.Builder builder = map.get(id);
             if (builder == null) {
@@ -102,12 +103,43 @@ public abstract class ServerAdvancementManagerMixin {
             }
             AdvGetter getter = entry.getValue();
             JsonObject oldJson = builder.serializeToJson();
-            ResourceLocation parentId = oldJson.has("parent") ? new ResourceLocation(oldJson.get("parent").getAsString()) : null;
+            ResourceLocation parentId = getter.parent == null ? (oldJson.has("parent") ? new ResourceLocation(oldJson.get("parent").getAsString()) : null) : getter.parent;
+            DisplayInfo neoDisplay = null;
+            String displayStr = "";
 
-            DisplayInfo oldDisplay = DisplayInfo.fromJson(oldJson.get("display").getAsJsonObject());
-            DisplayBuilder neoDisplayBuilder = new DisplayBuilder(id, oldDisplay);
-            getter.getDisplayConsumer().accept(neoDisplayBuilder);
-            DisplayInfo neoDisplay = neoDisplayBuilder.build();
+            if (getter.displayConsumer != null) {
+                if (oldJson.has("display")) {
+                    DisplayInfo oldDisplay = DisplayInfo.fromJson(oldJson.get("display").getAsJsonObject());
+                    DisplayBuilder neoDisplayBuilder = new DisplayBuilder(id, oldDisplay);
+                    getter.displayConsumer.accept(neoDisplayBuilder);
+                    neoDisplay = neoDisplayBuilder.build();
+
+                    displayStr = """
+                            display:
+                                icon: %s -> %s
+                                title: %s -> %s
+                                description: %s -> %s
+                                background: %s -> %s
+                                frame: %s -> %s
+                                showToast: %s -> %s
+                                announceToChat: %s -> %s
+                                hidden: %s -> %s
+                        """.formatted(
+                        ((ItemKJS) oldDisplay.getIcon().getItem()).kjs$getId(), ((ItemKJS) neoDisplay.getIcon().getItem()).kjs$getId(),
+                        oldDisplay.getTitle().getString(), neoDisplay.getTitle().getString(),
+                        oldDisplay.getDescription().getString(), neoDisplay.getDescription().getString(),
+                        oldDisplay.getBackground(), neoDisplay.getBackground(),
+                        oldDisplay.getFrame().getName(), neoDisplay.getFrame().getName(),
+                        oldDisplay.shouldShowToast(), neoDisplay.shouldShowToast(),
+                        oldDisplay.shouldAnnounceChat(), neoDisplay.shouldAnnounceChat(),
+                        oldDisplay.isHidden(), neoDisplay.isHidden()
+                    );
+                } else {
+                    DisplayBuilder neoDisplayBuilder = new DisplayBuilder(id);
+                    getter.displayConsumer.accept(neoDisplayBuilder);
+                    neoDisplay = neoDisplayBuilder.build();
+                }
+            }
 
             JsonElement oldRewardsJson = oldJson.get("rewards");
             AdvancementRewards neoRewards;
@@ -115,13 +147,13 @@ public abstract class ServerAdvancementManagerMixin {
                 neoRewards = AdvancementRewards.EMPTY;
             } else {
                 RewardsBuilder neoRewardsBuilder = RewardsBuilder.fromJson(oldRewardsJson.getAsJsonObject());
-                getter.getRewardsConsumer().accept(neoRewardsBuilder);
+                getter.rewardsConsumer.accept(neoRewardsBuilder);
                 neoRewards = neoRewardsBuilder.build();
             }
 
             Map<String, Criterion> oldCriteria = Criterion.criteriaFromJson(oldJson.get("criteria").getAsJsonObject(), new DeserializationContext(id, lootData));
             CriteriaBuilder neoCriteriaBuilder = new CriteriaBuilder(oldCriteria);
-            getter.getCriteriaConsumer().accept(neoCriteriaBuilder);
+            getter.criteriaConsumer.accept(neoCriteriaBuilder);
             String[][] neoRequirements = neoCriteriaBuilder.getRequirements();
 
             Advancement.Builder neo = Advancement.Builder.advancement().parent(parentId).display(neoDisplay).rewards(neoRewards).requirements(neoRequirements);
@@ -134,15 +166,7 @@ public abstract class ServerAdvancementManagerMixin {
             AdvJS.debugInfo("""
                 identifier: %s
                     parent: %s
-                    display:
-                        icon: %s -> %s
-                        title: %s -> %s
-                        description: %s -> %s
-                        background: %s -> %s
-                        frame: %s -> %s
-                        showToast: %s -> %s
-                        announceToChat: %s -> %s
-                        hidden: %s -> %s
+                %s
                     rewards: %s
                     requirements: %s
                     criteria: %s
@@ -150,14 +174,7 @@ public abstract class ServerAdvancementManagerMixin {
                 .formatted(
                     id,
                     parentId,
-                    oldDisplay.getIcon().getDescriptionId(), neoDisplay.getIcon().getDescriptionId(),
-                    oldDisplay.getTitle().getString(), neoDisplay.getTitle().getString(),
-                    oldDisplay.getDescription().getString(), neoDisplay.getDescription().getString(),
-                    oldDisplay.getBackground(), neoDisplay.getBackground(),
-                    oldDisplay.getFrame().getName(), neoDisplay.getFrame().getName(),
-                    oldDisplay.shouldShowToast(), neoDisplay.shouldShowToast(),
-                    oldDisplay.shouldAnnounceChat(), neoDisplay.shouldAnnounceChat(),
-                    oldDisplay.isHidden(), neoDisplay.isHidden(),
+                    displayStr,
                     neoRewards,
                     neoRequirements,
                     String.join(",", neo.getCriteria().keySet())
@@ -170,7 +187,7 @@ public abstract class ServerAdvancementManagerMixin {
     @Unique
     private static void advJS$add(Map<ResourceLocation, Advancement.Builder> map) {
         int counter = 0;
-        for (Map.Entry<ResourceLocation, AdvBuilder> entry : BUILDER_MAP.entrySet()) {
+        for (Map.Entry<ResourceLocation, AdvBuilder> entry : BUILDERS.entrySet()) {
             AdvBuilder advBuilder = entry.getValue();
             ResourceLocation parentId = advBuilder.getParent();
             if (parentId == null) {
@@ -180,7 +197,7 @@ public abstract class ServerAdvancementManagerMixin {
             }
 
             ResourceLocation id = advBuilder.getId();
-            if (BUILDER_MAP.containsKey(parentId) || map.containsKey(parentId)) {
+            if (BUILDERS.containsKey(parentId) || map.containsKey(parentId)) {
                 map.put(id, advJS$build(advBuilder).parent(parentId));
                 counter++;
             } else {
@@ -197,8 +214,11 @@ public abstract class ServerAdvancementManagerMixin {
             advBuilder.display(displayBuilder -> {
                 displayBuilder.setTitle(Component.translatable("advjs.attention").withStyle(ChatFormatting.RED));
                 displayBuilder.setDescription(advBuilder.getWarn().msg);
+                if (advBuilder.getWarn() == AdvBuilder.WarnType.NO_PARENT) {
+                    displayBuilder.setBackground(new ResourceLocation("textures/gui/advancements/backgrounds/nether.png"));
+                }
             });
-            ConsoleJS.SERVER.warn("AdvJS: A warn advancement created, the id is '%s'".formatted(advBuilder.getId()));
+            ConsoleJS.SERVER.warn("AdvJS: A warn advancement '%s' created".formatted(advBuilder.getId()));
         }
         return new Advancement(
             advBuilder.getId(),

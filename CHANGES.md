@@ -40,3 +40,23 @@
 - The new startup event ```AdvJSEvents.trigger```, for registering custom trigger
   - Use ```CustomTriggers.of(id: ResourceLocation): BaseTrigger``` to get your custom trigger for triggers
   - Use ```Trigger.custom(id: ResourceLocation): BaseTriggerInstance``` to create a trigger instance for criteria
+
+# 2.7.0
+## Addition
+- ```AdvBuilder.repeatable()``` and ```AdvGetter.repeatable()```
+  - If invoked this method, the advancement will revoke after grant automatically.
+- ```AdvGetter.changeParent(parentId: ResourceLocation)```
+- PlayerPredicateBuilder.checkAdvancementCriterions(advancement: ResourceLocation, criterions: Map<String, Boolean>)
+
+## Fix
+- If an advancement has no display, the displayModifier will not throw error, but create a new display
+- ```/advjs``` will generate correct code
+
+## Rename
+- ```AdvRemoveFilter``` -> ```AdvancementFilter```
+- ```GameType``` -> ```GameMode```
+- ```BaseTrigger``` -> ```CustomTrigger```
+
+# 2.8.0
+## Addition
+- AdvLockEventJS.interact(toLock: Block, lockBy: ResourceLocation)

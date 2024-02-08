@@ -8,7 +8,7 @@ import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
-class CuredZombieVillagerBuilder extends BaseTriggerInstanceBuilder {
+public class CuredZombieVillagerBuilder extends BaseTriggerInstanceBuilder {
     ContextAwarePredicate zombie = ContextAwarePredicate.ANY;
     ContextAwarePredicate villager = ContextAwarePredicate.ANY;
 

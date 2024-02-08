@@ -6,6 +6,7 @@
     "mixins": [
         "AbstractContainerMenuMixin",
         "AdvancementRewardsMixin",
+        "BlockBehavior$BlockStateBaseMixin",
         "BlockMixin",
         "PlayerAdvancementMixin",
         "PlayerMixin",

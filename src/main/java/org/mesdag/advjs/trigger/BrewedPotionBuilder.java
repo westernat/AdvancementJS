@@ -7,7 +7,7 @@ import net.minecraft.world.item.alchemy.Potion;
 
 import javax.annotation.Nullable;
 
-class BrewedPotionBuilder extends BaseTriggerInstanceBuilder {
+public class BrewedPotionBuilder extends BaseTriggerInstanceBuilder {
     @Nullable
     Potion potion = null;
 

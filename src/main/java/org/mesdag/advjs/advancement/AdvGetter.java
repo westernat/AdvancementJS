@@ -4,6 +4,7 @@ import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.util.DisplayOffset;
 
@@ -16,20 +17,27 @@ import static org.mesdag.advjs.util.Data.*;
 
 public class AdvGetter {
     private final ResourceLocation id;
-    private Consumer<DisplayBuilder> displayConsumer;
-    private Consumer<RewardsBuilder> rewardsConsumer;
-    private Consumer<CriteriaBuilder> criteriaConsumer;
-
+    @Nullable
+    public ResourceLocation parent;
     @HideFromJS
+    @Nullable
+    public Consumer<DisplayBuilder> displayConsumer;
+    @HideFromJS
+    public Consumer<RewardsBuilder> rewardsConsumer = rewardsBuilder -> {
+    };
+    @HideFromJS
+    public Consumer<CriteriaBuilder> criteriaConsumer = criteriaBuilder -> {
+    };
+
     public AdvGetter(ResourceLocation id) {
         this.id = id;
-        this.displayConsumer = displayBuilder -> {
-        };
-        this.rewardsConsumer = rewardsBuilder -> {
-        };
-        this.criteriaConsumer = criteriaBuilder -> {
-        };
-        GETTER_MAP.put(id, this);
+        GETTERS.put(id, this);
+    }
+
+    @Info("Change the parent. Defaults to original parent.")
+    public AdvGetter changeParent(ResourceLocation parentId) {
+        this.parent = parentId;
+        return this;
     }
 
     @Info("Modify the display. Defaults to original display.")
@@ -66,12 +74,7 @@ public class AdvGetter {
 
     private static ResourceLocation getRootPath(ResourceLocation savePath) {
         String[] paths = savePath.getPath().split("/");
-        String path;
-        if (paths.length == 1) {
-            path = paths[0];
-        } else {
-            path = String.join("/", Arrays.copyOfRange(paths, 0, paths.length - 1));
-        }
+        String path = paths.length == 1 ? paths[0] : String.join("/", Arrays.copyOfRange(paths, 0, paths.length - 1));
         return new ResourceLocation(savePath.getNamespace(), path);
     }
 
@@ -120,18 +123,13 @@ public class AdvGetter {
         return this;
     }
 
-    @HideFromJS
-    public Consumer<DisplayBuilder> getDisplayConsumer() {
-        return displayConsumer;
-    }
+    @Info("""
+        If invoked this method, the advancement will revoke after grant automatically.
 
-    @HideFromJS
-    public Consumer<CriteriaBuilder> getCriteriaConsumer() {
-        return criteriaConsumer;
-    }
-
-    @HideFromJS
-    public Consumer<RewardsBuilder> getRewardsConsumer() {
-        return rewardsConsumer;
+        This is useful when you want to trigger it repeatedly.
+        """)
+    public AdvGetter repeatable() {
+        REPEATABLE.add(id);
+        return this;
     }
 }

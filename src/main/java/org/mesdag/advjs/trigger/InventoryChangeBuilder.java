@@ -9,7 +9,7 @@ import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.stream.Stream;
 
-class InventoryChangeBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
+public class InventoryChangeBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
     MinMaxBounds.Ints slotsOccupied = MinMaxBounds.Ints.ANY;
     MinMaxBounds.Ints slotsFull = MinMaxBounds.Ints.ANY;
     MinMaxBounds.Ints slotsEmpty = MinMaxBounds.Ints.ANY;

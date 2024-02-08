@@ -14,6 +14,7 @@ import net.minecraft.world.level.GameType;
 import org.mesdag.advjs.util.Bounds;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class PlayerPredicateBuilder {
@@ -29,7 +30,7 @@ public class PlayerPredicateBuilder {
     EntityPredicate passenger = EntityPredicate.ANY;
     EntityPredicate targetedEntity = EntityPredicate.ANY;
     @Nullable
-    String team = null;
+    String team;
 
     @Info("Test the experience level of this player.")
     public void setLevel(Bounds bounds) {
@@ -66,7 +67,7 @@ public class PlayerPredicateBuilder {
     }
 
     @Info("Test the game mode of this player.")
-    public void setGameType(GameType gameType) {
+    public void setGameMode(GameType gameType) {
         playerBuilder.setGameType(gameType);
     }
 
@@ -91,7 +92,7 @@ public class PlayerPredicateBuilder {
     }
 
 
-    @Info(value = "Test if the player's advancement done.",
+    @Info(value = "Test whether an advancement is granted or not granted.",
         params = {
             @Param(name = "advancement"),
             @Param(name = "done")
@@ -100,7 +101,14 @@ public class PlayerPredicateBuilder {
         playerBuilder.checkAdvancementDone(advancement, done);
     }
 
-    //TODO checkAdvancementCriteria
+    @Info(value = "Test whether specific criterions of an advancement are marked as complete.",
+    params = {
+        @Param(name = "advancement"),
+        @Param(name = "criterions")
+    })
+    public void checkAdvancementCriterions(ResourceLocation advancement, Map<String, Boolean> criterions) {
+        playerBuilder.checkAdvancementCriterions(advancement, criterions);
+    }
 
     @Info("""
         Test the distance to player this predicate is invoked upon.

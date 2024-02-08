@@ -11,18 +11,20 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 
-public class BaseTrigger extends SimpleCriterionTrigger<BaseTriggerInstance> {
+public class CustomTrigger extends SimpleCriterionTrigger<CustomTriggerInstance> {
+    static final ResourceLocation IMPOSSIBLE_ID = new ResourceLocation("advjs", "impossible");
     private final ResourceLocation ID;
     private final LinkedList<TriggerMatchCallback> callbacks;
 
-    public BaseTrigger(ResourceLocation id, LinkedList<TriggerMatchCallback> callbacks) {
+    public CustomTrigger(ResourceLocation id, LinkedList<TriggerMatchCallback> callbacks) {
         this.ID = id;
         this.callbacks = callbacks;
     }
 
     @Override
-    protected @NotNull BaseTriggerInstance createInstance(@NotNull JsonObject jsonObject, @NotNull ContextAwarePredicate player, @NotNull DeserializationContext context) {
-        return new BaseTriggerInstance(ID, player, new LinkedList<>());
+    protected @NotNull CustomTriggerInstance createInstance(@NotNull JsonObject jsonObject, @NotNull ContextAwarePredicate player, @NotNull DeserializationContext context) {
+        // TODO JsonArray array = GsonHelper.getAsJsonArray(jsonObject, "matches", new JsonArray());
+        return new CustomTriggerInstance(ID, player, new LinkedList<>());
     }
 
     @Override
@@ -31,16 +33,17 @@ public class BaseTrigger extends SimpleCriterionTrigger<BaseTriggerInstance> {
     }
 
     public void trigger(ServerPlayer serverPlayer, Object... tests) {
+        if (ID == IMPOSSIBLE_ID) return;
         this.trigger(serverPlayer, instance -> instance.matches(tests));
     }
 
     @HideFromJS
-    public BaseTriggerInstance create() {
-        return new BaseTriggerInstance(ID, ContextAwarePredicate.ANY, callbacks);
+    public CustomTriggerInstance create() {
+        return new CustomTriggerInstance(ID, ContextAwarePredicate.ANY, callbacks);
     }
 
     @HideFromJS
-    public BaseTriggerInstance create(ContextAwarePredicate player) {
-        return new BaseTriggerInstance(ID, player, callbacks);
+    public CustomTriggerInstance create(ContextAwarePredicate player) {
+        return new CustomTriggerInstance(ID, player, callbacks);
     }
 }

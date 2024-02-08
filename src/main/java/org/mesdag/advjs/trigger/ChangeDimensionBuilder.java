@@ -6,8 +6,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
-
-class ChangeDimensionBuilder extends BaseTriggerInstanceBuilder {
+public class ChangeDimensionBuilder extends BaseTriggerInstanceBuilder {
     ResourceKey<Level> from = null;
     ResourceKey<Level> to = null;
 

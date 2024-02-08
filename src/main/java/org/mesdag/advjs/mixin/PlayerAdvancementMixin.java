@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static org.mesdag.advjs.util.Data.REPEATABLE;
 import static org.mesdag.advjs.util.Data.REQUIRE_DONE;
 
 @Mixin(PlayerAdvancements.class)
@@ -25,8 +26,11 @@ public abstract class PlayerAdvancementMixin {
     @Shadow
     public abstract AdvancementProgress getOrStartProgress(Advancement p_135997_);
 
+    @Shadow
+    public abstract boolean revoke(Advancement p_135999_, String p_136000_);
+
     @Inject(method = "award", at = @At("HEAD"), cancellable = true)
-    private void advJS$checkParentDone(Advancement advancement, String criterionName, CallbackInfoReturnable<Boolean> cir) {
+    private void advJS$checkDone(Advancement advancement, String criterionName, CallbackInfoReturnable<Boolean> cir) {
         if (player instanceof FakePlayer) {
             cir.setReturnValue(false);
             return;
@@ -52,5 +56,10 @@ public abstract class PlayerAdvancementMixin {
                 return;
             }
         }
+    }
+
+    @Inject(method = "award", at = @At(value = "RETURN", ordinal = 1))
+    private void advJS$repeat(Advancement advancement, String criterionName, CallbackInfoReturnable<Boolean> cir) {
+        if (REPEATABLE.contains(advancement.getId())) revoke(advancement, criterionName);
     }
 }

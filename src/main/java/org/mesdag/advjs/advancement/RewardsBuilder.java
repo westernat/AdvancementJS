@@ -10,7 +10,7 @@ import net.minecraft.commands.CommandFunction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import org.mesdag.advjs.util.RewardsAccessor;
+import org.mesdag.advjs.util.RewardsKJS;
 
 import java.util.ArrayList;
 
@@ -118,8 +118,8 @@ public class RewardsBuilder {
 
     @HideFromJS
     public AdvancementRewards build() {
-        RewardsAccessor accessor = (RewardsAccessor) new AdvancementRewards(experience, loot, recipes, function);
-        accessor.advJS$setMobEffectInstances(mobEffectInstances.toArray(MobEffectInstance[]::new));
-        return accessor.advJS$getSelf();
+        RewardsKJS rewards = (RewardsKJS) new AdvancementRewards(experience, loot, recipes, function);
+        rewards.advJS$setMobEffectInstances(mobEffectInstances.toArray(MobEffectInstance[]::new));
+        return rewards.advJS$getSelf();
     }
 }

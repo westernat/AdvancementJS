@@ -3,11 +3,10 @@ package org.mesdag.advjs.advancement;
 import dev.latvian.mods.kubejs.event.EventJS;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
-import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.resources.ResourceLocation;
 import org.mesdag.advjs.predicate.Predicate;
 import org.mesdag.advjs.trigger.Trigger;
-import org.mesdag.advjs.util.AdvRemoveFilter;
+import org.mesdag.advjs.util.AdvancementFilter;
 import org.mesdag.advjs.util.Condition;
 import org.mesdag.advjs.util.Provider;
 
@@ -27,7 +26,6 @@ public class AdvConfigureEventJS extends EventJS {
     @Info("Provides several data of vanilla.")
     public final Provider PROVIDER = new Provider();
 
-    @HideFromJS
     public AdvConfigureEventJS(Trigger trigger) {
         this.TRIGGER = trigger;
     }
@@ -49,7 +47,7 @@ public class AdvConfigureEventJS extends EventJS {
             frame: type of frame for the icon. Available value is 'challenge', 'goal' or 'task'.
             parent: the parent advancement path of this advancement.
         """)
-    public void remove(AdvRemoveFilter filter) {
+    public void remove(AdvancementFilter filter) {
         if (filter.fail()) {
             ConsoleJS.SERVER.warn("AdvJS/remove: Failed to create a filter");
         } else {
