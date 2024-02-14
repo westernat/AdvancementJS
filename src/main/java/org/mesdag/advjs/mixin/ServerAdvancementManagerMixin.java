@@ -14,7 +14,6 @@ import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.LootDataManager;
 import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.advancement.*;
@@ -50,6 +49,7 @@ public abstract class ServerAdvancementManagerMixin {
 
         int counter = 0;
         ImmutableSet.Builder<ResourceLocation> builder = new ImmutableSet.Builder<>();
+        // TODO iterator
         for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
             ResourceLocation key = entry.getKey();
             if (key.toString().startsWith("minecraft:recipe")) continue;
@@ -58,12 +58,10 @@ public abstract class ServerAdvancementManagerMixin {
             for (AdvancementFilter filter : FILTERS) {
                 if (filter.isResolved()) continue;
 
-                String parent = advJson.has("parent") ? advJson.get("parent").getAsString() : null;
+                ResourceLocation parent = advJson.has("parent") ? new ResourceLocation(advJson.get("parent").getAsString()) : null;
                 if (advJson.has("display")) {
-                    JsonObject display = advJson.get("display").getAsJsonObject();
-                    Item item = display.has("icon") ? GsonHelper.getAsItem(display.get("icon").getAsJsonObject(), "item", null) : null;
-                    String frame = display.has("frame") ? display.get("frame").getAsString() : null;
-                    if (filter.matches(key, item, frame, parent)) {
+                    DisplayInfo displayInfo = DisplayInfo.fromJson(GsonHelper.getAsJsonObject(advJson, "display"));
+                    if (filter.matches(key, displayInfo.getIcon(), displayInfo.getFrame(), parent)) {
                         builder.add(key);
                     }
                 } else if (filter.matches(key, null, null, parent)) {
@@ -77,13 +75,13 @@ public abstract class ServerAdvancementManagerMixin {
             counter++;
         }
 
-        ConsoleJS.SERVER.info("AdvJS: Removed '%s' advancements".formatted(counter));
+        ConsoleJS.SERVER.info("AdvJS: Removed %s advancements".formatted(counter));
     }
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/AdvancementList;add(Ljava/util/Map;)V", shift = At.Shift.BEFORE),
         locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void advjs$modify_add(Map<ResourceLocation, JsonElement> p_136034_, ResourceManager p_136035_, ProfilerFiller p_136036_, CallbackInfo ci, Map<ResourceLocation, Advancement.Builder> map, AdvancementList advancementlist) {
+    private void advJS$modify_add(Map<ResourceLocation, JsonElement> p_136034_, ResourceManager p_136035_, ProfilerFiller p_136036_, CallbackInfo ci, Map<ResourceLocation, Advancement.Builder> map, AdvancementList advancementlist) {
         advJS$modify(map, lootData);
         advJS$add(map);
         ConsoleJS.SERVER.info("AdvJS: Completely loaded!");

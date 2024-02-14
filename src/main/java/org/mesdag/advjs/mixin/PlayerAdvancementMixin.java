@@ -2,13 +2,13 @@ package org.mesdag.advjs.mixin;
 
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.util.FakePlayer;
 import org.mesdag.advjs.AdvJS;
+import org.mesdag.advjs.util.AdvHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,9 +24,6 @@ public abstract class PlayerAdvancementMixin {
     private ServerPlayer player;
 
     @Shadow
-    public abstract AdvancementProgress getOrStartProgress(Advancement p_135997_);
-
-    @Shadow
     public abstract boolean revoke(Advancement p_135999_, String p_136000_);
 
     @Inject(method = "award", at = @At("HEAD"), cancellable = true)
@@ -36,8 +33,8 @@ public abstract class PlayerAdvancementMixin {
             return;
         }
         ResourceLocation id = advancement.getId();
-        if (!REQUIRE_DONE.containsKey(id)) return;
         ResourceLocation[] requires = REQUIRE_DONE.get(id);
+        if (requires == null) return;
         if (requires.length == 0) {
             ConsoleJS.SERVER.error("AdvJS/requireDone: Invalid requires[] of '%s', which length is 0".formatted(id));
             return;
@@ -46,12 +43,8 @@ public abstract class PlayerAdvancementMixin {
         ServerAdvancementManager manager = player.server.getAdvancements();
         for (ResourceLocation requireId : requires) {
             Advancement required = requireId == AdvJS.PARENT ? advancement.getParent() : manager.getAdvancement(requireId);
-            if (required == null) {
-                ConsoleJS.SERVER.warn("AdvJS/requireDone: Advancement '%s' is not exist, so '%s' will not check it".formatted(requireId, id));
-                continue;
-            }
-
-            if (!getOrStartProgress(required).isDone()) {
+            String nullMsg = "AdvJS/requireDone: Advancement '%s' is not exist, so '%s' will not check it".formatted(requireId, id);
+            if (!AdvHelper.advDone(player, required, nullMsg)) {
                 cir.setReturnValue(false);
                 return;
             }

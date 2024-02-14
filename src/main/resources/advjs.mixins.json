@@ -8,6 +8,7 @@
         "AdvancementRewardsMixin",
         "BlockBehavior$BlockStateBaseMixin",
         "BlockMixin",
+        "ItemStackMixin",
         "PlayerAdvancementMixin",
         "PlayerMixin",
         "ServerAdvancementManagerMixin",
@@ -16,6 +17,7 @@
     ],
     "minVersion": "0.8.5",
     "client": [
+        "client.ClientAdvancementsAccessor",
         "revelationary.ClientAdvancementsMixin"
     ]
 }

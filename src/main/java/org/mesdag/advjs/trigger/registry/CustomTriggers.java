@@ -27,10 +27,11 @@ public class CustomTriggers {
     }
 
     public static CustomTrigger of(ResourceLocation id) {
-        if(TRIGGERS.containsKey(id)) {
-            return TRIGGERS.get(id);
+        CustomTrigger trigger = TRIGGERS.get(id);
+        if (trigger == null) {
+            ConsoleJS.SERVER.error("No such trigger: '%s'".formatted(id));
+            return IMPOSSIBLE_TRIGGER;
         }
-        ConsoleJS.SERVER.error("No such trigger: '%s'".formatted(id));
-        return IMPOSSIBLE_TRIGGER;
+        return trigger;
     }
 }

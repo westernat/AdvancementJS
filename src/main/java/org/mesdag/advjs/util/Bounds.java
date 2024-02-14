@@ -73,7 +73,7 @@ public class Bounds {
             return new Bounds(min.doubleValue(), max.doubleValue());
         } else if (o instanceof Map) {
             Map<String, Object> m = (Map<String, Object>) o;
-            return new Bounds(m.containsKey("min") ? (Number) m.get("min") : null, m.containsKey("max") ? (Number) m.get("max") : null);
+            return new Bounds((Number) m.get("min"), (Number) m.get("max"));
         }
 
         return ANY;

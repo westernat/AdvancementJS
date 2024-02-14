@@ -59,4 +59,12 @@
 
 # 2.8.0
 ## Addition
-- AdvLockEventJS.interact(toLock: Block, lockBy: ResourceLocation)
+- AdvLockEventJS.itemUse(toLock: Item, lockBy: ResourceLocation): void
+- AdvLockEventJS.blockInteract(toLock: Block, lockBy: ResourceLocation): void
+- AdvLockEventJS.entityInteract(toLock: EntityType\<any\>, lockBy: ResourceLocation): void
+
+## Binding
+- AdvHelper: for checking server player's advancement isn't done
+
+## Upgrades
+- AdvancementFilter: compound type is available

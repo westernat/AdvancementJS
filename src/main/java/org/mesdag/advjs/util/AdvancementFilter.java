@@ -1,12 +1,11 @@
 package org.mesdag.advjs.util;
 
-import com.google.gson.JsonObject;
+import dev.latvian.mods.kubejs.item.ItemStackJS;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
-import dev.latvian.mods.kubejs.util.MapJS;
-import net.minecraft.core.registries.BuiltInRegistries;
+import dev.latvian.mods.kubejs.util.UtilsJS;
+import net.minecraft.advancements.FrameType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,46 +15,47 @@ import java.util.Map;
 public class AdvancementFilter {
     @Nullable ResourceLocation path;
     @Nullable String modid;
-    @Nullable Item icon;
-    @Nullable String frame;
-    @Nullable String parent;
+    @Nullable ItemStack icon;
+    @Nullable FrameType frame;
+    @Nullable ResourceLocation parent;
     private boolean resolved = false;
 
     public static AdvancementFilter of(Object o) {
         AdvancementFilter filter = new AdvancementFilter();
         if (o instanceof CharSequence charSequence) {
             filter.path = new ResourceLocation(charSequence.toString());
-        } else if (o instanceof Map) {
-            JsonObject jsonObject = MapJS.json(o);
-            if (jsonObject == null) {
-                return filter;
-            }
-
-            if (jsonObject.has("mod")) {
-                String modid = jsonObject.get("mod").getAsString();
-                if (ModList.get().isLoaded(modid)) {
-                    filter.modid = modid;
+        } else if (o instanceof Map<?, ?> map) {
+            Object mod = map.get("mod");
+            if (mod instanceof CharSequence modid) {
+                String modidStr = modid.toString();
+                if (ModList.get().isLoaded(modidStr)) {
+                    filter.modid = modidStr;
                 } else {
-                    ConsoleJS.SERVER.warn("AdvJS/RemoveFilter: Mod '%s' not found".formatted(modid));
+                    ConsoleJS.SERVER.warn("AdvJS/RemoveFilter: mod '%s' not found".formatted(modid));
                 }
             }
 
-            if (jsonObject.has("icon")) {
-                String icon = jsonObject.get("icon").getAsString();
-                Item item = BuiltInRegistries.ITEM.getOptional(new ResourceLocation(icon)).orElse(Items.AIR);
-                if (item != Items.AIR) {
-                    filter.icon = item;
+            Object icon = map.get("icon");
+            if (icon != null) {
+                ItemStack iconStack = ItemStackJS.of(icon);
+                if (iconStack == ItemStack.EMPTY) {
+                    ConsoleJS.SERVER.warn("AdvJS/RemoveFilter: icon '%s' not found".formatted(icon));
                 } else {
-                    ConsoleJS.SERVER.warn("AdvJS/RemoveFilter: Icon '%s' not found".formatted(icon));
+                    filter.icon = iconStack;
                 }
             }
 
-            if (jsonObject.has("frame")) {
-                filter.frame = jsonObject.get("frame").getAsString();
+            Object frame = map.get("frame");
+            if (frame instanceof CharSequence frameStr) {
+                filter.frame = FrameType.byName(frameStr.toString());
+            } else if (frame instanceof FrameType frameType) {
+                filter.frame = frameType;
             }
 
-            if (jsonObject.has("parent")) {
-                filter.parent = jsonObject.get("parent").getAsString();
+            Object parent = map.get("parent");
+            ResourceLocation parentId = UtilsJS.getMCID(null, parent);
+            if (parentId != null) {
+                filter.parent = parentId;
             }
         }
         return filter;
@@ -69,7 +69,7 @@ public class AdvancementFilter {
         return path == null && modid == null && icon == null && frame == null && parent == null;
     }
 
-    public boolean matches(ResourceLocation path, Item icon, String frame, String parent) {
+    public boolean matches(ResourceLocation path, ItemStack icon, FrameType frame, ResourceLocation parent) {
         if (this.path != null) {
             if (this.path.equals(path)) {
                 resolved = true;
@@ -82,7 +82,7 @@ public class AdvancementFilter {
             return false;
         } else if (this.icon != null && this.icon != icon) {
             return false;
-        } else if (this.frame != null && !this.frame.equals(frame)) {
+        } else if (this.frame != null && this.frame != frame) {
             return false;
         } else return this.parent == null || this.parent.equals(parent);
     }
