@@ -10,6 +10,7 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
+import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.util.AdvHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,17 +31,25 @@ public abstract class ScreenHandlerMixin {
 
     @Inject(method = "internalOnSlotClick", at = @At("HEAD"), cancellable = true)
     private void advJS$checkAdvancement(int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
-        if (slotIndex < 0) return;
+        if (slotIndex < 0 || !(player instanceof ServerPlayerEntity serverPlayer)) return;
+
+//      ResourceLocation slot_lock_by = LOCK_SLOT.get(index);
+//      if (LOCK_SLOT.containsKey(index) && AdvHelper.advNotDone(serverPlayer, slot_lock_by)) {
+//          ci.cancel();
+//          AdvJS.debugInfo("AdvJS/lockSlot: slot index '%s' has locked by '%s'".formatted(index, slot_lock_by));
+//          return;
+//      }
+
         Slot slot = slots.get(slotIndex);
         if (!(slot.inventory instanceof CraftingResultInventory)) return;
 
-        if (actionType == SlotActionType.PICKUP && player instanceof ServerPlayerEntity serverPlayer) {
-            ItemStack result = slot.getStack();
-            for (Map.Entry<ItemPredicate, Identifier> entry : LOCK_RESULT.entrySet()){
-                if(entry.getKey().test(result) && AdvHelper.advNotDone(serverPlayer, entry.getValue())){
-                    ci.cancel();
-                    return;
-                }
+        ItemStack result = slot.getStack();
+        for (Map.Entry<ItemPredicate, Identifier> entry : LOCK_RESULT.entrySet()) {
+            Identifier result_lock_by = entry.getValue();
+            if (entry.getKey().test(result) && !AdvHelper.advDone(serverPlayer, result_lock_by)) {
+                ci.cancel();
+                AdvJS.debugInfo("AdvJS/lockResult: result '%s' has locked by '%s'".formatted(result.getItem().kjs$getId(), result_lock_by));
+                return;
             }
         }
     }

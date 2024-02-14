@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 import net.minecraft.advancement.*;
-import net.minecraft.item.Item;
 import net.minecraft.loot.LootManager;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
 import net.minecraft.resource.ResourceManager;
@@ -57,12 +56,10 @@ public abstract class ServerAdvancementLoaderMixin {
             for (AdvancementFilter filter : FILTERS) {
                 if (filter.isResolved()) continue;
 
-                String parent = advJson.has("parent") ? advJson.get("parent").getAsString() : null;
+                Identifier parent = advJson.has("parent") ? new Identifier(advJson.get("parent").getAsString()) : null;
                 if (advJson.has("display")) {
-                    JsonObject display = advJson.get("display").getAsJsonObject();
-                    Item item = display.has("icon") ? JsonHelper.getItem(display.get("icon").getAsJsonObject(), "item", null) : null;
-                    String frame = display.has("frame") ? display.get("frame").getAsString() : null;
-                    if (filter.matches(key, item, frame, parent)) {
+                    AdvancementDisplay displayInfo = AdvancementDisplay.fromJson(JsonHelper.getObject(advJson, "display"));
+                    if (filter.matches(key, displayInfo.getIcon(), displayInfo.getFrame(), parent)) {
                         builder.add(key);
                     }
                 } else if (filter.matches(key, null, null, parent)) {
@@ -76,13 +73,13 @@ public abstract class ServerAdvancementLoaderMixin {
             counter++;
         }
 
-        ConsoleJS.SERVER.info("AdvJS: Removed '%s' advancements".formatted(counter));
+        ConsoleJS.SERVER.info("AdvJS: Removed %s advancements".formatted(counter));
     }
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/advancement/AdvancementManager;load(Ljava/util/Map;)V", shift = At.Shift.BEFORE),
         locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void advjs$modify_add(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci, Map<Identifier, Advancement.Builder> map2, AdvancementManager advancementManager) {
+    private void advJS$modify_add(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci, Map<Identifier, Advancement.Builder> map2, AdvancementManager advancementManager) {
         advJS$modify(map2, conditionManager);
         advJS$add(map2);
         ConsoleJS.SERVER.info("AdvJS: Completely loaded!");

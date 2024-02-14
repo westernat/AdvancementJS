@@ -43,10 +43,10 @@ public class AdvConfigureEventJS extends EventJS implements ItemSetter {
 
         Else if you put in a json object, it will remove advancement by filter:
 
-            modid: the mod id of advancement.
-            icon: the id of icon item/block.
-            frame: type of frame for the icon. Available value is 'challenge', 'goal' or 'task'.
-            parent: the parent advancement path of this advancement.
+        @param mod: the mod id of advancement.
+        @param icon: the icon of advancement widget.
+        @param frame: type of frame for the icon. Available value is 'challenge', 'goal' or 'task'.
+        @param parent: the parent advancement id of this advancement.
         """)
     public void remove(AdvancementFilter filter) {
         if (filter.fail()) {

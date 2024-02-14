@@ -15,7 +15,7 @@ import org.mesdag.advjs.util.*;
 import java.nio.file.Files;
 
 public class AdvJSPlugin extends KubeJSPlugin {
-    static boolean DEBUG;
+    static boolean DEBUG = false;
 
     @Override
     public void registerBindings(BindingsEvent event) {
@@ -24,6 +24,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
         event.add("GameMode", GameTypeWrapper.class);
         event.add("Bounds", Bounds.class);
         event.add("CustomTriggers", CustomTriggers.class);
+        event.add("AdvHelper", AdvHelper.class);
     }
 
     @Override

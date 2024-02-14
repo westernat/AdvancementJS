@@ -34,12 +34,12 @@ public class CriteriaBuilder {
             @Param(name = "name", value = "The name of this trigger."),
             @Param(name = "trigger", value = "The trigger itself.")
         })
-    public <Trigger extends CriterionConditions> void add(String name, Trigger instance) {
+    public void add(String name, CriterionConditions instance) {
         criteria.put(name, new AdvancementCriterion(instance));
     }
 
     @Info("Add a nameless trigger for this advancement.")
-    public <Trigger extends CriterionConditions> void add(Trigger instance) {
+    public void add(CriterionConditions instance) {
         criteria.put(UUID.randomUUID().toString(), new AdvancementCriterion(instance));
     }
 

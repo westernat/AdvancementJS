@@ -2186,8 +2186,10 @@ public class AdvCommand {
             })
 
             AdvJSEvents.lock(event => {
-                // Lock recipe by advancement
                 event.result("stone_slab", "minecraft:story/smelt_iron");
+                event.itemUse("spyglass", "minecraft:story/smelt_iron");
+                event.blockInteract("chest", "minecraft:story/smelt_iron");
+                event.entityInteract("villager", "minecraft:story/smelt_iron");
             })
                         
             PlayerEvents.advancement(event => {

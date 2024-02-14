@@ -3,8 +3,10 @@
     "package": "org.mesdag.advjs.mixin",
     "compatibilityLevel": "JAVA_17",
     "mixins": [
+        "AbstractBlock$AbstractBlockStateMixin",
         "AdvancementRewardsMixin",
         "BlockMixin",
+        "ItemStackMixin",
         "PlayerAdvancementTrackerMixin",
         "PlayerEntityMixin",
         "ScreenHandlerMixin",
@@ -16,6 +18,7 @@
         "defaultRequire": 1
     },
     "client": [
+        "client.ClientAdvancementsAccessor",
         "revelationary.ClientAdvancementsMixin"
     ]
 }

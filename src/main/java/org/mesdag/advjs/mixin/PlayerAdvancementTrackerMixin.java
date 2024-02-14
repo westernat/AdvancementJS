@@ -8,6 +8,7 @@ import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import org.mesdag.advjs.AdvJS;
+import org.mesdag.advjs.util.AdvHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,10 +29,10 @@ public abstract class PlayerAdvancementTrackerMixin {
     @Shadow public abstract boolean revokeCriterion(Advancement advancement, String criterionName);
 
     @Inject(method = "grantCriterion", at = @At("HEAD"), cancellable = true)
-    private void advJS$checkParentDone(Advancement advancement, String criterionName, CallbackInfoReturnable<Boolean> cir) {
+    private void advJS$checkDone(Advancement advancement, String criterionName, CallbackInfoReturnable<Boolean> cir) {
         Identifier id = advancement.getId();
-        if (!REQUIRE_DONE.containsKey(id)) return;
         Identifier[] requires = REQUIRE_DONE.get(id);
+        if (requires==null) return;
         if (requires.length == 0) {
             ConsoleJS.SERVER.error("AdvJS/requireDone: Invalid requires[] of '%s', which length is 0".formatted(id));
             return;
@@ -40,12 +41,8 @@ public abstract class PlayerAdvancementTrackerMixin {
         ServerAdvancementLoader loader = owner.server.getAdvancementLoader();
         for (Identifier requireId : requires) {
             Advancement required = requireId == AdvJS.PARENT ? advancement.getParent() : loader.get(requireId);
-            if (required == null) {
-                ConsoleJS.SERVER.warn("AdvJS/requireDone: Advancement '%s' is not exist, so '%s' will not check it".formatted(requireId, id));
-                continue;
-            }
-
-            if (!getProgress(required).isDone()) {
+            String nullMsg = "AdvJS/requireDone: Advancement '%s' is not exist, so '%s' will not check it".formatted(requireId, id);
+            if (!AdvHelper.advDone(owner, required, nullMsg)) {
                 cir.setReturnValue(false);
                 return;
             }
