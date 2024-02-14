@@ -9,7 +9,7 @@ import org.mesdag.advjs.predicate.condition.ICondition;
 
 import java.util.function.Consumer;
 
-class BredAnimalsBuilder extends BaseTriggerInstanceBuilder {
+public class BredAnimalsBuilder extends BaseTriggerInstanceBuilder {
     LootContextPredicate parent = LootContextPredicate.EMPTY;
     LootContextPredicate partner = LootContextPredicate.EMPTY;
     LootContextPredicate child = LootContextPredicate.EMPTY;

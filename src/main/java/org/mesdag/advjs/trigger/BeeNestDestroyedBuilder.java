@@ -13,7 +13,7 @@ import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
 
-class BeeNestDestroyedBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
+public class BeeNestDestroyedBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
     @Nullable
     Block block = null;
     ItemPredicate item = ItemPredicate.ANY;

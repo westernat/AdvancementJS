@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static org.mesdag.advjs.util.Data.REPEATABLE;
 import static org.mesdag.advjs.util.Data.REQUIRE_DONE;
 
 @Mixin(PlayerAdvancementTracker.class)
@@ -23,6 +24,8 @@ public abstract class PlayerAdvancementTrackerMixin {
 
     @Shadow
     private ServerPlayerEntity owner;
+
+    @Shadow public abstract boolean revokeCriterion(Advancement advancement, String criterionName);
 
     @Inject(method = "grantCriterion", at = @At("HEAD"), cancellable = true)
     private void advJS$checkParentDone(Advancement advancement, String criterionName, CallbackInfoReturnable<Boolean> cir) {
@@ -47,5 +50,10 @@ public abstract class PlayerAdvancementTrackerMixin {
                 return;
             }
         }
+    }
+
+    @Inject(method = "grantCriterion", at = @At(value = "RETURN"))
+    private void advJS$repeat(Advancement advancement, String criterionName, CallbackInfoReturnable<Boolean> cir) {
+        if (REPEATABLE.contains(advancement.getId())) revokeCriterion(advancement, criterionName);
     }
 }

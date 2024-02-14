@@ -3,7 +3,7 @@
 	"id": "advjs",
 	"version": "${version}",
 	"name": "Advancement JS",
-	"description": "Configure advancements by KubeJS",
+	"description": "Configure more than advancements by KubeJS",
 	"authors": [
 		"Westernat"
 	],

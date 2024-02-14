@@ -12,7 +12,7 @@ import org.mesdag.advjs.util.Bounds;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-class KilledByCrossbowBuilder extends BaseTriggerInstanceBuilder {
+public class KilledByCrossbowBuilder extends BaseTriggerInstanceBuilder {
     final ArrayList<LootContextPredicate> victims = new ArrayList<>();
     NumberRange.IntRange uniqueEntityTypes = NumberRange.IntRange.ANY;
 

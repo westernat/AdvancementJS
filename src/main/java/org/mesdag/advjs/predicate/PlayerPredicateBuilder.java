@@ -16,6 +16,7 @@ import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.Nullable;
 import org.mesdag.advjs.util.Bounds;
 
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class PlayerPredicateBuilder {
@@ -31,7 +32,7 @@ public class PlayerPredicateBuilder {
     EntityPredicate passenger = EntityPredicate.ANY;
     EntityPredicate targetedEntity = EntityPredicate.ANY;
     @Nullable
-    String team = null;
+    String team;
 
     @Info("Test the experience level of this player.")
     public void setLevel(NumberRange.IntRange bounds) {
@@ -68,8 +69,8 @@ public class PlayerPredicateBuilder {
     }
 
     @Info("Test the game mode of this player.")
-    public void setGameType(GameMode gameType) {
-        playerBuilder.gameMode(gameType);
+    public void setGameMode(GameMode gameMode) {
+        playerBuilder.gameMode(gameMode);
     }
 
     @Info("""
@@ -92,7 +93,7 @@ public class PlayerPredicateBuilder {
         playerBuilder.lookingAt(builder.build());
     }
 
-    @Info(value = "Test if the player's advancement done.",
+    @Info(value = "Test whether an advancement is granted or not granted.",
         params = {
             @Param(name = "advancement"),
             @Param(name = "done")
@@ -101,7 +102,14 @@ public class PlayerPredicateBuilder {
         playerBuilder.advancement(advancement, done);
     }
 
-    //TODO checkAdvancementCriteria
+    @Info(value = "Test whether specific criterions of an advancement are marked as complete.",
+        params = {
+            @Param(name = "advancement"),
+            @Param(name = "criterions")
+        })
+    public void checkAdvancementCriterions(Identifier advancement, Map<String, Boolean> criterions) {
+        playerBuilder.advancement(advancement, criterions);
+    }
 
     @Info("""
         Test the distance to player this predicate is invoked upon.

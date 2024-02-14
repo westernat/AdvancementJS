@@ -11,7 +11,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.server.function.CommandFunction;
 import net.minecraft.util.Identifier;
-import org.mesdag.advjs.util.RewardsAccessor;
+import org.mesdag.advjs.util.RewardsKJS;
 
 import java.util.ArrayList;
 
@@ -119,8 +119,8 @@ public class RewardsBuilder {
 
     @HideFromJS
     public AdvancementRewards build() {
-        RewardsAccessor accessor = (RewardsAccessor) new AdvancementRewards(experience, loot, recipes, function);
-        accessor.advJS$setMobEffectInstances(mobEffectInstances.toArray(StatusEffectInstance[]::new));
-        return accessor.advJS$getSelf();
+        RewardsKJS rewards = (RewardsKJS) new AdvancementRewards(experience, loot, recipes, function);
+        rewards.advJS$setMobEffectInstances(mobEffectInstances.toArray(StatusEffectInstance[]::new));
+        return rewards.advJS$getSelf();
     }
 }

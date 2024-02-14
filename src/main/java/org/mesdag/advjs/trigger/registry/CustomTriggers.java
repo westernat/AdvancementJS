@@ -11,21 +11,26 @@ import java.util.LinkedList;
 
 public class CustomTriggers {
     @HideFromJS
-    static final Hashtable<Identifier, BaseTriggerBuilder> BUILDERS = new Hashtable<>();
+    static final Hashtable<Identifier, CustomTriggerBuilder> BUILDERS = new Hashtable<>();
     @HideFromJS
-    public static final Hashtable<Identifier, BaseCriterion> TRIGGERS = new Hashtable<>();
-    public static final BaseTriggerInstance IMPOSSIBLE = new BaseTriggerInstance(Criteria.IMPOSSIBLE.getId(), LootContextPredicate.EMPTY, new LinkedList<>());
+    public static final Hashtable<Identifier, CustomTrigger> TRIGGERS = new Hashtable<>();
+    public static final CustomTrigger IMPOSSIBLE_TRIGGER = new CustomTrigger(CustomTrigger.IMPOSSIBLE_ID, new LinkedList<>());
+    public static final CustomTriggerInstance IMPOSSIBLE = new CustomTriggerInstance(Criteria.IMPOSSIBLE.getId(), LootContextPredicate.EMPTY, new LinkedList<>());
 
     @HideFromJS
     public static void registerAll() {
         BUILDERS.forEach((key, value) -> {
-            TRIGGERS.put(key, Criteria.register(new BaseCriterion(key, value.callbacks)));
+            TRIGGERS.put(key, Criteria.register(new CustomTrigger(key, value.callbacks)));
             ConsoleJS.STARTUP.info("AdvJS/trigger: Registered trigger " + key);
         });
         BUILDERS.clear();
     }
 
-    public static BaseCriterion of(Identifier id) {
-        return TRIGGERS.get(id);
+    public static CustomTrigger of(Identifier id) {
+        if(TRIGGERS.containsKey(id)) {
+            return TRIGGERS.get(id);
+        }
+        ConsoleJS.SERVER.error("No such trigger: '%s'".formatted(id));
+        return IMPOSSIBLE_TRIGGER;
     }
 }

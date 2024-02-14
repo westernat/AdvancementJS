@@ -6,10 +6,10 @@ import net.minecraft.util.Identifier;
 
 import java.util.LinkedList;
 
-public class BaseTriggerInstance extends AbstractCriterionConditions {
+public class CustomTriggerInstance extends AbstractCriterionConditions {
     private final LinkedList<TriggerMatchCallback> callbacks;
 
-    public BaseTriggerInstance(Identifier id, LootContextPredicate player, LinkedList<TriggerMatchCallback> callbacks) {
+    public CustomTriggerInstance(Identifier id, LootContextPredicate player, LinkedList<TriggerMatchCallback> callbacks) {
         super(id, player);
         this.callbacks = callbacks;
     }

@@ -18,7 +18,7 @@ public class CriteriaBuilder {
     private final Map<String, AdvancementCriterion> criteria;
     private CriterionMerger strategy = CriterionMerger.AND;
     @Nullable
-    private String[][] requirements = null;
+    private String[][] requirements;
 
     CriteriaBuilder() {
         this.criteria = Maps.newLinkedHashMap();

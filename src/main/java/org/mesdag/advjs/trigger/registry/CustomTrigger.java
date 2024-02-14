@@ -11,18 +11,19 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 
-public class BaseCriterion extends AbstractCriterion<BaseTriggerInstance> {
+public class CustomTrigger extends AbstractCriterion<CustomTriggerInstance> {
+    static final Identifier IMPOSSIBLE_ID = new Identifier("advjs", "impossible");
     private final Identifier ID;
     private final LinkedList<TriggerMatchCallback> callbacks;
 
-    public BaseCriterion(Identifier id, LinkedList<TriggerMatchCallback> callbacks) {
+    public CustomTrigger(Identifier id, LinkedList<TriggerMatchCallback> callbacks) {
         this.ID = id;
         this.callbacks = callbacks;
     }
 
     @Override
-    protected @NotNull BaseTriggerInstance conditionsFromJson(@NotNull JsonObject jsonObject, @NotNull LootContextPredicate player, @NotNull AdvancementEntityPredicateDeserializer context) {
-        return new BaseTriggerInstance(ID, player, new LinkedList<>());
+    protected @NotNull CustomTriggerInstance conditionsFromJson(@NotNull JsonObject jsonObject, @NotNull LootContextPredicate player, @NotNull AdvancementEntityPredicateDeserializer context) {
+        return new CustomTriggerInstance(ID, player, new LinkedList<>());
     }
 
     @Override
@@ -31,16 +32,17 @@ public class BaseCriterion extends AbstractCriterion<BaseTriggerInstance> {
     }
 
     public void trigger(ServerPlayerEntity serverPlayer, Object... tests) {
+        if (ID == IMPOSSIBLE_ID) return;
         this.trigger(serverPlayer, instance -> instance.matches(tests));
     }
 
     @HideFromJS
-    public BaseTriggerInstance create() {
-        return new BaseTriggerInstance(ID, LootContextPredicate.EMPTY, callbacks);
+    public CustomTriggerInstance create() {
+        return new CustomTriggerInstance(ID, LootContextPredicate.EMPTY, callbacks);
     }
 
     @HideFromJS
-    public BaseTriggerInstance create(LootContextPredicate player) {
-        return new BaseTriggerInstance(ID, player, callbacks);
+    public CustomTriggerInstance create(LootContextPredicate player) {
+        return new CustomTriggerInstance(ID, player, callbacks);
     }
 }

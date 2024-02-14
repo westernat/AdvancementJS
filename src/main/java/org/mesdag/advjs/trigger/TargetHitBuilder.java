@@ -11,7 +11,7 @@ import org.mesdag.advjs.util.Bounds;
 
 import java.util.function.Consumer;
 
-class TargetHitBuilder extends BaseTriggerInstanceBuilder {
+public class TargetHitBuilder extends BaseTriggerInstanceBuilder {
     NumberRange.IntRange signalStrength = NumberRange.IntRange.ANY;
     LootContextPredicate projectile = LootContextPredicate.EMPTY;
 

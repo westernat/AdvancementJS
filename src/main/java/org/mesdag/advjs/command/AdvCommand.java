@@ -14,7 +14,11 @@ import java.nio.file.Path;
 public class AdvCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess access, CommandManager.RegistrationEnvironment environment) {
         dispatcher.register(CommandManager.literal("advjs").requires(serverCommandSource -> serverCommandSource.hasPermissionLevel(2))
-            .then(CommandManager.literal("example").executes(context -> run(context.getSource(), AdvJS.SERVER_EXAMPLE, SERVER_EXAMPLE)))
+            .then(CommandManager.literal("example").executes(context -> {
+                run(context.getSource(), AdvJS.SERVER_EXAMPLE, SERVER_EXAMPLE);
+                run(context.getSource(), AdvJS.STARTUP_EXAMPLE, STARTUP_EXAMPLE);
+                return 2;
+            }))
             .then(CommandManager.literal("story").executes(context -> run(context.getSource(), AdvJS.STORY, STORY)))
             .then(CommandManager.literal("adventure").executes(context -> run(context.getSource(), AdvJS.ADVENTURE, ADVENTURE)))
             .then(CommandManager.literal("nether").executes(context -> run(context.getSource(), AdvJS.NETHER, NETHER)))
@@ -54,7 +58,7 @@ public class AdvCommand {
 
     static {
         END = """
-            ServerEvents.advancement(event => {
+            AdvJSEvents.advancement(event => {
                 const { TRIGGER } = event;
                         
                 const end = event
@@ -199,7 +203,7 @@ public class AdvCommand {
             })
             """;
         HUSBANDRY = """
-            ServerEvents.advancement(event => {
+            AdvJSEvents.advancement(event => {
                 const { CONDITION, PROVIDER, TRIGGER } = event;
                         
                 const husbandry = event
@@ -684,7 +688,7 @@ public class AdvCommand {
             })
             """;
         NETHER = """
-            ServerEvents.advancement(event => {
+            AdvJSEvents.advancement(event => {
                 const { CONDITION, PREDICATE, PROVIDER, TRIGGER } = event;
                         
                 const nether = event
@@ -1143,7 +1147,7 @@ public class AdvCommand {
             })
             """;
         ADVENTURE = """
-            ServerEvents.advancement(event => {
+            AdvJSEvents.advancement(event => {
                 const { CONDITION, PREDICATE, PROVIDER, TRIGGER } = event;
                         
                 const adventure = event
@@ -1857,7 +1861,7 @@ public class AdvCommand {
             })
             """;
         STORY = """
-            ServerEvents.advancement(event => {
+            AdvJSEvents.advancement(event => {
                 const { TRIGGER } = event;
                         
                 const story = event
@@ -2124,7 +2128,9 @@ public class AdvCommand {
                     })
                     .criteria(criteriaBuilder => criteriaBuilder.add("dirt", destroy_dirt))
                     // AdvJS custom reward
-                    .rewards(rewardsBuilder => rewardsBuilder.addEffect("absorption", 200));
+                    .rewards(rewardsBuilder => rewardsBuilder.addEffect("absorption", 200))
+                    // Make it repeatable
+                    .repeatable();
 
                 // Add child for root
                 root.addChild("child1", childBuilder => {
@@ -2149,8 +2155,8 @@ public class AdvCommand {
                         .requireParentDone()
                 });
 
-                // Remove an exist advancement by RemoveFilter, available filter was writen in doc.
-                // you can also remove like this: 'event.remove("minecraft:story/lava_bucket");'
+                // Remove an exist advancement by AdvancementFilter, available filter was writen in doc.
+                // you can also remove by id: 'event.remove("minecraft:story/lava_bucket");'
                 event.remove({
                     icon: "minecraft:lava_bucket"
                 });

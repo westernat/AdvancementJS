@@ -34,14 +34,13 @@ public class AdvBuilder {
     private WarnType warn;
     private final Identifier id;
 
-    @HideFromJS
     public AdvBuilder(@Nullable Identifier parent, String name, Identifier rootPath, WarnType warn) {
         this.parent = parent;
         this.name = name;
         this.rootPath = rootPath;
         this.warn = warn;
         this.id = generateId();
-        BUILDER_MAP.put(id, this);
+        BUILDERS.put(id, this);
     }
 
     @Info("Add a nameless child to this advancement, just for test. Returns child.")
@@ -134,6 +133,16 @@ public class AdvBuilder {
             })
     public AdvBuilder displayOffset(float x, float y, boolean modifyChildren) {
         DISPLAY_OFFSET.put(id, new DisplayOffset(x, y, modifyChildren));
+        return this;
+    }
+
+    @Info("""
+        If invoked this method, the advancement will revoke after grant automatically.
+        
+        This is useful when you want to trigger it repeatedly.
+        """)
+    public AdvBuilder repeatable() {
+        REPEATABLE.add(id);
         return this;
     }
 

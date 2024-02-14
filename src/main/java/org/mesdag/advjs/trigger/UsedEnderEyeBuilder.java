@@ -4,7 +4,7 @@ import dev.latvian.mods.kubejs.typings.Info;
 import net.minecraft.predicate.NumberRange;
 import org.mesdag.advjs.util.Bounds;
 
-class UsedEnderEyeBuilder extends BaseTriggerInstanceBuilder {
+public class UsedEnderEyeBuilder extends BaseTriggerInstanceBuilder {
     NumberRange.FloatRange distance = NumberRange.FloatRange.ANY;
 
     @Info("The horizontal distance between the player and the stronghold.")

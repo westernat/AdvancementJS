@@ -26,7 +26,7 @@ public class DisplayBuilder {
     private boolean hidden;
     private final Identifier source;
 
-    DisplayBuilder(Identifier source) {
+    public DisplayBuilder(Identifier source) {
         this.icon = new ItemStack(Items.APPLE);
         this.title = Text.literal("title");
         this.description = Text.literal("description");

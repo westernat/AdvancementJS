@@ -6,7 +6,7 @@ import org.mesdag.advjs.predicate.DamagePredicateBuilder;
 
 import java.util.function.Consumer;
 
-class EntityHurtPlayerBuilder extends BaseTriggerInstanceBuilder {
+public class EntityHurtPlayerBuilder extends BaseTriggerInstanceBuilder {
     DamagePredicate damage = DamagePredicate.ANY;
 
     @Info("Checks the damage done to the player.")

@@ -8,7 +8,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 import org.mesdag.advjs.util.ItemSetter;
 
-import static org.mesdag.advjs.util.Data.LOCK_MAP;
+import static org.mesdag.advjs.util.Data.LOCK_RESULT;
 
 public class AdvLockEventJS extends EventJS implements ItemSetter {
     @Info(value = "Lock recipe by advancement. It will only deny player take the result from GUI.",
@@ -17,7 +17,7 @@ public class AdvLockEventJS extends EventJS implements ItemSetter {
             @Param(name = "lockBy")
         })
     public void result(Ingredient toLock, Identifier lockBy) {
-        LOCK_MAP.put(wrapItem(toLock), lockBy);
+        LOCK_RESULT.put(wrapItem(toLock), lockBy);
     }
 
     @Info(value = "Lock recipe by advancement. It will only deny player take the result from GUI.",
@@ -26,6 +26,6 @@ public class AdvLockEventJS extends EventJS implements ItemSetter {
             @Param(name = "lockBy")
         })
     public void result(ItemPredicate toLock, Identifier lockBy) {
-        LOCK_MAP.put(toLock, lockBy);
+        LOCK_RESULT.put(toLock, lockBy);
     }
 }

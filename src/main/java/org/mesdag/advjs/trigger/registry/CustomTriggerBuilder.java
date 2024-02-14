@@ -5,14 +5,14 @@ import net.minecraft.util.Identifier;
 import java.util.LinkedList;
 
 
-public class BaseTriggerBuilder {
+public class CustomTriggerBuilder {
     final LinkedList<TriggerMatchCallback> callbacks = new LinkedList<>();
 
-    BaseTriggerBuilder(Identifier id) {
+    CustomTriggerBuilder(Identifier id) {
         CustomTriggers.BUILDERS.put(id, this);
     }
 
-    public BaseTriggerBuilder match(TriggerMatchCallback callback) {
+    public CustomTriggerBuilder match(TriggerMatchCallback callback) {
         callbacks.add(callback);
         return this;
     }

@@ -21,7 +21,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
     public void registerBindings(BindingsEvent event) {
         event.add("FrameType", FrameTypeWrapper.class);
         event.add("RequirementsStrategy", RequirementsStrategyWrapper.class);
-        event.add("GameType", GameTypeWrapper.class);
+        event.add("GameMode", GameTypeWrapper.class);
         event.add("Bounds", Bounds.class);
         event.add("CustomTriggers", CustomTriggers.class);
     }
@@ -29,7 +29,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
     @Override
     public void registerTypeWrappers(ScriptType type, TypeWrappers typeWrappers) {
         typeWrappers.registerSimple(Bounds.class, Bounds::of);
-        typeWrappers.registerSimple(AdvRemoveFilter.class, AdvRemoveFilter::of);
+        typeWrappers.registerSimple(AdvancementFilter.class, AdvancementFilter::of);
     }
 
     @Override

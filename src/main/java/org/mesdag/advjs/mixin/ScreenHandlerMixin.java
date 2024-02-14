@@ -1,16 +1,16 @@
 package org.mesdag.advjs.mixin;
 
-import net.minecraft.advancement.Advancement;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
+import org.mesdag.advjs.util.AdvHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,9 +18,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.HashSet;
+import java.util.Map;
 
-import static org.mesdag.advjs.util.Data.LOCK_MAP;
+import static org.mesdag.advjs.util.Data.LOCK_RESULT;
 
 @Mixin(ScreenHandler.class)
 public abstract class ScreenHandlerMixin {
@@ -36,20 +36,10 @@ public abstract class ScreenHandlerMixin {
 
         if (actionType == SlotActionType.PICKUP && player instanceof ServerPlayerEntity serverPlayer) {
             ItemStack result = slot.getStack();
-            MinecraftServer server = serverPlayer.getServer();
-            if (server == null) return;
-
-            HashSet<Identifier> lockBy = new HashSet<>();
-            LOCK_MAP.forEach((key, value) -> {
-                if (key.test(result)) {
-                    lockBy.add(value);
-                }
-            });
-
-            for (Identifier id : lockBy) {
-                Advancement advancement = server.getAdvancementLoader().get(id);
-                if (advancement != null && !serverPlayer.getAdvancementTracker().getProgress(advancement).isDone()) {
+            for (Map.Entry<ItemPredicate, Identifier> entry : LOCK_RESULT.entrySet()){
+                if(entry.getKey().test(result) && AdvHelper.advNotDone(serverPlayer, entry.getValue())){
                     ci.cancel();
+                    return;
                 }
             }
         }
