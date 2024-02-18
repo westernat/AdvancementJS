@@ -1,6 +1,5 @@
 package org.mesdag.advjs.mixin;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
@@ -16,7 +15,6 @@ import net.minecraft.util.JsonHelper;
 import net.minecraft.util.profiler.Profiler;
 import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.advancement.*;
-import org.mesdag.advjs.trigger.Trigger;
 import org.mesdag.advjs.util.AdvJSEvents;
 import org.mesdag.advjs.util.AdvancementFilter;
 import org.mesdag.advjs.util.DisplayOffset;
@@ -29,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import static org.mesdag.advjs.util.Data.*;
@@ -44,11 +43,12 @@ public abstract class ServerAdvancementLoaderMixin {
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("HEAD"))
     private void advJS$remove(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
-        AdvJSEvents.ADVANCEMENT.post(new AdvConfigureEventJS(new Trigger(conditionManager)));
+        AdvJSEvents.postAdv(conditionManager);
 
         int counter = 0;
-        ImmutableSet.Builder<Identifier> builder = new ImmutableSet.Builder<>();
-        for (Map.Entry<Identifier, JsonElement> entry : map.entrySet()) {
+        Iterator<Map.Entry<Identifier, JsonElement>> iterator = map.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Identifier, JsonElement> entry = iterator.next();
             Identifier key = entry.getKey();
             if (key.toString().startsWith("minecraft:recipe")) continue;
 
@@ -60,26 +60,22 @@ public abstract class ServerAdvancementLoaderMixin {
                 if (advJson.has("display")) {
                     AdvancementDisplay displayInfo = AdvancementDisplay.fromJson(JsonHelper.getObject(advJson, "display"));
                     if (filter.matches(key, displayInfo.getIcon(), displayInfo.getFrame(), parent)) {
-                        builder.add(key);
+                        iterator.remove();
+                        counter++;
                     }
                 } else if (filter.matches(key, null, null, parent)) {
-                    builder.add(key);
+                    iterator.remove();
+                    counter++;
                 }
             }
         }
-
-        for (Identifier remove : builder.build()) {
-            map.remove(remove);
-            counter++;
-        }
-
         ConsoleJS.SERVER.info("AdvJS: Removed %s advancements".formatted(counter));
     }
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/advancement/AdvancementManager;load(Ljava/util/Map;)V", shift = At.Shift.BEFORE),
         locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void advJS$modify_add(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci, Map<Identifier, Advancement.Builder> map2, AdvancementManager advancementManager) {
+    private void advJS$modify_add(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci, Map<Identifier, Advancement.Builder> map2) {
         advJS$modify(map2, conditionManager);
         advJS$add(map2);
         ConsoleJS.SERVER.info("AdvJS: Completely loaded!");
@@ -87,8 +83,6 @@ public abstract class ServerAdvancementLoaderMixin {
 
     @Unique
     private static void advJS$modify(Map<Identifier, Advancement.Builder> map, LootManager predicateManager) {
-        AdvJS.debugInfo("AdvJS: Modification details:");
-
         int counter = 0;
         for (Map.Entry<Identifier, AdvGetter> entry : GETTERS.entrySet()) {
             Identifier id = entry.getKey();
@@ -101,7 +95,6 @@ public abstract class ServerAdvancementLoaderMixin {
             JsonObject oldJson = builder.toJson();
             Identifier parentId = oldJson.has("parent") ? new Identifier(oldJson.get("parent").getAsString()) : null;
             AdvancementDisplay neoDisplay = null;
-            String displayStr = "";
 
             if (getter.displayConsumer != null) {
                 if (oldJson.has("display")) {
@@ -109,27 +102,6 @@ public abstract class ServerAdvancementLoaderMixin {
                     DisplayBuilder neoDisplayBuilder = new DisplayBuilder(id, oldDisplay);
                     getter.displayConsumer.accept(neoDisplayBuilder);
                     neoDisplay = neoDisplayBuilder.build();
-
-                    displayStr = """
-                            display:
-                                icon: %s -> %s
-                                title: %s -> %s
-                                description: %s -> %s
-                                background: %s -> %s
-                                frame: %s -> %s
-                                showToast: %s -> %s
-                                announceToChat: %s -> %s
-                                hidden: %s -> %s
-                        """.formatted(
-                        oldDisplay.getIcon().getItem().kjs$getId(), neoDisplay.getIcon().getItem().kjs$getId(),
-                        oldDisplay.getTitle().getString(), neoDisplay.getTitle().getString(),
-                        oldDisplay.getDescription().getString(), neoDisplay.getDescription().getString(),
-                        oldDisplay.getBackground(), neoDisplay.getBackground(),
-                        oldDisplay.getFrame().getId(), neoDisplay.getFrame().getId(),
-                        oldDisplay.shouldShowToast(), neoDisplay.shouldShowToast(),
-                        oldDisplay.shouldAnnounceToChat(), neoDisplay.shouldAnnounceToChat(),
-                        oldDisplay.isHidden(), neoDisplay.isHidden()
-                    );
                 } else {
                     DisplayBuilder neoDisplayBuilder = new DisplayBuilder(id);
                     getter.displayConsumer.accept(neoDisplayBuilder);
@@ -160,26 +132,8 @@ public abstract class ServerAdvancementLoaderMixin {
             for (Map.Entry<String, AdvancementCriterion> pair : neoCriteriaBuilder.getCriteria().entrySet()) {
                 neo.criterion(pair.getKey(), pair.getValue());
             }
-            map.put(id, neo);
+            map.replace(id, neo);
             counter++;
-
-            AdvJS.debugInfo("""
-                identifier: %s
-                    parent: %s
-                %s
-                    rewards: %s
-                    requirements: %s
-                    criteria: %s
-                """
-                .formatted(
-                    id,
-                    parentId,
-                    displayStr,
-                    neoRewards,
-                    neoRequirements,
-                    String.join(",", neo.getCriteria().keySet())
-                )
-            );
         }
         ConsoleJS.SERVER.info("AdvJS: Modified %s advancements".formatted(counter));
     }
@@ -238,13 +192,15 @@ public abstract class ServerAdvancementLoaderMixin {
             Identifier id = entry.getKey();
             Advancement advancement = manager.get(id);
             if (advancement == null) {
-                ConsoleJS.SERVER.warn("AdvJS/displayOffset: Advancement '%s' is not exist".formatted(id));
+                ConsoleJS.SERVER.error("AdvJS/displayOffset: Advancement '%s' is not exist".formatted(id));
                 continue;
             }
 
             DisplayOffset offset = entry.getValue();
             advJS$applyOffset(advancement, offset.offsetX(), offset.offsetY(), offset.modifyChildren());
         }
+
+        clearCache();
     }
 
     @Unique

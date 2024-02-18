@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.mesdag.advjs.trigger.custom.CriteriaTriggers;
+import org.mesdag.advjs.trigger.builtin.CriteriaTriggers;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

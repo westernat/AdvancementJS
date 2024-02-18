@@ -16,13 +16,13 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import org.mesdag.advjs.predicate.PlayerPredicateBuilder;
-import org.mesdag.advjs.trigger.custom.BlockDestroyedCriterion;
-import org.mesdag.advjs.trigger.custom.BossEventCriterion;
-import org.mesdag.advjs.trigger.custom.IncreasedKillScoreCriterion;
-import org.mesdag.advjs.trigger.custom.PlayerTouchCriterion;
-import org.mesdag.advjs.trigger.registry.CustomTrigger;
-import org.mesdag.advjs.trigger.registry.CustomTriggerInstance;
-import org.mesdag.advjs.trigger.registry.CustomTriggers;
+import org.mesdag.advjs.trigger.builtin.BlockDestroyedCriterion;
+import org.mesdag.advjs.trigger.builtin.BossEventCriterion;
+import org.mesdag.advjs.trigger.builtin.IncreasedKillScoreCriterion;
+import org.mesdag.advjs.trigger.builtin.PlayerTouchCriterion;
+import org.mesdag.advjs.trigger.custom.CustomTrigger;
+import org.mesdag.advjs.trigger.custom.CustomTriggerInstance;
+import org.mesdag.advjs.trigger.custom.CustomTriggers;
 import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.List;
@@ -60,7 +60,7 @@ public class Trigger implements ItemSetter {
 
     @Info("Create new trigger by json.")
     public CriterionConditions fromJson(JsonObject jsonObject){
-        Identifier id = new Identifier(JsonHelper.asString(jsonObject, "trigger"));
+        Identifier id = new Identifier(JsonHelper.getString(jsonObject, "trigger"));
         Criterion<?> criterion = Criteria.getById(id);
         if (criterion == null) {
             throw new JsonSyntaxException("Invalid criterion trigger: " + id);

@@ -1,4 +1,4 @@
-package org.mesdag.advjs.trigger.registry;
+package org.mesdag.advjs.trigger.custom;
 
 import net.minecraft.advancement.criterion.AbstractCriterionConditions;
 import net.minecraft.predicate.entity.LootContextPredicate;

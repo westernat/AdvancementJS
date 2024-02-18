@@ -50,7 +50,7 @@ public class AdvConfigureEventJS extends EventJS implements ItemSetter {
         """)
     public void remove(AdvancementFilter filter) {
         if (filter.fail()) {
-            ConsoleJS.SERVER.warn("AdvJS/remove: Failed create a filter");
+            ConsoleJS.SERVER.error("AdvJS/remove: Failed create a filter");
         } else {
             FILTERS.add(filter);
         }

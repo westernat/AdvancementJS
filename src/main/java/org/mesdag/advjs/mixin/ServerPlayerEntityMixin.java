@@ -3,7 +3,7 @@ package org.mesdag.advjs.mixin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import org.mesdag.advjs.trigger.custom.CriteriaTriggers;
+import org.mesdag.advjs.trigger.builtin.CriteriaTriggers;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

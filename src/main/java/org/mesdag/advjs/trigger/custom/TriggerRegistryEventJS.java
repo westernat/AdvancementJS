@@ -1,4 +1,4 @@
-package org.mesdag.advjs.trigger.registry;
+package org.mesdag.advjs.trigger.custom;
 
 import dev.latvian.mods.kubejs.event.StartupEventJS;
 import net.minecraft.util.Identifier;

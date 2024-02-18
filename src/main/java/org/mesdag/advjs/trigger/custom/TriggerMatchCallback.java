@@ -1,4 +1,4 @@
-package org.mesdag.advjs.trigger.registry;
+package org.mesdag.advjs.trigger.custom;
 
 @FunctionalInterface
 public interface TriggerMatchCallback {

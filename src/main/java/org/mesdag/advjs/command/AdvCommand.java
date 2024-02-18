@@ -15,30 +15,32 @@ public class AdvCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess access, CommandManager.RegistrationEnvironment environment) {
         dispatcher.register(CommandManager.literal("advjs").requires(serverCommandSource -> serverCommandSource.hasPermissionLevel(2))
             .then(CommandManager.literal("example").executes(context -> {
-                run(context.getSource(), AdvJS.SERVER_EXAMPLE, SERVER_EXAMPLE);
-                run(context.getSource(), AdvJS.STARTUP_EXAMPLE, STARTUP_EXAMPLE);
-                return 2;
+                ServerCommandSource source = context.getSource();
+                generate(source, AdvJS.SERVER_EXAMPLE, SERVER_EXAMPLE);
+                generate(source, AdvJS.STARTUP_EXAMPLE, STARTUP_EXAMPLE);
+                generate(source, AdvJS.CLIENT_EXAMPLE, CLIENT_EXAMPLE);
+                return 3;
             }))
-            .then(CommandManager.literal("story").executes(context -> run(context.getSource(), AdvJS.STORY, STORY)))
-            .then(CommandManager.literal("adventure").executes(context -> run(context.getSource(), AdvJS.ADVENTURE, ADVENTURE)))
-            .then(CommandManager.literal("nether").executes(context -> run(context.getSource(), AdvJS.NETHER, NETHER)))
-            .then(CommandManager.literal("husbandry").executes(context -> run(context.getSource(), AdvJS.HUSBANDRY, HUSBANDRY)))
-            .then(CommandManager.literal("end").executes(context -> run(context.getSource(), AdvJS.END, END)))
+            .then(CommandManager.literal("story").executes(context -> generate(context.getSource(), AdvJS.STORY, STORY)))
+            .then(CommandManager.literal("adventure").executes(context -> generate(context.getSource(), AdvJS.ADVENTURE, ADVENTURE)))
+            .then(CommandManager.literal("nether").executes(context -> generate(context.getSource(), AdvJS.NETHER, NETHER)))
+            .then(CommandManager.literal("husbandry").executes(context -> generate(context.getSource(), AdvJS.HUSBANDRY, HUSBANDRY)))
+            .then(CommandManager.literal("end").executes(context -> generate(context.getSource(), AdvJS.END, END)))
             .then(CommandManager.literal("all").executes(context -> {
                 ServerCommandSource source = context.getSource();
-                run(source, AdvJS.STARTUP_EXAMPLE, STARTUP_EXAMPLE);
-                run(source, AdvJS.SERVER_EXAMPLE, SERVER_EXAMPLE);
-                run(source, AdvJS.STORY, STORY);
-                run(source, AdvJS.ADVENTURE, ADVENTURE);
-                run(source, AdvJS.NETHER, NETHER);
-                run(source, AdvJS.HUSBANDRY, HUSBANDRY);
-                run(source, AdvJS.END, END);
+                generate(source, AdvJS.STARTUP_EXAMPLE, STARTUP_EXAMPLE);
+                generate(source, AdvJS.SERVER_EXAMPLE, SERVER_EXAMPLE);
+                generate(source, AdvJS.STORY, STORY);
+                generate(source, AdvJS.ADVENTURE, ADVENTURE);
+                generate(source, AdvJS.NETHER, NETHER);
+                generate(source, AdvJS.HUSBANDRY, HUSBANDRY);
+                generate(source, AdvJS.END, END);
                 return 7;
             }))
         );
     }
 
-    private static int run(ServerCommandSource sourceStack, Path file, String text) {
+    private static int generate(ServerCommandSource sourceStack, Path file, String text) {
         try {
             Files.writeString(file, text);
             sourceStack.sendFeedback(() -> Text.translatable("advjs.command.success", file.getFileName()), false);
@@ -55,6 +57,7 @@ public class AdvCommand {
     public static final String STORY;
     public static final String SERVER_EXAMPLE;
     public static final String STARTUP_EXAMPLE;
+    public static final String CLIENT_EXAMPLE;
 
     static {
         END = """
@@ -2127,8 +2130,11 @@ public class AdvCommand {
                         displayBuilder.setIcon("diamond")
                     })
                     .criteria(criteriaBuilder => criteriaBuilder.add("dirt", destroy_dirt))
-                    // AdvJS custom reward
-                    .rewards(rewardsBuilder => rewardsBuilder.addEffect("absorption", 200))
+                    .rewards(rewardsBuilder => {
+                        rewardsBuilder.setExperience(100)
+                        // AdvJS custom reward
+                        rewardsBuilder.addEffect("absorption", 200)
+                    })
                     // Make it repeatable
                     .repeatable();
 
@@ -2151,14 +2157,14 @@ public class AdvCommand {
                             rewardsBuilder.setRecipes("minecraft:lodestone", "minecraft:brewing_stand")
                             rewardsBuilder.setExperience(100)
                         })
-                        // Check if parent done, else it will not be done
-                        .requireParentDone()
                 });
 
                 // Remove an exist advancement by AdvancementFilter, available filter was writen in doc.
                 // you can also remove by id: 'event.remove("minecraft:story/lava_bucket");'
                 event.remove({
-                    icon: "minecraft:lava_bucket"
+                    mod: "minecraft",
+                    icon: "minecraft:lava_bucket",
+                    frame: "task"
                 });
 
                 // Modify an exist advancement
@@ -2172,6 +2178,7 @@ public class AdvCommand {
                                 displayBuilder.setIcon("recovery_compass")
                                 displayBuilder.setTitle('I will come back!')
                                 displayBuilder.setDescription(Text.green("Good luck"))
+                                // You can also apply display in DisplayBuilder
                                 displayBuilder.offset(-1, 0)
                             })
                             // The trigger could also be created from json
@@ -2182,6 +2189,8 @@ public class AdvCommand {
                                     "to": "minecraft:overworld"
                                 }
                             })))
+                            // Check if parent done, else it will not be done
+                            .requireParentDone()
                     });
             })
 
@@ -2190,6 +2199,11 @@ public class AdvCommand {
                 event.itemUse("spyglass", "minecraft:story/smelt_iron");
                 event.blockInteract("chest", "minecraft:story/smelt_iron");
                 event.entityInteract("villager", "minecraft:story/smelt_iron");
+            })
+            
+            // Compat with 'Better Advancements'
+            AdvJSEvents.betterAdv(event => {
+                event.modify("advjs:hell/child1").posX(0).posY(32).hideLines()
             })
                         
             PlayerEvents.advancement(event => {
@@ -2206,6 +2220,16 @@ public class AdvCommand {
                     // In this example, we defined 2 matches
                     .match(advancement => advancement.getId() == "minecraft:story/smelt_iron")
                     .match(playerName => playerName == "Dev")
+            })
+            """;
+        CLIENT_EXAMPLE = """        
+            // Compat with Revelationary(EventHorizon)
+            AdvJSEvents.revelation(event => {
+                event.onFlush((done, removed, isFirst) => {
+                    event.player.sendSystemMessage(Text.aqua(done.size() + " advancement has done"))
+                    event.player.sendSystemMessage(Text.red(removed.size() + " advancement has removed"))
+                    event.player.sendSystemMessage(Text.green((isFirst ? "Is" : "Isn't") + " first flush"))
+                })
             })
             """;
     }

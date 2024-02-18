@@ -17,11 +17,9 @@ import static org.mesdag.advjs.util.Data.*;
 
 public class AdvGetter {
     private final Identifier id;
-    @Nullable
-    public Identifier parent;
+    public @Nullable Identifier parent;
     @HideFromJS
-    @Nullable
-    public Consumer<DisplayBuilder> displayConsumer;
+    public @Nullable Consumer<DisplayBuilder> displayConsumer;
     @HideFromJS
     public Consumer<RewardsBuilder> rewardsConsumer = rewardsBuilder -> {
     };
@@ -61,14 +59,14 @@ public class AdvGetter {
 
     @Info("Add a nameless child to this advancement just for test. Returns child.")
     public AdvBuilder addChild(Consumer<AdvBuilder> advBuilderConsumer) {
-        AdvBuilder child = new AdvBuilder(id, UUID.randomUUID().toString(), getRootPath(id), AdvBuilder.WarnType.NONE);
+        AdvBuilder child = new AdvBuilder(id, UUID.randomUUID().toString(), getRootPath(id), AdvBuilder.WarnType.NAMELESS);
         advBuilderConsumer.accept(child);
         return child;
     }
 
     @Info("Add a named child to this advancement. Returns child.")
     public AdvBuilder addChild(String name, Consumer<AdvBuilder> advBuilderConsumer) {
-        AdvBuilder child = new AdvBuilder(id, name, getRootPath(id), AdvBuilder.WarnType.NAMELESS);
+        AdvBuilder child = new AdvBuilder(id, name, getRootPath(id), AdvBuilder.WarnType.NONE);
         advBuilderConsumer.accept(child);
         return child;
     }

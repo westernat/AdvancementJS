@@ -10,8 +10,7 @@ import java.util.function.Consumer;
 
 
 public class SingleBlockBuilder extends BaseTriggerInstanceBuilder {
-    @Nullable
-    Block block = null;
+    @Nullable Block block;
     StatePredicate state = StatePredicate.ANY;
 
     public void setBlock(@Nullable Block block) {

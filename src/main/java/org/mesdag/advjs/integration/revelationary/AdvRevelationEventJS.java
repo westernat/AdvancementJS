@@ -13,11 +13,11 @@ import net.minecraft.util.Identifier;
 
 import java.util.Set;
 
-public class ClientAdvancementEventJS extends ClientEventJS implements ClientAdvancementPacketCallback {
-    public static final ClientAdvancementEventJS INSTANCE = new ClientAdvancementEventJS();
+public class AdvRevelationEventJS extends ClientEventJS implements ClientAdvancementPacketCallback {
+    public static final AdvRevelationEventJS INSTANCE = new AdvRevelationEventJS();
     private AdvancementCallBack advancementCallBack;
 
-    public ClientAdvancementEventJS() {
+    public AdvRevelationEventJS() {
         ClientAdvancementPacketCallback.registerCallback(this);
     }
 

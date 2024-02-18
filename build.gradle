@@ -42,7 +42,9 @@ dependencies {
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modImplementation "dev.latvian.mods:kubejs-fabric:${kubejs_version}"
+
 	modCompileOnly "maven.modrinth:Revelationary:${revelationary_version}"
+	modCompileOnly "maven.modrinth:better-advancements:${betteradvancements_version}"
 }
 
 processResources {

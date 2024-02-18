@@ -40,7 +40,7 @@ public class DamagePredicateBuilder {
     }
 
     @Info("Checks the type of damage done.")
-    public void setType(DamageSourcePredicate damageSourcePredicate) {
+    public void setTypeByPredicate(DamageSourcePredicate damageSourcePredicate) {
         builder.type(damageSourcePredicate);
     }
 
