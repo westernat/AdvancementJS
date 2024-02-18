@@ -1,4 +1,4 @@
-package org.mesdag.advjs.trigger.registry;
+package org.mesdag.advjs.trigger.custom;
 
 import com.google.gson.JsonObject;
 import dev.latvian.mods.rhino.util.HideFromJS;

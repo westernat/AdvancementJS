@@ -6,9 +6,10 @@ import dev.latvian.mods.kubejs.util.ConsoleJS;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import org.mesdag.advjs.command.AdvCommand;
-import org.mesdag.advjs.trigger.custom.Criteria;
+import org.mesdag.advjs.trigger.builtin.Criteria;
 
 import java.nio.file.Path;
 
@@ -17,6 +18,7 @@ import java.nio.file.Path;
 public class AdvJS {
     public static final Path SERVER_EXAMPLE = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_server.js");
     public static final Path STARTUP_EXAMPLE = KubeJSPaths.STARTUP_SCRIPTS.resolve("advjs_startup.js");
+    public static final Path CLIENT_EXAMPLE = KubeJSPaths.CLIENT_SCRIPTS.resolve("advjs_client.js");
     public static final Path STORY = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_story.js");
     public static final Path ADVENTURE = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_adventure.js");
     public static final Path NETHER = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_nether.js");
@@ -39,5 +41,9 @@ public class AdvJS {
         if (AdvJSPlugin.DEBUG) {
             ConsoleJS.SERVER.info(info);
         }
+    }
+
+    public static boolean betterLoaded() {
+        return ModList.get().isLoaded("betteradvancements");
     }
 }

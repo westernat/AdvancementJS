@@ -249,7 +249,7 @@ public class EntityPredicateBuilder implements EntitySetter {
         public TypeSpecific cat(CatType catType) {
             CatVariant variant = BuiltInRegistries.CAT_VARIANT.get(catType.variant);
             if (variant == null) {
-                ConsoleJS.SERVER.warn("Failed to get cat type '%s'.".formatted(catType.name()));
+                ConsoleJS.SERVER.error("Failed to get cat type '%s'".formatted(catType.name()));
                 return new TypeSpecific();
             }
             return new TypeSpecific().setSubPredicate(EntitySubPredicate.variant(variant));

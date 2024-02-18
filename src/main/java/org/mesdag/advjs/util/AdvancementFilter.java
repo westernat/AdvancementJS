@@ -80,7 +80,7 @@ public class AdvancementFilter {
 
         if (this.modid != null && !this.modid.equals(path.getNamespace())) {
             return false;
-        } else if (this.icon != null && this.icon != icon) {
+        } else if (this.icon != null && icon != null && !ItemStack.isSameItemSameTags(this.icon, icon)) {
             return false;
         } else if (this.frame != null && this.frame != frame) {
             return false;

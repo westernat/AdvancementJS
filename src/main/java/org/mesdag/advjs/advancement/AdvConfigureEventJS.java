@@ -49,7 +49,7 @@ public class AdvConfigureEventJS extends EventJS {
         """)
     public void remove(AdvancementFilter filter) {
         if (filter.fail()) {
-            ConsoleJS.SERVER.warn("AdvJS/remove: Failed to create a filter");
+            ConsoleJS.SERVER.error("AdvJS/remove: Failed to create a filter");
         } else {
             FILTERS.add(filter);
         }

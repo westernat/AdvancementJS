@@ -1,4 +1,4 @@
-package org.mesdag.advjs.trigger.custom;
+package org.mesdag.advjs.trigger.builtin;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -34,8 +34,7 @@ public class BlockDestroyedTrigger extends SimpleCriterionTrigger<BlockDestroyed
         return new TriggerInstance(composite, block, tag, state, item);
     }
 
-    @Nullable
-    private static Block deserializeBlock(JsonObject jsonObject) {
+    private static @Nullable Block deserializeBlock(JsonObject jsonObject) {
         if (jsonObject.has("block")) {
             ResourceLocation resourcelocation = new ResourceLocation(GsonHelper.getAsString(jsonObject, "block"));
             return BuiltInRegistries.BLOCK.getOptional(resourcelocation).orElseThrow(() -> new JsonSyntaxException("Unknown block type '" + resourcelocation + "'"));
@@ -60,10 +59,8 @@ public class BlockDestroyedTrigger extends SimpleCriterionTrigger<BlockDestroyed
     }
 
     public static class Builder extends BaseTriggerInstanceBuilder implements ItemSetter {
-        @Nullable
-        Block block;
-        @Nullable
-        TagKey<Block> tag;
+        @Nullable Block block;
+        @Nullable TagKey<Block> tag;
         StatePropertiesPredicate statePredicate = StatePropertiesPredicate.ANY;
         ItemPredicate item = ItemPredicate.ANY;
 

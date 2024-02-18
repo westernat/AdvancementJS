@@ -10,11 +10,8 @@ import java.util.Map;
 
 public class Bounds {
     private static final Bounds ANY = new Bounds(null, null);
-
-    @Nullable
-    private final Number min;
-    @Nullable
-    private final Number max;
+    private final @Nullable Number min;
+    private final @Nullable Number max;
 
     Bounds(@Nullable Number min, @Nullable Number max) {
         this.min = min;

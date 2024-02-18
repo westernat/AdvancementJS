@@ -1,4 +1,4 @@
-package org.mesdag.advjs.trigger.custom;
+package org.mesdag.advjs.trigger.builtin;
 
 import net.minecraft.advancements.CriteriaTriggers;
 

@@ -17,8 +17,7 @@ import java.util.UUID;
 public class CriteriaBuilder {
     private final Map<String, Criterion> criteria;
     private RequirementsStrategy strategy = RequirementsStrategy.AND;
-    @Nullable
-    private String[][] requirements;
+    private @Nullable String[][] requirements;
 
     CriteriaBuilder() {
         this.criteria = Maps.newLinkedHashMap();

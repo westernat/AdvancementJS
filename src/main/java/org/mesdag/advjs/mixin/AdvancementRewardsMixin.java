@@ -15,8 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(AdvancementRewards.class)
 public abstract class AdvancementRewardsMixin implements RewardsKJS {
     @Unique
-    @Nullable
-    private MobEffectInstance[] advJS$mobEffectInstances = null;
+    private @Nullable MobEffectInstance[] advJS$mobEffectInstances;
 
     @Override
     @HideFromJS

@@ -1,9 +1,7 @@
 package org.mesdag.advjs.mixin;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.latvian.mods.kubejs.core.ItemKJS;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.*;
@@ -17,7 +15,6 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.storage.loot.LootDataManager;
 import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.advancement.*;
-import org.mesdag.advjs.trigger.Trigger;
 import org.mesdag.advjs.util.AdvJSEvents;
 import org.mesdag.advjs.util.AdvancementFilter;
 import org.mesdag.advjs.util.DisplayOffset;
@@ -30,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import static org.mesdag.advjs.util.Data.*;
@@ -45,12 +43,12 @@ public abstract class ServerAdvancementManagerMixin {
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("HEAD"))
     private void advJS$remove(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfo ci) {
-        AdvJSEvents.ADVANCEMENT.post(new AdvConfigureEventJS(new Trigger(lootData)));
+        AdvJSEvents.postAdv(lootData);
 
         int counter = 0;
-        ImmutableSet.Builder<ResourceLocation> builder = new ImmutableSet.Builder<>();
-        // TODO iterator
-        for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
+        Iterator<Map.Entry<ResourceLocation, JsonElement>> iterator = map.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<ResourceLocation, JsonElement> entry = iterator.next();
             ResourceLocation key = entry.getKey();
             if (key.toString().startsWith("minecraft:recipe")) continue;
 
@@ -62,26 +60,22 @@ public abstract class ServerAdvancementManagerMixin {
                 if (advJson.has("display")) {
                     DisplayInfo displayInfo = DisplayInfo.fromJson(GsonHelper.getAsJsonObject(advJson, "display"));
                     if (filter.matches(key, displayInfo.getIcon(), displayInfo.getFrame(), parent)) {
-                        builder.add(key);
+                        iterator.remove();
+                        counter++;
                     }
                 } else if (filter.matches(key, null, null, parent)) {
-                    builder.add(key);
+                    iterator.remove();
+                    counter++;
                 }
             }
         }
-
-        for (ResourceLocation remove : builder.build()) {
-            map.remove(remove);
-            counter++;
-        }
-
         ConsoleJS.SERVER.info("AdvJS: Removed %s advancements".formatted(counter));
     }
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/AdvancementList;add(Ljava/util/Map;)V", shift = At.Shift.BEFORE),
         locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void advJS$modify_add(Map<ResourceLocation, JsonElement> p_136034_, ResourceManager p_136035_, ProfilerFiller p_136036_, CallbackInfo ci, Map<ResourceLocation, Advancement.Builder> map, AdvancementList advancementlist) {
+    private void advJS$modify_add(Map<ResourceLocation, JsonElement> p_136034_, ResourceManager p_136035_, ProfilerFiller p_136036_, CallbackInfo ci, Map<ResourceLocation, Advancement.Builder> map) {
         advJS$modify(map, lootData);
         advJS$add(map);
         ConsoleJS.SERVER.info("AdvJS: Completely loaded!");
@@ -89,8 +83,6 @@ public abstract class ServerAdvancementManagerMixin {
 
     @Unique
     private static void advJS$modify(Map<ResourceLocation, Advancement.Builder> map, LootDataManager lootData) {
-        AdvJS.debugInfo("AdvJS: Modification details:");
-
         int counter = 0;
         for (Map.Entry<ResourceLocation, AdvGetter> entry : GETTERS.entrySet()) {
             ResourceLocation id = entry.getKey();
@@ -103,7 +95,6 @@ public abstract class ServerAdvancementManagerMixin {
             JsonObject oldJson = builder.serializeToJson();
             ResourceLocation parentId = getter.parent == null ? (oldJson.has("parent") ? new ResourceLocation(oldJson.get("parent").getAsString()) : null) : getter.parent;
             DisplayInfo neoDisplay = null;
-            String displayStr = "";
 
             if (getter.displayConsumer != null) {
                 if (oldJson.has("display")) {
@@ -111,27 +102,6 @@ public abstract class ServerAdvancementManagerMixin {
                     DisplayBuilder neoDisplayBuilder = new DisplayBuilder(id, oldDisplay);
                     getter.displayConsumer.accept(neoDisplayBuilder);
                     neoDisplay = neoDisplayBuilder.build();
-
-                    displayStr = """
-                            display:
-                                icon: %s -> %s
-                                title: %s -> %s
-                                description: %s -> %s
-                                background: %s -> %s
-                                frame: %s -> %s
-                                showToast: %s -> %s
-                                announceToChat: %s -> %s
-                                hidden: %s -> %s
-                        """.formatted(
-                        ((ItemKJS) oldDisplay.getIcon().getItem()).kjs$getId(), ((ItemKJS) neoDisplay.getIcon().getItem()).kjs$getId(),
-                        oldDisplay.getTitle().getString(), neoDisplay.getTitle().getString(),
-                        oldDisplay.getDescription().getString(), neoDisplay.getDescription().getString(),
-                        oldDisplay.getBackground(), neoDisplay.getBackground(),
-                        oldDisplay.getFrame().getName(), neoDisplay.getFrame().getName(),
-                        oldDisplay.shouldShowToast(), neoDisplay.shouldShowToast(),
-                        oldDisplay.shouldAnnounceChat(), neoDisplay.shouldAnnounceChat(),
-                        oldDisplay.isHidden(), neoDisplay.isHidden()
-                    );
                 } else {
                     DisplayBuilder neoDisplayBuilder = new DisplayBuilder(id);
                     getter.displayConsumer.accept(neoDisplayBuilder);
@@ -158,26 +128,8 @@ public abstract class ServerAdvancementManagerMixin {
             for (Map.Entry<String, Criterion> pair : neoCriteriaBuilder.getCriteria().entrySet()) {
                 neo.addCriterion(pair.getKey(), pair.getValue());
             }
-            map.put(id, neo);
+            map.replace(id, neo);
             counter++;
-
-            AdvJS.debugInfo("""
-                identifier: %s
-                    parent: %s
-                %s
-                    rewards: %s
-                    requirements: %s
-                    criteria: %s
-                """
-                .formatted(
-                    id,
-                    parentId,
-                    displayStr,
-                    neoRewards,
-                    neoRequirements,
-                    String.join(",", neo.getCriteria().keySet())
-                )
-            );
         }
         ConsoleJS.SERVER.info("AdvJS: Modified %s advancements".formatted(counter));
     }
@@ -242,6 +194,8 @@ public abstract class ServerAdvancementManagerMixin {
             DisplayOffset offset = entry.getValue();
             advJS$applyOffset(advancement, offset.offsetX(), offset.offsetY(), offset.modifyChildren());
         }
+
+        clearCache();
     }
 
     @Unique

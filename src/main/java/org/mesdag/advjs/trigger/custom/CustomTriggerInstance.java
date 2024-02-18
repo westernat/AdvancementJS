@@ -1,4 +1,4 @@
-package org.mesdag.advjs.trigger.registry;
+package org.mesdag.advjs.trigger.custom;
 
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;

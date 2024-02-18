@@ -18,8 +18,7 @@ public class DisplayBuilder {
     private ItemStack icon;
     private Component title;
     private Component description;
-    @Nullable
-    private ResourceLocation background;
+    private @Nullable ResourceLocation background;
     private FrameType frameType;
     private boolean showToast;
     private boolean announceToChat;

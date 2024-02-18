@@ -68,3 +68,14 @@
 
 ## Upgrades
 - AdvancementFilter: compound type is available
+
+# 2.9.0
+## Fix
+- ```AdvancementFilter``` will filter icon correctly
+- ```DamagePredicateBuilder.setType(predicate)``` -> ```DamagePredicateBuilder.setTypeByPredicate(predicate)```
+
+## Addition
+- Client example in ```/advjs```
+
+## Compat
+- ```Better Advancements```: the new server event: ```AdvJSEvents.betterAdv```

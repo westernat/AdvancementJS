@@ -17,11 +17,9 @@ import static org.mesdag.advjs.util.Data.*;
 
 public class AdvGetter {
     private final ResourceLocation id;
-    @Nullable
-    public ResourceLocation parent;
+    public @Nullable ResourceLocation parent;
     @HideFromJS
-    @Nullable
-    public Consumer<DisplayBuilder> displayConsumer;
+    public @Nullable Consumer<DisplayBuilder> displayConsumer;
     @HideFromJS
     public Consumer<RewardsBuilder> rewardsConsumer = rewardsBuilder -> {
     };

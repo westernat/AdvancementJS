@@ -5,7 +5,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import org.mesdag.advjs.trigger.custom.Criteria;
+import org.mesdag.advjs.trigger.builtin.Criteria;
 import org.mesdag.advjs.util.AdvHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

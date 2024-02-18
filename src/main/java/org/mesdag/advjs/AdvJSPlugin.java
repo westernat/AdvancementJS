@@ -8,11 +8,12 @@ import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
 import org.mesdag.advjs.advancement.AdvLockEventJS;
 import org.mesdag.advjs.command.AdvCommand;
-import org.mesdag.advjs.trigger.registry.CustomTriggers;
-import org.mesdag.advjs.trigger.registry.TriggerRegistryEventJS;
+import org.mesdag.advjs.trigger.custom.CustomTriggers;
+import org.mesdag.advjs.trigger.custom.TriggerRegistryEventJS;
 import org.mesdag.advjs.util.*;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class AdvJSPlugin extends KubeJSPlugin {
     static boolean DEBUG = false;
@@ -41,7 +42,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
 
     @Override
     public void onServerReload() {
-        Data.clear();
+        Data.clearResistance();
         AdvJSEvents.LOCK.post(new AdvLockEventJS());
     }
 
@@ -56,21 +57,18 @@ public class AdvJSPlugin extends KubeJSPlugin {
         example(properties.get("AdvJSExample", true));
     }
 
-    private static void example(boolean generate) {
-        if (!generate) return;
+    private static void example(boolean shouldGen) {
+        if (!shouldGen) return;
+        generate(AdvJS.SERVER_EXAMPLE, AdvCommand.SERVER_EXAMPLE);
+        generate(AdvJS.STARTUP_EXAMPLE, AdvCommand.STARTUP_EXAMPLE);
+        generate(AdvJS.CLIENT_EXAMPLE, AdvCommand.CLIENT_EXAMPLE);
+    }
 
-        if (Files.notExists(AdvJS.STARTUP_EXAMPLE)) {
+    private static void generate(Path file, String text){
+        if (Files.notExists(file)) {
             try {
-                Files.writeString(AdvJS.STARTUP_EXAMPLE, AdvCommand.STARTUP_EXAMPLE);
-                ConsoleJS.SERVER.info("AdvJS: Generated advjs_startup.js");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        if (Files.notExists(AdvJS.SERVER_EXAMPLE)) {
-            try {
-                Files.writeString(AdvJS.SERVER_EXAMPLE, AdvCommand.SERVER_EXAMPLE);
-                ConsoleJS.SERVER.info("AdvJS: Generated advjs_server.js");
+                Files.writeString(file, text);
+                ConsoleJS.SERVER.info("AdvJS: Generated " + file.getFileName());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

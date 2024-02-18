@@ -1,4 +1,4 @@
-package org.mesdag.advjs.trigger.custom;
+package org.mesdag.advjs.trigger.builtin;
 
 import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.typings.Info;

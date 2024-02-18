@@ -14,8 +14,7 @@ import org.mesdag.advjs.util.ItemSetter;
 import java.util.function.Consumer;
 
 public class BeeNestDestroyedBuilder extends BaseTriggerInstanceBuilder implements ItemSetter {
-    @Nullable
-    Block block = null;
+    @Nullable Block block;
     ItemPredicate item = ItemPredicate.ANY;
     MinMaxBounds.Ints bounds = MinMaxBounds.Ints.ANY;
 
