@@ -12,14 +12,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
+
 @Mixin(AdvancementRewards.class)
 public abstract class AdvancementRewardsMixin implements RewardsKJS {
     @Unique
-    private @Nullable MobEffectInstance[] advJS$mobEffectInstances;
+    private @Nullable List<MobEffectInstance> advJS$mobEffectInstances;
 
     @Override
     @HideFromJS
-    public void advJS$setMobEffectInstances(MobEffectInstance[] mobEffectInstances) {
+    public void advJS$setMobEffectInstances(List<MobEffectInstance> mobEffectInstances) {
         advJS$mobEffectInstances = mobEffectInstances;
     }
 

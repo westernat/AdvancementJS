@@ -3,12 +3,13 @@ package org.mesdag.advjs;
 import dev.latvian.mods.kubejs.CommonProperties;
 import dev.latvian.mods.kubejs.KubeJSPaths;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import org.mesdag.advjs.command.AdvCommand;
+import org.mesdag.advjs.event.LockEvent;
 import org.mesdag.advjs.trigger.builtin.Criteria;
 
 import java.nio.file.Path;
@@ -26,10 +27,12 @@ public class AdvJS {
     public static final Path END = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_end.js");
 
     public static final ResourceLocation PARENT = new ResourceLocation("advjs", "parent");
+    public static final Component EMPTY_COMPONENT = Component.empty();
 
     public AdvJS() {
         CommonProperties.reload();
         Criteria.initialize();
+        MinecraftForge.EVENT_BUS.register(LockEvent.class);
         MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
     }
 
@@ -41,9 +44,5 @@ public class AdvJS {
         if (AdvJSPlugin.DEBUG) {
             ConsoleJS.SERVER.info(info);
         }
-    }
-
-    public static boolean betterLoaded() {
-        return ModList.get().isLoaded("betteradvancements");
     }
 }

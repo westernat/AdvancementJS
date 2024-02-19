@@ -119,7 +119,7 @@ public class RewardsBuilder {
     @HideFromJS
     public AdvancementRewards build() {
         RewardsKJS rewards = (RewardsKJS) new AdvancementRewards(experience, loot, recipes, function);
-        rewards.advJS$setMobEffectInstances(mobEffectInstances.toArray(MobEffectInstance[]::new));
+        rewards.advJS$setMobEffectInstances(mobEffectInstances);
         return rewards.advJS$getSelf();
     }
 }

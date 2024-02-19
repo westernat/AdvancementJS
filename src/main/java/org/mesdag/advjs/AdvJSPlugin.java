@@ -20,12 +20,14 @@ public class AdvJSPlugin extends KubeJSPlugin {
 
     @Override
     public void registerBindings(BindingsEvent event) {
-        event.add("FrameType", FrameTypeWrapper.class);
-        event.add("RequirementsStrategy", RequirementsStrategyWrapper.class);
-        event.add("GameMode", GameTypeWrapper.class);
-        event.add("Bounds", Bounds.class);
-        event.add("CustomTriggers", CustomTriggers.class);
-        event.add("AdvHelper", AdvHelper.class);
+        if (event.getType().isServer()) {
+            event.add("FrameType", FrameTypeWrapper.class);
+            event.add("RequirementsStrategy", RequirementsStrategyWrapper.class);
+            event.add("GameMode", GameTypeWrapper.class);
+            event.add("Bounds", Bounds.class);
+            event.add("CustomTriggers", CustomTriggers.class);
+            event.add("AdvHelper", AdvHelper.class);
+        }
     }
 
     @Override
@@ -64,7 +66,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
         generate(AdvJS.CLIENT_EXAMPLE, AdvCommand.CLIENT_EXAMPLE);
     }
 
-    private static void generate(Path file, String text){
+    private static void generate(Path file, String text) {
         if (Files.notExists(file)) {
             try {
                 Files.writeString(file, text);

@@ -10,6 +10,7 @@ import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+import org.mesdag.advjs.AdvJS;
 import org.mesdag.advjs.util.DisplayOffset;
 
 import java.util.ArrayList;
@@ -203,7 +204,7 @@ public class AdvBuilder {
     }
 
     public enum WarnType {
-        NONE(Component.empty()),
+        NONE(AdvJS.EMPTY_COMPONENT),
         NAMELESS(Component.translatable("advjs.attention.nameless")),
         NO_SPACE(Component.translatable("advjs.attention.no_space")),
         NO_PARENT(Component.translatable("advjs.attention.no_parent"));

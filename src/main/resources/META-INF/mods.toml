@@ -6,7 +6,7 @@ license = "${mod_license}"
 modId = "advjs"
 version = "${mod_version}"
 displayName = "AdvancementJS"
-authors = "Weternat"
+authors = "Westernat"
 description = '''Configure more than advancements by KubeJS'''
 logoFile = "logo.png"
 

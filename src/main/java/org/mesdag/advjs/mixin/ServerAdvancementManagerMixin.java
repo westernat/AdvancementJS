@@ -78,6 +78,7 @@ public abstract class ServerAdvancementManagerMixin {
     private void advJS$modify_add(Map<ResourceLocation, JsonElement> p_136034_, ResourceManager p_136035_, ProfilerFiller p_136036_, CallbackInfo ci, Map<ResourceLocation, Advancement.Builder> map) {
         advJS$modify(map, lootData);
         advJS$add(map);
+        AdvJSEvents.postBetter(map);
         ConsoleJS.SERVER.info("AdvJS: Completely loaded!");
     }
 

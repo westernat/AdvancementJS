@@ -79,3 +79,9 @@
 
 ## Compat
 - ```Better Advancements```: the new server event: ```AdvJSEvents.betterAdv```
+
+# 2.9.1
+## Addition
+- Send custom message to player who tried to interact with locked things
+- ```AdvJSEvents.betterAdv``` support modify vanilla display
+- ```BetterAdvModifier``` support more override method

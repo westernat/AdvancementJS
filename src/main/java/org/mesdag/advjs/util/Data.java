@@ -1,7 +1,9 @@
 package org.mesdag.advjs.util;
 
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -15,9 +17,9 @@ import java.util.LinkedHashMap;
 public class Data {
     public static final HashSet<ResourceLocation> REPEATABLE = new HashSet<>();
     public static final Hashtable<ItemPredicate, ResourceLocation> LOCK_RESULT = new Hashtable<>();
-    public static final Hashtable<Item, ResourceLocation> LOCK_ITEM_USE = new Hashtable<>();
-    public static final Hashtable<Block, ResourceLocation> LOCK_BLOCK_INTERACT = new Hashtable<>();
-    public static final Hashtable<EntityType<?>, ResourceLocation> LOCK_ENTITY_INTERACT = new Hashtable<>();
+    public static final Hashtable<Item, Tuple<ResourceLocation, Component>> LOCK_ITEM_USE = new Hashtable<>();
+    public static final Hashtable<Block, Tuple<ResourceLocation, Component>> LOCK_BLOCK_INTERACT = new Hashtable<>();
+    public static final Hashtable<EntityType<?>, Tuple<ResourceLocation, Component>> LOCK_ENTITY_INTERACT = new Hashtable<>();
     public static final Hashtable<ResourceLocation, ResourceLocation[]> REQUIRE_DONE = new Hashtable<>();
 
     public static final HashSet<AdvancementFilter> FILTERS = new HashSet<>();
