@@ -27,7 +27,7 @@ public class Data {
     public static final LinkedHashMap<ResourceLocation, AdvBuilder> BUILDERS = new LinkedHashMap<>();
     public static final Hashtable<ResourceLocation, DisplayOffset> DISPLAY_OFFSET = new Hashtable<>();
 
-    public static void clearResistance() {
+    public static void clearPersistent() {
         REPEATABLE.clear();
         LOCK_RESULT.clear();
         LOCK_ITEM_USE.clear();

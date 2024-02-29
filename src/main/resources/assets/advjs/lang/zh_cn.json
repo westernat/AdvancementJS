@@ -3,6 +3,6 @@
     "advjs.attention.nameless": "你的自定义进度没有名字",
     "advjs.attention.no_space": "你的自定义进度正在使用命名空间 'minecraft'",
     "advjs.attention.no_parent": "你的自定义进度没有父进度",
-    "advjs.command.success": "成功生成了：%s",
-    "advjs.command.failed": "生成失败了：%s"
+    "advjs.command.success": "成功生成了：./kubejs/server_scripts/%s",
+    "advjs.command.failed": "生成失败了：./kubejs/server_scripts/%s"
 }

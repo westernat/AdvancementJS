@@ -44,7 +44,7 @@ public class AdvJSPlugin extends KubeJSPlugin {
 
     @Override
     public void onServerReload() {
-        Data.clearResistance();
+        Data.clearPersistent();
         AdvJSEvents.LOCK.post(new AdvLockEventJS());
     }
 

@@ -125,7 +125,9 @@ public abstract class ServerAdvancementManagerMixin {
             getter.criteriaConsumer.accept(neoCriteriaBuilder);
             String[][] neoRequirements = neoCriteriaBuilder.getRequirements();
 
-            Advancement.Builder neo = Advancement.Builder.advancement().parent(parentId).display(neoDisplay).rewards(neoRewards).requirements(neoRequirements);
+            Advancement.Builder neo = Advancement.Builder.advancement().rewards(neoRewards).requirements(neoRequirements);
+            if (parentId != null) neo.parent(parentId);
+            if (neoDisplay != null) neo.display(neoDisplay);
             for (Map.Entry<String, Criterion> pair : neoCriteriaBuilder.getCriteria().entrySet()) {
                 neo.addCriterion(pair.getKey(), pair.getValue());
             }
