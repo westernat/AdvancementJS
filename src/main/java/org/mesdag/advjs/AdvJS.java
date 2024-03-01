@@ -1,6 +1,5 @@
 package org.mesdag.advjs;
 
-import dev.latvian.mods.kubejs.CommonProperties;
 import dev.latvian.mods.kubejs.KubeJSPaths;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 import net.minecraft.network.chat.Component;
@@ -19,7 +18,6 @@ import java.nio.file.Path;
 public class AdvJS {
     public static final Path SERVER_EXAMPLE = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_server.js");
     public static final Path STARTUP_EXAMPLE = KubeJSPaths.STARTUP_SCRIPTS.resolve("advjs_startup.js");
-    public static final Path CLIENT_EXAMPLE = KubeJSPaths.CLIENT_SCRIPTS.resolve("advjs_client.js");
     public static final Path STORY = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_story.js");
     public static final Path ADVENTURE = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_adventure.js");
     public static final Path NETHER = KubeJSPaths.SERVER_SCRIPTS.resolve("advjs_nether.js");
@@ -30,7 +28,6 @@ public class AdvJS {
     public static final Component EMPTY_COMPONENT = Component.empty();
 
     public AdvJS() {
-        CommonProperties.reload();
         Criteria.initialize();
         MinecraftForge.EVENT_BUS.register(LockEvent.class);
         MinecraftForge.EVENT_BUS.addListener(this::registerCommand);

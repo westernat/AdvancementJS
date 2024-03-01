@@ -17,8 +17,7 @@ public class AdvCommand {
                 CommandSourceStack source = context.getSource();
                 generate(source, AdvJS.SERVER_EXAMPLE, SERVER_EXAMPLE);
                 generate(source, AdvJS.STARTUP_EXAMPLE, STARTUP_EXAMPLE);
-                generate(source, AdvJS.CLIENT_EXAMPLE, CLIENT_EXAMPLE);
-                return 3;
+                return 2;
             }))
             .then(Commands.literal("story").executes(context -> generate(context.getSource(), AdvJS.STORY, STORY)))
             .then(Commands.literal("adventure").executes(context -> generate(context.getSource(), AdvJS.ADVENTURE, ADVENTURE)))
@@ -29,13 +28,12 @@ public class AdvCommand {
                 CommandSourceStack source = context.getSource();
                 generate(source, AdvJS.SERVER_EXAMPLE, SERVER_EXAMPLE);
                 generate(source, AdvJS.STARTUP_EXAMPLE, STARTUP_EXAMPLE);
-                generate(source, AdvJS.CLIENT_EXAMPLE, CLIENT_EXAMPLE);
                 generate(source, AdvJS.STORY, STORY);
                 generate(source, AdvJS.ADVENTURE, ADVENTURE);
                 generate(source, AdvJS.NETHER, NETHER);
                 generate(source, AdvJS.HUSBANDRY, HUSBANDRY);
                 generate(source, AdvJS.END, END);
-                return 8;
+                return 7;
             }))
         );
     }
@@ -57,7 +55,6 @@ public class AdvCommand {
     public static final String STORY;
     public static final String SERVER_EXAMPLE;
     public static final String STARTUP_EXAMPLE;
-    public static final String CLIENT_EXAMPLE;
 
     static {
         END = """
@@ -2220,16 +2217,6 @@ public class AdvCommand {
                     // In this example, we defined 2 matches
                     .match(advancement => advancement.getId() == "minecraft:story/smelt_iron")
                     .match(playerName => playerName == "Dev")
-            })
-            """;
-        CLIENT_EXAMPLE = """        
-            // Compat with Revelationary(EventHorizon)
-            AdvJSEvents.revelation(event => {
-                event.onFlush((done, removed, isFirst) => {
-                    event.player.sendSystemMessage(Text.aqua(done.size() + " advancement has done"))
-                    event.player.sendSystemMessage(Text.red(removed.size() + " advancement has removed"))
-                    event.player.sendSystemMessage(Text.green((isFirst ? "Is" : "Isn't") + " first flush"))
-                })
             })
             """;
     }

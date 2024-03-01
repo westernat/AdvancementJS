@@ -15,7 +15,6 @@
     ],
     "minVersion": "0.8.5",
     "client": [
-        "client.ClientAdvancementsAccessor",
-        "revelationary.ClientAdvancementsMixin"
+        "client.ClientAdvancementsAccessor"
     ]
 }

@@ -1,7 +1,7 @@
 # AdvancementJS
 Configure more than advancements by KubeJS
 
-## Quick Example(for latest version ```2.9.0```)
+## Quick Example(for latest version ```2.9.2```)
 
 ### Startup script
 ```js
@@ -126,18 +126,6 @@ PlayerEvents.advancement(event => {
 })
 ```
 
-### Client script
-```js
-// Compat with Revelationary(EventHorizon)
-AdvJSEvents.revelation(event => {
-    event.onFlush((done, removed, isFirst) => {
-        event.player.sendSystemMessage(Text.aqua(done.size() + " advancement has done"))
-        event.player.sendSystemMessage(Text.red(removed.size() + " advancement has removed"))
-        event.player.sendSystemMessage(Text.green(isFirst ? "Is" : "Isn't" + " first flush"))
-    })
-})
-```
-
 # How to reload
 Just use ```/reload```
 
@@ -159,6 +147,4 @@ Just use ```/reload```
   - requireOthersDone(requires[]: ResourceLocation...)
     - check if advancements that you put in had done.
 - Compat
-  - ```Revelationary```(Fabric only), the new client event: ```AdvJSEvents.revelation```
-  - ```EventHorizon```(Forge only), the new client event: ```AdvJSEvents.revelation```
   - ```Better Advancements```, the new server event: ```AdvJSEvents.betterAdv```

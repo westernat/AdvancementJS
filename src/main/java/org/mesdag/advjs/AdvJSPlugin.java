@@ -37,6 +37,11 @@ public class AdvJSPlugin extends KubeJSPlugin {
     }
 
     @Override
+    public void init() {
+        CommonProperties.reload();
+    }
+
+    @Override
     public void initStartup() {
         AdvJSEvents.TRIGGER.post(new TriggerRegistryEventJS());
         CustomTriggers.registerAll();
@@ -63,7 +68,6 @@ public class AdvJSPlugin extends KubeJSPlugin {
         if (!shouldGen) return;
         generate(AdvJS.SERVER_EXAMPLE, AdvCommand.SERVER_EXAMPLE);
         generate(AdvJS.STARTUP_EXAMPLE, AdvCommand.STARTUP_EXAMPLE);
-        generate(AdvJS.CLIENT_EXAMPLE, AdvCommand.CLIENT_EXAMPLE);
     }
 
     private static void generate(Path file, String text) {

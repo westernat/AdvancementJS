@@ -85,3 +85,8 @@
 - Send custom message to player who tried to interact with locked things
 - ```AdvJSEvents.betterAdv``` support modify vanilla display
 - ```BetterAdvModifier``` support more override method
+
+# 2.9.2
+## Fix
+- Removed compat with Revelationary(EventHorizon), so that ProbeJS could successfully generate js doc
+- common.properties will create AdvJS configures correctly
