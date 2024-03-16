@@ -21,6 +21,7 @@ public class Data {
     public static final Hashtable<Block, Tuple<ResourceLocation, Component>> LOCK_BLOCK_INTERACT = new Hashtable<>();
     public static final Hashtable<EntityType<?>, Tuple<ResourceLocation, Component>> LOCK_ENTITY_INTERACT = new Hashtable<>();
     public static final Hashtable<ResourceLocation, ResourceLocation[]> REQUIRE_DONE = new Hashtable<>();
+    public static final Hashtable<ResourceLocation, ResourceLocation[]> ANY_DONE = new Hashtable<>();
 
     public static final HashSet<AdvancementFilter> FILTERS = new HashSet<>();
     public static final LinkedHashMap<ResourceLocation, AdvGetter> GETTERS = new LinkedHashMap<>();
@@ -34,6 +35,7 @@ public class Data {
         LOCK_BLOCK_INTERACT.clear();
         LOCK_ENTITY_INTERACT.clear();
         REQUIRE_DONE.clear();
+        ANY_DONE.clear();
     }
 
     public static void clearCache() {

@@ -15,8 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static org.mesdag.advjs.util.Data.REPEATABLE;
-import static org.mesdag.advjs.util.Data.REQUIRE_DONE;
+import static org.mesdag.advjs.util.Data.*;
 
 @Mixin(PlayerAdvancements.class)
 public abstract class PlayerAdvancementMixin {
@@ -33,19 +32,36 @@ public abstract class PlayerAdvancementMixin {
             return;
         }
         ResourceLocation id = advancement.getId();
+
         ResourceLocation[] requires = REQUIRE_DONE.get(id);
-        if (requires == null) return;
-        if (requires.length == 0) {
-            ConsoleJS.SERVER.error("AdvJS/requireDone: Invalid requires[] of '%s', which length is 0".formatted(id));
-            return;
+        if (requires != null) {
+            if (requires.length == 0) {
+                ConsoleJS.SERVER.error("AdvJS/requireDone: Invalid requires[] of '%s', which length is 0".formatted(id));
+                return;
+            }
+            ServerAdvancementManager manager = player.server.getAdvancements();
+            for (ResourceLocation requireId : requires) {
+                Advancement required = requireId == AdvJS.PARENT ? advancement.getParent() : manager.getAdvancement(requireId);
+                String nullMsg = "AdvJS/requireDone: Advancement '%s' is not exist, so '%s' will not check it".formatted(requireId, id);
+                if (!AdvHelper.advDone(player, required, nullMsg)) {
+                    cir.setReturnValue(false);
+                    return;
+                }
+            }
         }
 
+        ResourceLocation[] any = ANY_DONE.get(id);
+        if (any == null) return;
+        if (any.length == 0) {
+            ConsoleJS.SERVER.error("AdvJS/anyDone: Invalid requires[] of '%s', which length is 0".formatted(id));
+            return;
+        }
         ServerAdvancementManager manager = player.server.getAdvancements();
-        for (ResourceLocation requireId : requires) {
+        for (ResourceLocation requireId : any) {
             Advancement required = requireId == AdvJS.PARENT ? advancement.getParent() : manager.getAdvancement(requireId);
-            String nullMsg = "AdvJS/requireDone: Advancement '%s' is not exist, so '%s' will not check it".formatted(requireId, id);
-            if (!AdvHelper.advDone(player, required, nullMsg)) {
-                cir.setReturnValue(false);
+            String nullMsg = "AdvJS/anyDone: Advancement '%s' is not exist, so '%s' will not check it".formatted(requireId, id);
+            if (AdvHelper.advDone(player, required, nullMsg)) {
+                cir.setReturnValue(true);
                 return;
             }
         }

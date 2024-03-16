@@ -10,6 +10,7 @@ import org.mesdag.advjs.util.Bounds;
 
 import javax.annotation.Nullable;
 
+@SuppressWarnings({"deprecation", "unused"})
 public class EnchantmentPredicateBuilder {
     @Nullable
     Enchantment enchantment = null;

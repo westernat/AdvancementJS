@@ -17,6 +17,7 @@ import org.mesdag.advjs.util.Bounds;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
+@SuppressWarnings({"deprecation", "unused"})
 public class ItemPredicateBuilder {
     final ItemPredicate.Builder builder = ItemPredicate.Builder.item();
 

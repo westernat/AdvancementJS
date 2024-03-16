@@ -100,6 +100,11 @@ public class AdvGetter {
         return this;
     }
 
+    public AdvGetter requireAnyDone(ResourceLocation... requires){
+        ANY_DONE.put(id, requires);
+        return this;
+    }
+
     @Info(value = "Configure this advancement's position",
         params = {
             @Param(name = "offsetX", value = "The offset x of display."),

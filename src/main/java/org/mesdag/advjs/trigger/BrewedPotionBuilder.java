@@ -7,9 +7,9 @@ import net.minecraft.world.item.alchemy.Potion;
 
 import javax.annotation.Nullable;
 
+@SuppressWarnings({"deprecation", "unused"})
 public class BrewedPotionBuilder extends BaseTriggerInstanceBuilder {
-    @Nullable
-    Potion potion = null;
+    @Nullable Potion potion;
 
     @Info("A brewed potion ID.")
     public void setPotion(ResourceLocation name) {

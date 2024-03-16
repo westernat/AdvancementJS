@@ -21,7 +21,7 @@ import org.mesdag.advjs.util.ItemSetter;
 
 import java.util.function.Consumer;
 
-
+@SuppressWarnings({"deprecation", "unused"})
 public class BlockDestroyedTrigger extends SimpleCriterionTrigger<BlockDestroyedTrigger.TriggerInstance> {
     static final ResourceLocation ID = new ResourceLocation("advjs", "block_destroyed");
 

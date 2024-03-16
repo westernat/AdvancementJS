@@ -13,12 +13,14 @@ import java.util.Map;
 
 
 public class AdvancementFilter {
-    @Nullable ResourceLocation path;
-    @Nullable String modid;
-    @Nullable ItemStack icon;
-    @Nullable FrameType frame;
-    @Nullable ResourceLocation parent;
+    private @Nullable ResourceLocation path;
+    private @Nullable String modid;
+    private @Nullable String notMatchModid;
+    private @Nullable ItemStack icon;
+    private @Nullable FrameType frame;
+    private @Nullable ResourceLocation parent;
     private boolean resolved = false;
+    private boolean matchAll = false;
 
     public static AdvancementFilter of(Object o) {
         AdvancementFilter filter = new AdvancementFilter();
@@ -30,8 +32,17 @@ public class AdvancementFilter {
                 String modidStr = modid.toString();
                 if (ModList.get().isLoaded(modidStr)) {
                     filter.modid = modidStr;
+                } else if (modidStr.equals("*")) {
+                    filter.matchAll = true;
+                } else if (modidStr.startsWith("!")) {
+                    String flip = modidStr.replace("!", "");
+                    if (ModList.get().isLoaded(flip)) {
+                        filter.notMatchModid = flip;
+                    } else {
+                        ConsoleJS.SERVER.warn("AdvJS/RemoveFilter: mod '%s' not found".formatted(flip));
+                    }
                 } else {
-                    ConsoleJS.SERVER.warn("AdvJS/RemoveFilter: mod '%s' not found".formatted(modid));
+                    ConsoleJS.SERVER.warn("AdvJS/RemoveFilter: mod '%s' not found".formatted(modidStr));
                 }
             }
 
@@ -66,24 +77,30 @@ public class AdvancementFilter {
     }
 
     public boolean fail() {
-        return path == null && modid == null && icon == null && frame == null && parent == null;
+        return path == null && modid == null && notMatchModid == null && icon == null && frame == null && parent == null;
     }
 
-    public boolean matches(ResourceLocation path, ItemStack icon, FrameType frame, ResourceLocation parent) {
-        if (this.path != null) {
-            if (this.path.equals(path)) {
+    public boolean matches(ResourceLocation pPath, ItemStack pIcon, FrameType pFrame, ResourceLocation pParent) {
+        if (matchAll) return true;
+
+        if (path != null) {
+            if (path.equals(pPath)) {
                 resolved = true;
                 return true;
             }
             return false;
         }
 
-        if (this.modid != null && !this.modid.equals(path.getNamespace())) {
+        if (notMatchModid != null) {
+            return !notMatchModid.equals(pPath.getNamespace());
+        }
+
+        if (modid != null && !modid.equals(pPath.getNamespace())) {
             return false;
-        } else if (this.icon != null && icon != null && !ItemStack.isSameItemSameTags(this.icon, icon)) {
+        } else if (icon != null && pIcon != null && !ItemStack.isSameItemSameTags(icon, pIcon)) {
             return false;
-        } else if (this.frame != null && this.frame != frame) {
+        } else if (frame != null && frame != pFrame) {
             return false;
-        } else return this.parent == null || this.parent.equals(parent);
+        } else return parent == null || parent.equals(pParent);
     }
 }

@@ -29,8 +29,7 @@ public class PlayerPredicateBuilder {
     EntityPredicate vehicle = EntityPredicate.ANY;
     EntityPredicate passenger = EntityPredicate.ANY;
     EntityPredicate targetedEntity = EntityPredicate.ANY;
-    @Nullable
-    String team;
+    @Nullable String team;
 
     @Info("Test the experience level of this player.")
     public void setLevel(Bounds bounds) {
@@ -102,10 +101,10 @@ public class PlayerPredicateBuilder {
     }
 
     @Info(value = "Test whether specific criterions of an advancement are marked as complete.",
-    params = {
-        @Param(name = "advancement"),
-        @Param(name = "criterions")
-    })
+        params = {
+            @Param(name = "advancement"),
+            @Param(name = "criterions")
+        })
     public void checkAdvancementCriterions(ResourceLocation advancement, Map<String, Boolean> criterions) {
         playerBuilder.checkAdvancementCriterions(advancement, criterions);
     }

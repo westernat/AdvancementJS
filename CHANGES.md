@@ -25,37 +25,37 @@
 - AdvConfigureEventJS.lock(toLock: ItemStack, lockBy: AdvBuilder): void
 
 ## Fix
-- Allow ```requireParentDone``` and ```requireOthersDone``` use in same advancement
+- Allow `requireParentDone` and `requireOthersDone` use in same advancement
 
 # 2.6.0
 ## Compat
-- ```Revelationary```(Fabric only), the new client event: ```AdvJSEvents.revelation```
-- ```EventHorizon```(Forge only), the new client event: ```AdvJSEvents.revelation```
+- `Revelationary`(Fabric only), the new client event: `AdvJSEvents.revelation`
+- `EventHorizon`(Forge only), the new client event: `AdvJSEvents.revelation`
 
 ## Reconstruct
-- ```ServerEvents.advancement``` -> ```AdvJSEvents.advancement```
-- ```AdvConfigureEventJS.lock``` -> ```AdvJSEvents.lock```
+- `ServerEvents.advancement` -> `AdvJSEvents.advancement`
+- `AdvConfigureEventJS.lock` -> `AdvJSEvents.lock`
 
 ## Addition
-- The new startup event ```AdvJSEvents.trigger```, for registering custom trigger
-  - Use ```CustomTriggers.of(id: ResourceLocation): BaseTrigger``` to get your custom trigger for triggers
-  - Use ```Trigger.custom(id: ResourceLocation): BaseTriggerInstance``` to create a trigger instance for criteria
+- The new startup event `AdvJSEvents.trigger`, for registering custom trigger
+  - Use `CustomTriggers.of(id: ResourceLocation): BaseTrigger` to get your custom trigger for triggers
+  - Use `Trigger.custom(id: ResourceLocation): BaseTriggerInstance` to create a trigger instance for criteria
 
 # 2.7.0
 ## Addition
-- ```AdvBuilder.repeatable()``` and ```AdvGetter.repeatable()```
+- `AdvBuilder.repeatable()` and `AdvGetter.repeatable()`
   - If invoked this method, the advancement will revoke after grant automatically.
-- ```AdvGetter.changeParent(parentId: ResourceLocation)```
+- `AdvGetter.changeParent(parentId: ResourceLocation)`
 - PlayerPredicateBuilder.checkAdvancementCriterions(advancement: ResourceLocation, criterions: Map<String, Boolean>)
 
 ## Fix
 - If an advancement has no display, the displayModifier will not throw error, but create a new display
-- ```/advjs``` will generate correct code
+- `/advjs` will generate correct code
 
 ## Rename
-- ```AdvRemoveFilter``` -> ```AdvancementFilter```
-- ```GameType``` -> ```GameMode```
-- ```BaseTrigger``` -> ```CustomTrigger```
+- `AdvRemoveFilter` -> `AdvancementFilter`
+- `GameType` -> `GameMode`
+- `BaseTrigger` -> `CustomTrigger`
 
 # 2.8.0
 ## Addition
@@ -71,22 +71,29 @@
 
 # 2.9.0
 ## Fix
-- ```AdvancementFilter``` will filter icon correctly
-- ```DamagePredicateBuilder.setType(predicate)``` -> ```DamagePredicateBuilder.setTypeByPredicate(predicate)```
+- `AdvancementFilter` will filter icon correctly
+- `DamagePredicateBuilder.setType(predicate)` -> `DamagePredicateBuilder.setTypeByPredicate(predicate)`
 
 ## Addition
-- Client example in ```/advjs```
+- Client example in `/advjs`
 
 ## Compat
-- ```Better Advancements```: the new server event: ```AdvJSEvents.betterAdv```
+- `Better Advancements`: the new server event: `AdvJSEvents.betterAdv`
 
 # 2.9.1
 ## Addition
 - Send custom message to player who tried to interact with locked things
-- ```AdvJSEvents.betterAdv``` support modify vanilla display
-- ```BetterAdvModifier``` support more override method
+- `AdvJSEvents.betterAdv` support modify vanilla display
+- `BetterAdvModifier` support more override method
 
 # 2.9.2
 ## Fix
 - Removed compat with Revelationary(EventHorizon), so that ProbeJS could successfully generate js doc
 - common.properties will create AdvJS configures correctly
+
+# 2.9.3
+## Addition
+- `requireAnyDone(ResourceLocation... requires)` for `AdvBuilder` and `AdvGetter`
+- `AdvancementFilter`
+  - Use `{ mod: "*" }` for match all mod
+  - Use `{ mod: "!modid" }` for not match `modid`

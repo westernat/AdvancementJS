@@ -51,8 +51,6 @@ minecraft {
     }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
 repositories {
     maven {
         // Shedaniel's maven (Architectury API)
