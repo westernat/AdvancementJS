@@ -77,7 +77,7 @@ public class AdvancementFilter {
     }
 
     public boolean fail() {
-        return path == null && modid == null && notMatchModid == null && icon == null && frame == null && parent == null;
+        return path == null && modid == null && !matchAll && notMatchModid == null && icon == null && frame == null && parent == null;
     }
 
     public boolean matches(ResourceLocation pPath, ItemStack pIcon, FrameType pFrame, ResourceLocation pParent) {

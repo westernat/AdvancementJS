@@ -43,6 +43,8 @@ public class AdvConfigureEventJS extends EventJS {
         Else if you put in an object, it will remove advancement by filter:
 
         @param mod: the mod id of advancement.
+            - Use `*` for match all mod
+            - Use `!modid` for not match `modid`
         @param icon: the icon of advancement widget.
         @param frame: type of frame for the icon. Available value is 'challenge', 'goal' or 'task'.
         @param parent: the parent advancement id of this advancement.
