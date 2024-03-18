@@ -62,10 +62,12 @@ public abstract class ServerAdvancementManagerMixin {
                     if (filter.matches(key, displayInfo.getIcon(), displayInfo.getFrame(), parent)) {
                         iterator.remove();
                         counter++;
+                        break;
                     }
                 } else if (filter.matches(key, null, null, parent)) {
                     iterator.remove();
                     counter++;
+                    break;
                 }
             }
         }
