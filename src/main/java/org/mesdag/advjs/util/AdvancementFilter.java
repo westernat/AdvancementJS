@@ -76,13 +76,15 @@ public class AdvancementFilter {
         return resolved;
     }
 
+    public boolean isMatchAll() {
+        return matchAll;
+    }
+
     public boolean fail() {
         return path == null && modid == null && !matchAll && notMatchModid == null && icon == null && frame == null && parent == null;
     }
 
     public boolean matches(ResourceLocation pPath, ItemStack pIcon, FrameType pFrame, ResourceLocation pParent) {
-        if (matchAll) return true;
-
         if (path != null) {
             if (path.equals(pPath)) {
                 resolved = true;
@@ -91,11 +93,7 @@ public class AdvancementFilter {
             return false;
         }
 
-        if (notMatchModid != null) {
-            return !notMatchModid.equals(pPath.getNamespace());
-        }
-
-        if (modid != null && !modid.equals(pPath.getNamespace())) {
+        if ((modid != null && !modid.equals(pPath.getNamespace())) || (notMatchModid != null && notMatchModid.equals(pPath.getNamespace()))) {
             return false;
         } else if (icon != null && pIcon != null && !ItemStack.isSameItemSameTags(icon, pIcon)) {
             return false;

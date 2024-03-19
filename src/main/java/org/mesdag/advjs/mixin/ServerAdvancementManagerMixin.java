@@ -46,28 +46,34 @@ public abstract class ServerAdvancementManagerMixin {
         AdvJSEvents.postAdv(lootData);
 
         int counter = 0;
-        Iterator<Map.Entry<ResourceLocation, JsonElement>> iterator = map.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<ResourceLocation, JsonElement> entry = iterator.next();
-            ResourceLocation key = entry.getKey();
-            if (key.toString().startsWith("minecraft:recipe")) continue;
+        if (FILTERS.stream().anyMatch(AdvancementFilter::isMatchAll)) {
+            int raw = map.size();
+            map.entrySet().removeIf(entry -> !entry.getKey().toString().startsWith("minecraft:recipe"));
+            counter = raw - map.size();
+        } else {
+            Iterator<Map.Entry<ResourceLocation, JsonElement>> iterator = map.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<ResourceLocation, JsonElement> entry = iterator.next();
+                ResourceLocation key = entry.getKey();
+                if (key.toString().startsWith("minecraft:recipe")) continue;
 
-            JsonObject advJson = entry.getValue().getAsJsonObject();
-            for (AdvancementFilter filter : FILTERS) {
-                if (filter.isResolved()) continue;
+                JsonObject advJson = entry.getValue().getAsJsonObject();
+                for (AdvancementFilter filter : FILTERS) {
+                    if (filter.isResolved()) continue;
 
-                ResourceLocation parent = advJson.has("parent") ? new ResourceLocation(advJson.get("parent").getAsString()) : null;
-                if (advJson.has("display")) {
-                    DisplayInfo displayInfo = DisplayInfo.fromJson(GsonHelper.getAsJsonObject(advJson, "display"));
-                    if (filter.matches(key, displayInfo.getIcon(), displayInfo.getFrame(), parent)) {
+                    ResourceLocation parent = advJson.has("parent") ? new ResourceLocation(advJson.get("parent").getAsString()) : null;
+                    if (advJson.has("display")) {
+                        DisplayInfo displayInfo = DisplayInfo.fromJson(GsonHelper.getAsJsonObject(advJson, "display"));
+                        if (filter.matches(key, displayInfo.getIcon(), displayInfo.getFrame(), parent)) {
+                            iterator.remove();
+                            counter++;
+                            break;
+                        }
+                    } else if (filter.matches(key, null, null, parent)) {
                         iterator.remove();
                         counter++;
                         break;
                     }
-                } else if (filter.matches(key, null, null, parent)) {
-                    iterator.remove();
-                    counter++;
-                    break;
                 }
             }
         }
